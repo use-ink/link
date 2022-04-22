@@ -12,7 +12,7 @@
 [k2]: https://riot.im/app/#/room/#ink:matrix.parity.io
 [l1]: https://img.shields.io/discord/722223075629727774?style=flat-square&label=discord
 [l2]: https://discord.com/invite/wGUDt2p
-[i1]: https://raw.githubusercontent.com/paritytech/link/master/.images/badge.svg
+[i1]: /.images/badge.svg
 [i2]: https://github.com/paritytech/ink
 
 ## 🤔 What is this?
