@@ -36,7 +36,7 @@ mod link {
     pub struct Link {
         /// Needed in order to resolve slugs to URLs.
         urls: Mapping<Slug, Url>,
-        /// Needed in order to deduplicate URLs when shortening.
+        /// Needed in order to de-duplicate URLs when shortening.
         slugs: Mapping<Url, Slug>,
         /// The account that is allowed to upgrade this contract.
         upgrader: Option<AccountId>,
