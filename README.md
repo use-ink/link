@@ -4,7 +4,7 @@
 
 <br/>
 
-[![linux][a1]][a2] [![matrix][k1]][k2] [![discord][l1]][l2]
+[![linux][a1]][a2] [![matrix][k1]][k2] [![discord][l1]][l2] [![built-with-ink][i1]][i2]
 
 [a1]: https://gitlab.parity.io/parity/link/badges/master/pipeline.svg
 [a2]: https://gitlab.parity.io/parity/link/pipelines?ref=master
@@ -12,6 +12,8 @@
 [k2]: https://riot.im/app/#/room/#ink:matrix.parity.io
 [l1]: https://img.shields.io/discord/722223075629727774?style=flat-square&label=discord
 [l2]: https://discord.com/invite/wGUDt2p
+[i1]: https://raw.githubusercontent.com/paritytech/link/master/.images/badge.svg
+[i2]: https://github.com/paritytech/ink
 
 ## 🤔 What is this?
 
