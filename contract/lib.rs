@@ -30,15 +30,16 @@ mod link {
     type Url = Vec<u8>;
     type Slug = Vec<u8>;
 
+    /// The in-storage representation of this contract.
     #[ink(storage)]
     #[derive(SpreadAllocate)]
     pub struct Link {
-        /// Slug ➜ URL
+        /// Needed in order to resolve slugs to URLs.
         urls: Mapping<Slug, Url>,
-        /// URL ➜ Slug
+        /// Needed in order to deduplicate URLs when shortening.
         slugs: Mapping<Url, Slug>,
         /// The account that is allowed to upgrade this contract.
-        upgrader: AccountId,
+        upgrader: Option<AccountId>,
     }
 
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -85,9 +86,16 @@ mod link {
 
     impl Link {
         #[ink(constructor)]
-        pub fn default() -> Self {
+        pub fn new() -> Self {
             ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.upgrader = contract.env().caller();
+                contract.upgrader = Some(contract.env().caller());
+            })
+        }
+
+        #[ink(constructor)]
+        pub fn unstoppable() -> Self {
+            ink_lang::utils::initialize_contract(|contract: &mut Self| {
+                contract.upgrader = None;
             })
         }
 
@@ -137,7 +145,11 @@ mod link {
 
         #[ink(message)]
         pub fn upgrade(&mut self, code_hash: [u8; 32]) -> Result<()> {
-            if self.env().caller() != self.upgrader {
+            if self
+                .upgrader
+                .map(|id| id != self.env().caller())
+                .unwrap_or(true)
+            {
                 return Err(Error::UpgradeDenied)
             }
             ink_env::set_code_hash(&code_hash).map_err(|_| Error::UpgradeFailed)
