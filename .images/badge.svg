@@ -11,6 +11,7 @@
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns:serif="http://www.serif.com/">
@@ -24,33 +25,83 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.5411756"
-     inkscape:cx="274.14137"
-     inkscape:cy="42.82445"
+     inkscape:zoom="6.1647026"
+     inkscape:cx="82.485731"
+     inkscape:cy="9.2461882"
      inkscape:window-width="1918"
      inkscape:window-height="1055"
      inkscape:window-x="0"
      inkscape:window-y="23"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
-     units="px" />
+     units="px"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="40.730201,1.3001927"
+       orientation="0,-1"
+       id="guide85129" />
+  </sodipodi:namedview>
   <defs
-     id="defs42670" />
+     id="defs42670">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient77140">
+      <stop
+         style="stop-color:#bc83fb;stop-opacity:1;"
+         offset="0"
+         id="stop77136" />
+      <stop
+         style="stop-color:#d8b6ff;stop-opacity:1"
+         offset="1"
+         id="stop77138" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient77140"
+       id="linearGradient80850"
+       gradientUnits="userSpaceOnUse"
+       x1="24.632771"
+       y1="0.0048799305"
+       x2="24.632771"
+       y2="5.3769369" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath81071">
+      <rect
+         style="opacity:1;fill:#d8b6ff;fill-opacity:1;stroke:none;stroke-width:1.7;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1.7, 1.7;stroke-dashoffset:0"
+         id="rect81073"
+         width="24.692909"
+         height="9.5550709"
+         x="-0.65320092"
+         y="-1.3622379"
+         ry="0" />
+    </clipPath>
+  </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#bc83fb;fill-opacity:1;stroke:none;stroke-width:0.430732;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.430732, 0.430732;stroke-dashoffset:0"
+       style="fill:#bc83fb;fill-opacity:1;stroke:none;stroke-width:0.430732;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.430732, 0.430732;stroke-dashoffset:0;opacity:1"
        id="rect42968"
        width="34.75893"
        height="5.2916665"
        x="0"
        y="0"
        ry="1.4079753" />
+    <rect
+       style="fill:url(#linearGradient80850);fill-opacity:1;stroke:none;stroke-width:0.430732;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.430732, 0.430732;stroke-dashoffset:0"
+       id="rect42968-7"
+       width="34.75893"
+       height="5.2916665"
+       x="0"
+       y="0"
+       ry="1.4079753"
+       clip-path="url(#clipPath81071)" />
     <g
        id="g12185"
-       transform="matrix(0.11877782,0,0,0.08700629,6.2739252,4.5457659)">
+       transform="matrix(0.11877782,0,0,0.08700629,6.3594071,4.5861571)">
       <g
          id="g35489"
          transform="matrix(0.70990601,0,0,0.91116784,124.47555,-93.789421)">
@@ -182,27 +233,31 @@
         </g>
       </g>
     </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:2.46742px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.489098;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:0.398086"
-       x="1.77746"
-       y="3.7551265"
-       id="text17620-2"><tspan
-         sodipodi:role="line"
-         id="tspan17618-9"
+    <g
+       id="g85021"
+       transform="translate(-0.03331834,0.14492005)">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:2.46742px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.489098;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:0.398086"
          x="1.77746"
          y="3.7551265"
-         style="font-size:2.46742px;fill:#e6e6e6;fill-opacity:1;stroke-width:0.398086">proudly built with </tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:2.46742px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.398086"
-       x="1.6525806"
-       y="3.5861864"
-       id="text17620"><tspan
-         sodipodi:role="line"
-         id="tspan17618"
+         id="text17620-2"><tspan
+           sodipodi:role="line"
+           id="tspan17618-9"
+           x="1.77746"
+           y="3.7551265"
+           style="font-size:2.46742px;fill:#e6e6e6;fill-opacity:1;stroke-width:0.398086">proudly built with </tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:2.46742px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.398086"
          x="1.6525806"
          y="3.5861864"
-         style="font-size:2.46742px;fill:#ffffff;fill-opacity:1;stroke-width:0.398086">proudly built with </tspan></text>
+         id="text17620"><tspan
+           sodipodi:role="line"
+           id="tspan17618"
+           x="1.6525806"
+           y="3.5861864"
+           style="font-size:2.46742px;fill:#ffffff;fill-opacity:1;stroke-width:0.398086">proudly built with </tspan></text>
+    </g>
   </g>
 </svg>
