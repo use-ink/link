@@ -63,5 +63,4 @@ check-contract:
     - cargo fmt --verbose -- --check
     - cargo clippy --verbose --no-default-features --target wasm32-unknown-unknown -- -D warnings
     - cargo test --verbose
-    - cargo +nightly contract build
-    - cargo +nightly contract build --release
+    - cargo +nightly contract check
