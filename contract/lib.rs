@@ -124,7 +124,7 @@ mod link {
         /// for that reason. A truly trustless deployment should use the [`unstoppable`]
         /// constructor.
         #[ink(constructor)]
-        pub fn new() -> Self {
+        pub fn default() -> Self {
             ink_lang::utils::initialize_contract(|contract: &mut Self| {
                 contract.upgrader = Some(contract.env().caller());
             })
@@ -172,7 +172,7 @@ mod link {
             if slug.len() < MIN_SLUG_LENGTH {
                 return Err(Error::SlugTooShort)
             }
-            if let Some(_) = self.urls.get(&slug) {
+            if self.urls.get(&slug).is_some() {
                 return Err(Error::SlugUnavailable)
             }
             self.urls.insert(&slug, &url);
