@@ -83,21 +83,6 @@ mod link {
         url: Url,
     }
 
-    #[ink(event)]
-    pub struct SlugTooShort {
-        slug: Slug,
-    }
-
-    #[ink(event)]
-    pub struct SlugUnavailable {
-        slug: Slug,
-    }
-
-    #[ink(event)]
-    pub struct UrlNotFound {
-        url: Url,
-    }
-
     impl Link {
         #[ink(constructor)]
         pub fn default() -> Self {
@@ -124,10 +109,7 @@ mod link {
                     });
                     return Ok(ShorteningOutcome::Deduplicated { slug })
                 }
-                (SlugCreationMode::Deduplicate, None) => {
-                    self.env().emit_event(UrlNotFound { url });
-                    return Err(Error::UrlNotFound)
-                }
+                (SlugCreationMode::Deduplicate, None) => return Err(Error::UrlNotFound),
                 (
                     SlugCreationMode::New(slug)
                     | SlugCreationMode::DeduplicateOrNew(slug),
@@ -137,13 +119,9 @@ mod link {
 
             // No dedup: Insert new slug
             if slug.len() < MIN_SLUG_LENGTH {
-                self.env().emit_event(SlugTooShort {
-                    slug: slug.to_vec(),
-                });
                 return Err(Error::SlugTooShort)
             }
             if let Some(_) = self.urls.get(&slug) {
-                self.env().emit_event(SlugUnavailable { slug });
                 return Err(Error::SlugUnavailable)
             }
             self.urls.insert(&slug, &url);
