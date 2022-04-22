@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="164mm"
-   height="25mm"
-   viewBox="0 0 164 25"
+   width="132"
+   height="20"
+   viewBox="0 0 34.924999 5.2916666"
    version="1.1"
    id="svg42673"
    sodipodi:docname="badge.svg"
@@ -32,7 +32,8 @@
      inkscape:window-x="0"
      inkscape:window-y="23"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     units="px" />
   <defs
      id="defs42670" />
   <g
@@ -40,16 +41,16 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#bc83fb;fill-opacity:1;stroke:none;stroke-width:2.03229;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.03229, 2.03229;stroke-dashoffset:0"
+       style="fill:#bc83fb;fill-opacity:1;stroke:none;stroke-width:0.430732;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.430732, 0.430732;stroke-dashoffset:0"
        id="rect42968"
-       width="164"
-       height="24.967207"
+       width="34.75893"
+       height="5.2916665"
        x="0"
        y="0"
-       ry="6.643126" />
+       ry="1.4079753" />
     <g
        id="g12185"
-       transform="matrix(0.56041433,0,0,0.41051071,29.601465,21.44771)">
+       transform="matrix(0.11877782,0,0,0.08700629,6.2739252,4.5457659)">
       <g
          id="g35489"
          transform="matrix(0.70990601,0,0,0.91116784,124.47555,-93.789421)">
@@ -183,25 +184,25 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:11.6417px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:1.87824;opacity:0.48909844"
-       x="8.386364"
-       y="17.717337"
+       style="font-style:normal;font-weight:normal;font-size:2.46742px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.489098;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:0.398086"
+       x="1.77746"
+       y="3.7551265"
        id="text17620-2"><tspan
          sodipodi:role="line"
          id="tspan17618-9"
-         x="8.386364"
-         y="17.717337"
-         style="font-size:11.6417px;fill:#e6e6e6;fill-opacity:1;stroke-width:1.87824">proudly built with </tspan></text>
+         x="1.77746"
+         y="3.7551265"
+         style="font-size:2.46742px;fill:#e6e6e6;fill-opacity:1;stroke-width:0.398086">proudly built with </tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:11.6417px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.87824"
-       x="7.7971616"
-       y="16.920248"
+       style="font-style:normal;font-weight:normal;font-size:2.46742px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.398086"
+       x="1.6525806"
+       y="3.5861864"
        id="text17620"><tspan
          sodipodi:role="line"
          id="tspan17618"
-         x="7.7971616"
-         y="16.920248"
-         style="font-size:11.6417px;fill:#ffffff;fill-opacity:1;stroke-width:1.87824">proudly built with </tspan></text>
+         x="1.6525806"
+         y="3.5861864"
+         style="font-size:2.46742px;fill:#ffffff;fill-opacity:1;stroke-width:0.398086">proudly built with </tspan></text>
   </g>
 </svg>
