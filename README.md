@@ -4,10 +4,8 @@
 
 <br/>
 
-[![linux][a1]][a2] [![matrix][k1]][k2] [![discord][l1]][l2] [![built-with-ink][i1]][i2]
+[![matrix][k1]][k2] [![discord][l1]][l2] [![built-with-ink][i1]][i2]
 
-[a1]: https://gitlab.parity.io/parity/mirrors/link/badges/master/pipeline.svg
-[a2]: https://gitlab.parity.io/parity/link/pipelines?ref=master
 [k1]: https://img.shields.io/badge/matrix-chat-brightgreen.svg?style=flat
 [k2]: https://riot.im/app/#/room/#ink:matrix.parity.io
 [l1]: https://img.shields.io/discord/722223075629727774?style=flat-square&label=discord
