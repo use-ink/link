@@ -27,14 +27,16 @@ mod link {
     const MIN_SLUG_LENGTH: usize = 5;
 
     type Result<T> = core::result::Result<T, Error>;
+    type Url = Vec<u8>;
+    type SlugValue = Vec<u8>;
 
     #[ink(storage)]
     #[derive(SpreadAllocate)]
     pub struct Link {
         /// Slug -> URL
-        urls: Mapping<Vec<u8>, Vec<u8>>,
+        urls: Mapping<SlugValue, Url>,
         /// URL -> Slug
-        slugs: Mapping<Vec<u8>, Vec<u8>>,
+        slugs: Mapping<Url, SlugValue>,
         /// The account that is allowed to upgrade this contract.
         upgrader: AccountId,
     }
@@ -57,8 +59,8 @@ mod link {
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum Slug {
-        New(Vec<u8>),
-        DeduplicateOrNew(Vec<u8>),
+        New(SlugValue),
+        DeduplicateOrNew(SlugValue),
         Deduplicate,
     }
 
@@ -66,34 +68,34 @@ mod link {
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum ShorteningOutcome {
         Shortened,
-        Deduplicated { slug: Vec<u8> },
+        Deduplicated { slug: SlugValue },
     }
 
     #[ink(event)]
     pub struct Shortened {
-        slug: Vec<u8>,
-        url: Vec<u8>,
+        slug: SlugValue,
+        url: Url,
     }
 
     #[ink(event)]
     pub struct Deduplicated {
-        slug: Vec<u8>,
-        url: Vec<u8>,
+        slug: SlugValue,
+        url: Url,
     }
 
     #[ink(event)]
     pub struct SlugTooShort {
-        slug: Vec<u8>,
+        slug: SlugValue,
     }
 
     #[ink(event)]
     pub struct SlugUnavailable {
-        slug: Vec<u8>,
+        slug: SlugValue,
     }
 
     #[ink(event)]
     pub struct UrlNotFound {
-        url: Vec<u8>,
+        url: Url,
     }
 
     impl Link {
@@ -105,7 +107,7 @@ mod link {
         }
 
         #[ink(message)]
-        pub fn shorten(&mut self, slug: Slug, url: Vec<u8>) -> Result<ShorteningOutcome> {
+        pub fn shorten(&mut self, slug: Slug, url: Url) -> Result<ShorteningOutcome> {
             // Deduplicate if requested by the user
             let slug = match (slug, self.slugs.get(&url)) {
                 (Slug::Deduplicate | Slug::DeduplicateOrNew(_), Some(slug)) => {
@@ -140,7 +142,7 @@ mod link {
         }
 
         #[ink(message)]
-        pub fn resolve(&self, slug: Vec<u8>) -> Option<Vec<u8>> {
+        pub fn resolve(&self, slug: SlugValue) -> Option<Url> {
             self.urls.get(slug)
         }
 
