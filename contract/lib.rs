@@ -24,6 +24,8 @@ mod link {
         Mapping,
     };
 
+    const MIN_SLUG_LENGTH: usize = 5;
+
     type Result<T> = core::result::Result<T, Error>;
 
     #[ink(storage)]
@@ -40,6 +42,10 @@ mod link {
     pub enum Error {
         /// The slug is already in use for another URL.
         SlugUnavailable,
+        /// The supplied slug was too short.
+        SlugTooShort,
+        /// User requested to use an existing slug but the URL wasn't shortened before.
+        UrlNotFound,
     }
 
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -50,21 +56,11 @@ mod link {
         Deduplicate,
     }
 
-    impl Slug {
-        fn get(&self) -> Option<&[u8]> {
-            match self {
-                Slug::New(slug) | Slug::DeduplicateOrNew(slug) => Some(slug),
-                Slug::Deduplicate => None,
-            }
-        }
-    }
-
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum ShorteningOutcome {
         Shortened,
         Deduplicated { slug: Vec<u8> },
-        UrlNotFound,
     }
 
     #[ink(event)]
@@ -77,6 +73,11 @@ mod link {
     pub struct Deduplicated {
         slug: Vec<u8>,
         url: Vec<u8>,
+    }
+
+    #[ink(event)]
+    pub struct SlugTooShort {
+        slug: Vec<u8>,
     }
 
     #[ink(event)]
@@ -97,17 +98,6 @@ mod link {
 
         #[ink(message)]
         pub fn shorten(&mut self, slug: Slug, url: Vec<u8>) -> Result<ShorteningOutcome> {
-            // Prevent duplicate slugs
-            if let Some(slug) = slug
-                .get()
-                .and_then(|slug| self.urls.get(slug).map(|_| slug))
-            {
-                self.env().emit_event(SlugUnavailable {
-                    slug: slug.to_vec(),
-                });
-                return Err(Error::SlugUnavailable)
-            }
-
             // Deduplicate if requested by the user
             let slug = match (slug, self.slugs.get(&url)) {
                 (Slug::Deduplicate | Slug::DeduplicateOrNew(_), Some(slug)) => {
@@ -119,18 +109,25 @@ mod link {
                 }
                 (Slug::Deduplicate, None) => {
                     self.env().emit_event(UrlNotFound { url });
-                    return Ok(ShorteningOutcome::UrlNotFound)
+                    return Err(Error::UrlNotFound)
                 }
                 (Slug::New(slug) | Slug::DeduplicateOrNew(slug), _) => slug,
             };
 
             // No dedup: Insert new slug
+            if slug.len() < MIN_SLUG_LENGTH {
+                self.env().emit_event(SlugTooShort {
+                    slug: slug.to_vec(),
+                });
+                return Err(Error::SlugTooShort)
+            }
+            if let Some(_) = self.urls.get(&slug) {
+                self.env().emit_event(SlugUnavailable { slug });
+                return Err(Error::SlugUnavailable)
+            }
             self.urls.insert(&slug, &url);
             self.slugs.insert(&url, &slug);
-            self.env().emit_event(Shortened {
-                slug: slug.clone(),
-                url,
-            });
+            self.env().emit_event(Shortened { slug, url });
             Ok(ShorteningOutcome::Shortened)
         }
 
