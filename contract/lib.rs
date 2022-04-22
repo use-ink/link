@@ -35,6 +35,8 @@ mod link {
         urls: Mapping<Vec<u8>, Vec<u8>>,
         /// URL -> Slug
         slugs: Mapping<Vec<u8>, Vec<u8>>,
+        /// The account that is allowed to upgrade this contract.
+        upgrader: AccountId,
     }
 
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -46,6 +48,10 @@ mod link {
         SlugTooShort,
         /// User requested to use an existing slug but the URL wasn't shortened before.
         UrlNotFound,
+        // The account trying to do the upgrade doesn't match the `upgrader`.
+        UpgradeDenied,
+        /// The upgrade of the contract failed.
+        UpgradeFailed,
     }
 
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -134,6 +140,14 @@ mod link {
         #[ink(message)]
         pub fn resolve(&self, slug: Vec<u8>) -> Option<Vec<u8>> {
             self.urls.get(slug)
+        }
+
+        #[ink(message)]
+        pub fn upgrade(&mut self, code_hash: [u8; 32]) -> Result<()> {
+            if self.env().caller() != self.upgrader {
+                return Err(Error::UpgradeDenied)
+            }
+            ink_env::set_code_hash(&code_hash).map_err(|_| Error::UpgradeFailed)
         }
     }
 }
