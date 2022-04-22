@@ -1,0 +1,65 @@
+# .gitlab-ci.yml
+#
+# link
+#
+# pipelines can be triggered manually in the web
+
+stages:
+  - build
+
+default:
+  interruptible:                   true
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - unknown_failure
+      - api_failure
+
+variables:
+  GIT_STRATEGY:                    fetch
+  GIT_DEPTH:                       "100"
+  CARGO_TARGET_DIR:                "/ci-cache/${CI_PROJECT_NAME}/targets/${CI_COMMIT_REF_NAME}/${CI_JOB_NAME}"
+  RUST_LIB_BACKTRACE:              "0"
+  RUST_LOG:                        "info"
+  CI_IMAGE:                        "paritytech/ink-waterfall-ci:latest"
+
+
+.default-refs:                      &default-refs
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "web"
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+  - if: $CI_COMMIT_REF_NAME == "master"
+  - if: $CI_COMMIT_REF_NAME == "tags"
+  - if: $CI_COMMIT_REF_NAME =~ /^[0-9]+$/                   # PRs
+  - if: $CI_COMMIT_REF_NAME =~ /^v[0-9]+\.[0-9]+.*$/        # i.e. v1.0, v2.1rc1
+
+.rust-info-script:                 &rust-info-script
+  - rustup show
+  - cargo --version
+  - rustup +nightly show
+  - cargo +nightly --version
+  - bash --version
+  - sccache -s
+
+.docker-env:                       &docker-env
+  image:                           "${CI_IMAGE}"
+  before_script:
+    - *rust-info-script
+  tags:
+    - linux-docker
+
+.kubernetes-env:                   &kubernetes-env
+  image:                           "${CI_IMAGE}"
+  tags:
+    - kubernetes-parity-build
+
+.clone-repo:                       &clone-repo
+  - git clone --verbose --depth 1 https://github.com/paritytech/ink.git
+
+build-examples:
+  stage:                           build
+  <<:                              *kubernetes-env
+  script:
+    - *clone-repo
+    - ls
