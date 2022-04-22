@@ -54,12 +54,14 @@ variables:
   tags:
     - kubernetes-parity-build
 
-.clone-repo:                       &clone-repo
-  - git clone --verbose --depth 1 https://github.com/paritytech/ink.git
-
-build-examples:
+check-contract:
   stage:                           build
   <<:                              *kubernetes-env
   script:
-    - *clone-repo
-    - ls
+    - cd contract/
+    - cargo spellcheck check -vvvv --cfg=.config/cargo_spellcheck.toml --checkers hunspell --code 1
+    - cargo fmt --verbose -- --check
+    - cargo clippy --verbose --no-default-features --target wasm32-unknown-unknown -- -D warnings
+    - cargo test --verbose
+    - cargo +nightly contract build
+    - cargo +nightly contract build --release
