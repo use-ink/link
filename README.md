@@ -6,7 +6,7 @@
 
 [![linux][a1]][a2] [![matrix][k1]][k2] [![discord][l1]][l2] [![built-with-ink][i1]][i2]
 
-[a1]: https://gitlab.parity.io/parity/link/badges/master/pipeline.svg
+[a1]: https://gitlab.parity.io/parity/mirrors/link/badges/master/pipeline.svg
 [a2]: https://gitlab.parity.io/parity/link/pipelines?ref=master
 [k1]: https://img.shields.io/badge/matrix-chat-brightgreen.svg?style=flat
 [k2]: https://riot.im/app/#/room/#ink:matrix.parity.io
