@@ -99,7 +99,9 @@ mod link {
     impl Link {
         #[ink(constructor)]
         pub fn default() -> Self {
-            ink_lang::utils::initialize_contract(|_contract: &mut Self| {})
+            ink_lang::utils::initialize_contract(|contract: &mut Self| {
+                contract.upgrader = contract.env().caller();
+            })
         }
 
         #[ink(message)]
