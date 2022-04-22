@@ -18,8 +18,13 @@ use ink_lang as ink;
 
 #[ink::contract]
 mod link {
-    use ink_storage::{Mapping, traits::SpreadAllocate};
     use ink_prelude::vec::Vec;
+    use ink_storage::{
+        traits::SpreadAllocate,
+        Mapping,
+    };
+
+    type Result<T> = core::result::Result<T, Error>;
 
     #[ink(storage)]
     #[derive(SpreadAllocate)]
@@ -34,7 +39,14 @@ mod link {
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum Error {
         /// The slug is already in use for another URL.
-        SlugUnavailable(Vec<u8>),
+        SlugUnavailable,
+    }
+
+    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    pub enum ShorteningOutcome {
+        Shortened,
+        Deduplicated { slug: Vec<u8> },
     }
 
     #[ink(event)]
@@ -44,14 +56,14 @@ mod link {
     }
 
     #[ink(event)]
-    pub struct SlugUnavailable {
+    pub struct Deduplicated {
         slug: Vec<u8>,
+        url: Vec<u8>,
     }
 
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
-    pub enum Error {
-        SlugUnavailable(Vec<u8>),
+    #[ink(event)]
+    pub struct SlugUnavailable {
+        slug: Vec<u8>,
     }
 
     impl Link {
@@ -61,21 +73,31 @@ mod link {
         }
 
         #[ink(message)]
-        pub fn shorten(&mut self, slug: Vec<u8>, url: Vec<u8>) {
+        pub fn shorten(
+            &mut self,
+            slug: Vec<u8>,
+            url: Vec<u8>,
+        ) -> Result<ShorteningOutcome> {
             if let Some(_) = self.urls.get(&slug) {
                 self.env().emit_event(SlugUnavailable { slug });
-                return
+                return Err(Error::SlugUnavailable)
             }
 
-            let slug = if let Some(slug) = self.slugs.get(&url) {
-                slug
+            if let Some(slug) = self.slugs.get(&url) {
+                self.env().emit_event(Deduplicated {
+                    slug: slug.clone(),
+                    url,
+                });
+                Ok(ShorteningOutcome::Deduplicated { slug })
             } else {
                 self.urls.insert(&slug, &url);
                 self.slugs.insert(&url, &slug);
-                slug
-            };
-
-            self.env().emit_event(Shortened { slug, url });
+                self.env().emit_event(Shortened {
+                    slug: slug.clone(),
+                    url,
+                });
+                Ok(ShorteningOutcome::Shortened)
+            }
         }
 
         #[ink(message)]
