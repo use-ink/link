@@ -1,5 +1,5 @@
 <h1>
-    <img src="./.images/ink-squid.svg" alt="squink, the ink! mascot" style="vertical-align: middle" align="left" height="60" />link!
+    <img src="./.images/ink-squid.svg" alt="Squink, the ink! mascot" style="vertical-align: middle" align="left" height="60" />link!
 </h1>
 
 [![linux][a1]][a2] [![matrix][k1]][k2] [![discord][l1]][l2]
