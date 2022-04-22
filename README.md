@@ -2,6 +2,8 @@
     <img src="./.images/ink-squid.svg" alt="Squink, the ink! mascot" style="vertical-align: middle" align="left" height="60" />link!
 </h1>
 
+<br/>
+
 [![linux][a1]][a2] [![matrix][k1]][k2] [![discord][l1]][l2]
 
 [a1]: https://gitlab.parity.io/parity/link/badges/master/pipeline.svg
@@ -11,7 +13,7 @@
 [l1]: https://img.shields.io/discord/722223075629727774?style=flat-square&label=discord
 [l2]: https://discord.com/invite/wGUDt2p
 
-## What is this?
+## 🤔 What is this?
 
 This is an unstoppable URL shortener. We built it to illustrate how a
 full-stack DApp can be built with:
@@ -26,7 +28,7 @@ full-stack DApp can be built with:
 	[`substrate-connect`](https://github.com/paritytech/substrate-connect)
 	and be truly trustless.
 
-## Why?
+## 🧐 Why?
 
 Popular URL shorteners are for-profit companies, relying on them to
 infinitely store a URL can only be done by trusting them to always
