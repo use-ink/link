@@ -33,9 +33,9 @@ mod link {
     #[ink(storage)]
     #[derive(SpreadAllocate)]
     pub struct Link {
-        /// Slug -> URL
+        /// Slug ➜ URL
         urls: Mapping<Slug, Url>,
-        /// URL -> Slug
+        /// URL ➜ Slug
         slugs: Mapping<Url, Slug>,
         /// The account that is allowed to upgrade this contract.
         upgrader: AccountId,
