@@ -30,6 +30,13 @@ mod link {
         slugs: Mapping<Vec<u8>, Vec<u8>>,
     }
 
+    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    pub enum Error {
+        /// The slug is already in use for another URL.
+        SlugUnavailable(Vec<u8>),
+    }
+
     #[ink(event)]
     pub struct Shortened {
         slug: Vec<u8>,
