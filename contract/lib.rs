@@ -28,15 +28,15 @@ mod link {
 
     type Result<T> = core::result::Result<T, Error>;
     type Url = Vec<u8>;
-    type SlugValue = Vec<u8>;
+    type Slug = Vec<u8>;
 
     #[ink(storage)]
     #[derive(SpreadAllocate)]
     pub struct Link {
         /// Slug -> URL
-        urls: Mapping<SlugValue, Url>,
+        urls: Mapping<Slug, Url>,
         /// URL -> Slug
-        slugs: Mapping<Url, SlugValue>,
+        slugs: Mapping<Url, Slug>,
         /// The account that is allowed to upgrade this contract.
         upgrader: AccountId,
     }
@@ -58,9 +58,9 @@ mod link {
 
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
-    pub enum Slug {
-        New(SlugValue),
-        DeduplicateOrNew(SlugValue),
+    pub enum SlugCreationMode {
+        New(Slug),
+        DeduplicateOrNew(Slug),
         Deduplicate,
     }
 
@@ -68,29 +68,29 @@ mod link {
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum ShorteningOutcome {
         Shortened,
-        Deduplicated { slug: SlugValue },
+        Deduplicated { slug: Slug },
     }
 
     #[ink(event)]
     pub struct Shortened {
-        slug: SlugValue,
+        slug: Slug,
         url: Url,
     }
 
     #[ink(event)]
     pub struct Deduplicated {
-        slug: SlugValue,
+        slug: Slug,
         url: Url,
     }
 
     #[ink(event)]
     pub struct SlugTooShort {
-        slug: SlugValue,
+        slug: Slug,
     }
 
     #[ink(event)]
     pub struct SlugUnavailable {
-        slug: SlugValue,
+        slug: Slug,
     }
 
     #[ink(event)]
@@ -107,21 +107,32 @@ mod link {
         }
 
         #[ink(message)]
-        pub fn shorten(&mut self, slug: Slug, url: Url) -> Result<ShorteningOutcome> {
+        pub fn shorten(
+            &mut self,
+            slug: SlugCreationMode,
+            url: Url,
+        ) -> Result<ShorteningOutcome> {
             // Deduplicate if requested by the user
             let slug = match (slug, self.slugs.get(&url)) {
-                (Slug::Deduplicate | Slug::DeduplicateOrNew(_), Some(slug)) => {
+                (
+                    SlugCreationMode::Deduplicate | SlugCreationMode::DeduplicateOrNew(_),
+                    Some(slug),
+                ) => {
                     self.env().emit_event(Deduplicated {
                         slug: slug.clone(),
                         url,
                     });
                     return Ok(ShorteningOutcome::Deduplicated { slug })
                 }
-                (Slug::Deduplicate, None) => {
+                (SlugCreationMode::Deduplicate, None) => {
                     self.env().emit_event(UrlNotFound { url });
                     return Err(Error::UrlNotFound)
                 }
-                (Slug::New(slug) | Slug::DeduplicateOrNew(slug), _) => slug,
+                (
+                    SlugCreationMode::New(slug)
+                    | SlugCreationMode::DeduplicateOrNew(slug),
+                    _,
+                ) => slug,
             };
 
             // No dedup: Insert new slug
@@ -142,7 +153,7 @@ mod link {
         }
 
         #[ink(message)]
-        pub fn resolve(&self, slug: SlugValue) -> Option<Url> {
+        pub fn resolve(&self, slug: Slug) -> Option<Url> {
             self.urls.get(slug)
         }
 
