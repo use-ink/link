@@ -24,10 +24,25 @@ mod link {
         Mapping,
     };
 
+    /// Slugs shorter than this are rejected by [`shorten`].
     const MIN_SLUG_LENGTH: usize = 5;
 
+    /// The result used for all messages.
     type Result<T> = core::result::Result<T, Error>;
+
+    /// We treat a URL as bytes. We don't check if it is a valid URL at all.
+    ///
+    /// # Note
+    ///
+    /// A resolver DApp should sanitize URLs before doing a forward.
     type Url = Vec<u8>;
+
+    /// We treat the slug as just bytes. We don't check if it represents a valid text.
+    ///
+    /// # Note
+    ///
+    /// A slug that isn't allowed to appear within an URL is pretty useless. Any
+    /// sane DApp probably wouldn't allow inputting arbitrary byte patterns.
     type Slug = Vec<u8>;
 
     /// The in-storage representation of this contract.
@@ -42,6 +57,7 @@ mod link {
         upgrader: Option<AccountId>,
     }
 
+    /// The error type used for all messages.
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum Error {
@@ -53,38 +69,60 @@ mod link {
         UrlNotFound,
         // The account trying to do the upgrade doesn't match the `upgrader`.
         UpgradeDenied,
-        /// The upgrade of the contract failed.
+        /// The upgrade of the contract failed for some other reason than authorization.
         UpgradeFailed,
     }
 
+    /// Used by users to specify whether an URL should be de-duplicated.
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum SlugCreationMode {
+        /// Always create a new slug even if the URL was already shortened.
         New(Slug),
+        /// Only use the supplied slug in case the URL wasn't shortened before.
         DeduplicateOrNew(Slug),
+        /// Never create a new slug. Fail if the URL wasn't shortened before.
         Deduplicate,
     }
 
+    /// Specifies the outcome of a [`shorten`] message.
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum ShorteningOutcome {
+        /// A new mapping from the supplied slug was created.
         Shortened,
-        Deduplicated { slug: Slug },
+        /// A pre-existing mapping was used.
+        Deduplicated {
+            /// The slug of the pre-existing mapping.
+            slug: Slug,
+        },
     }
 
+    /// A new slug mapping was created.
     #[ink(event)]
     pub struct Shortened {
+        /// The slug of the mapping.
         slug: Slug,
+        /// The URL that the slug maps to.
         url: Url,
     }
 
+    /// A pre-existing mapping was used.
     #[ink(event)]
     pub struct Deduplicated {
+        /// The slug of the mapping.
         slug: Slug,
+        /// The URL that the slug maps to.
         url: Url,
     }
 
     impl Link {
+        /// Construct a new contract and set the caller as an upgrader.
+        ///
+        /// The caller will be able to upgrade this contract to use any code. This requires
+        /// users of the contract to trust the upgrader. Probably a multisig should be used
+        /// for that reason. A truly trustless deployment should use the [`unstoppable`]
+        /// constructor.
         #[ink(constructor)]
         pub fn new() -> Self {
             ink_lang::utils::initialize_contract(|contract: &mut Self| {
@@ -92,6 +130,10 @@ mod link {
             })
         }
 
+        /// Construct a new contract and don't set an upgrader.
+        ///
+        /// This prevents the contract from being changed and hence makes it truly
+        /// unstoppable.
         #[ink(constructor)]
         pub fn unstoppable() -> Self {
             ink_lang::utils::initialize_contract(|contract: &mut Self| {
@@ -99,6 +141,7 @@ mod link {
             })
         }
 
+        /// Create a a new mapping or use an existing one.
         #[ink(message)]
         pub fn shorten(
             &mut self,
@@ -138,11 +181,17 @@ mod link {
             Ok(ShorteningOutcome::Shortened)
         }
 
+        /// Resolve a slug to its mapped URL.
         #[ink(message)]
         pub fn resolve(&self, slug: Slug) -> Option<Url> {
             self.urls.get(slug)
         }
 
+        /// Change the code of this contract.
+        ///
+        /// This can only be called by the upgrader specified at contract construction.
+        /// The code cannot be changed in case no upgrader was set because the
+        /// [`unstoppable`] constructor was used.
         #[ink(message)]
         pub fn upgrade(&mut self, code_hash: [u8; 32]) -> Result<()> {
             if self
