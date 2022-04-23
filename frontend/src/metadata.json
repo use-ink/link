@@ -1,0 +1,476 @@
+{
+  "source": {
+    "hash": "0x665130c4df142ea9298db52b175f97f278f76549465d238640f74651ff4ea71b",
+    "language": "ink! 3.0.1",
+    "compiler": "rustc 1.62.0-nightly"
+  },
+  "contract": {
+    "name": "link",
+    "version": "0.1.0",
+    "authors": [
+      "Parity Technologies <admin@parity.io>"
+    ]
+  },
+  "V3": {
+    "spec": {
+      "constructors": [
+        {
+          "args": [],
+          "docs": [],
+          "label": "default",
+          "payable": false,
+          "selector": "0xed4b9d1b"
+        }
+      ],
+      "docs": [],
+      "events": [
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": false,
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "docs": [],
+              "indexed": false,
+              "label": "url",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "Shortened"
+        },
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": false,
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "docs": [],
+              "indexed": false,
+              "label": "url",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "Deduplicated"
+        },
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": false,
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "SlugTooShort"
+        },
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": false,
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "SlugUnavailable"
+        },
+        {
+          "args": [
+            {
+              "docs": [],
+              "indexed": false,
+              "label": "url",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "UrlNotFound"
+        }
+      ],
+      "messages": [
+        {
+          "args": [
+            {
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "Slug"
+                ],
+                "type": 5
+              }
+            },
+            {
+              "label": "url",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "shorten",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 6
+          },
+          "selector": "0x92ccc180"
+        },
+        {
+          "args": [
+            {
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "resolve",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Option"
+            ],
+            "type": 9
+          },
+          "selector": "0x9e30d65d"
+        }
+      ]
+    },
+    "storage": {
+      "struct": {
+        "fields": [
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "ty": 0
+              }
+            },
+            "name": "urls"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0100000000000000000000000000000000000000000000000000000000000000",
+                "ty": 0
+              }
+            },
+            "name": "slugs"
+          }
+        ]
+      }
+    },
+    "types": [
+      {
+        "id": 0,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "name": "offset_key",
+                  "type": 3,
+                  "typeName": "Key"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 1
+            },
+            {
+              "name": "V",
+              "type": 1
+            }
+          ],
+          "path": [
+            "ink_storage",
+            "lazy",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": {
+          "def": {
+            "primitive": "u8"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 4,
+                  "typeName": "[u8; 32]"
+                }
+              ]
+            }
+          },
+          "path": [
+            "ink_primitives",
+            "Key"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "type": {
+          "def": {
+            "array": {
+              "len": 32,
+              "type": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 1,
+                      "typeName": "Vec<u8>"
+                    }
+                  ],
+                  "index": 0,
+                  "name": "New"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 1,
+                      "typeName": "Vec<u8>"
+                    }
+                  ],
+                  "index": 1,
+                  "name": "DeduplicateOrNew"
+                },
+                {
+                  "index": 2,
+                  "name": "Deduplicate"
+                }
+              ]
+            }
+          },
+          "path": [
+            "link",
+            "link",
+            "Slug"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 7
+                    }
+                  ],
+                  "index": 0,
+                  "name": "Ok"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 8
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Err"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 7
+            },
+            {
+              "name": "E",
+              "type": 8
+            }
+          ],
+          "path": [
+            "Result"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "index": 0,
+                  "name": "Shortened"
+                },
+                {
+                  "fields": [
+                    {
+                      "name": "slug",
+                      "type": 1,
+                      "typeName": "Vec<u8>"
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Deduplicated"
+                }
+              ]
+            }
+          },
+          "path": [
+            "link",
+            "link",
+            "ShorteningOutcome"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "index": 0,
+                  "name": "SlugUnavailable"
+                },
+                {
+                  "index": 1,
+                  "name": "SlugTooShort"
+                },
+                {
+                  "index": 2,
+                  "name": "UrlNotFound"
+                }
+              ]
+            }
+          },
+          "path": [
+            "link",
+            "link",
+            "Error"
+          ]
+        }
+      },
+      {
+        "id": 9,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "index": 0,
+                  "name": "None"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 1
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Some"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 1
+            }
+          ],
+          "path": [
+            "Option"
+          ]
+        }
+      }
+    ]
+  }
+}

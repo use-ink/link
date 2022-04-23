@@ -6,6 +6,7 @@ body,
 }
 body {
   background: radial-gradient(100% 100% at 50% 0%, #3D2B52 0%, #2A2442 20.91%, #201F37 100%);
+  color: #fff;
 }
 .top-bar {
   display: flex;
@@ -54,6 +55,7 @@ input {
   border-radius: 8px;
   margin-bottom: 32px;
   padding-left: 16px;
+  color: #fff;
 }
 
 button {
@@ -63,4 +65,9 @@ button {
   color: #fff;
   background: rgba(191, 139, 250, 0.4);
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
+}
+.estimations {
+  text-align: left;
+  font-size: 12px;
+  margin-bottom: 16px;
 }
