@@ -11,8 +11,12 @@
 [i1]: /.images/badge.svg
 [i2]: https://github.com/paritytech/ink
 
-This is an unstoppable URL shortener, it allows users to store short versions of URLs, as well
-as resolve them.
+This is an unstoppable URL shortener. It allows users to store a short version
+of a URL, this short (often mnemonic) version can be resolved back to the long
+version.
+
+Read the section [Why?](#-why) below for our motivation and the distinction to
+traditional URL shorteners.
 
 We built it to illustrate how a full-stack DApp can be built with:
 
