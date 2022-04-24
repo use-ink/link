@@ -15,10 +15,10 @@ This is an unstoppable URL shortener. It allows users to store a short version
 of a URL, this short (often mnemonic) version can be resolved back to the long
 version.
 
-Read the section [Why?](#-why) below for our motivation and the distinction to
+The section [Why?](#-why) below contains more details on the distinction to
 traditional URL shorteners.
 
-We built it to illustrate how a full-stack DApp can be built with:
+We built this project to illustrate how a full-stack DApp can be built with:
 
 * __Smart Contract:__ Parity's [ink!](https://github.com/paritytech/ink) as the programing
   language for the contract.
