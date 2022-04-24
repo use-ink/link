@@ -1,10 +1,8 @@
-<h1>
-    <img src="./.images/ink-squid.svg" alt="Squink, the ink! mascot" style="vertical-align: middle" align="left" height="60" />link!
-</h1>
+<img src="./.images/ink-squid.svg" alt="Squink, the ink! mascot" align="left" height="120" />
 
-<br/>
+# link! ‒ The Unstoppable URL shortener<br/>[![matrix][k1]][k2] [![discord][l1]][l2] [![built-with-ink][i1]][i2]
 
-[![matrix][k1]][k2] [![discord][l1]][l2] [![built-with-ink][i1]][i2]
+<br clear="both"/>
 
 [k1]: https://img.shields.io/badge/matrix-chat-brightgreen.svg?style=flat
 [k2]: https://riot.im/app/#/room/#ink:matrix.parity.io
