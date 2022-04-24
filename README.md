@@ -32,19 +32,30 @@ the blockchain.
 ## 🤔 Why?
 
 Popular URL shorteners are for-profit companies, relying on them to
-infinitely store a URL can only be done by trusting them to always
-adhere to this pinky promise.
+infinitely store a URL can only be done by trusting those third parties
+to always adhere to their pinky promise.
 
 In the past there have been a number of incidents where URL shorteneres
-removed the short URL again due to a variety of reasons: commercial
+removed the short URL at some point for a variety of reasons: commercial
 interests, moral values, legal obligations, ….
 
 We're not aware of incidents where URL shortener services maliciously
 decided to change the resolved URL after the fact, but it's something
-that can in principle be done ‒ you don't have any guarantee that 
-the short URL will always be resolved to the same long URL.
+that can in principle be done.
+Importantly this could also be done without the companies intention.
+An attacker could modify the company database and there would be no way
+for a user to know that the short URL now resolves to something else.
+
+_Point being: you don't have any guarantee that the short URL will always
+be resolved to the same long URL. You have to trust the central service._
 
 Blockchains allow us to build decentralized applications in a trustless
-manner. With this project we illustrate how our stack can be used
+manner. A central ledger ensures that you can't simply edit a value,
+the nodes in a blockchain network (often many thousands) have to come to
+consensus on this change. You don't have to trust a central entity anymore
+that it will always adhere to its promises. Instead you can put your trust
+in the underlying scientific mechanisms behind the blockchain network.
+
+With this project we illustrate how our stack can be used
 to build a decentralized URL shortener where you don't have to put
 trust in a singular entity.
