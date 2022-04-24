@@ -1,6 +1,6 @@
 <img src="./.images/ink-squid.svg" alt="Squink, the ink! mascot" align="left" height="120" />
 
-# link! ‒ The Unstoppable URL shortener<br/>[![matrix][k1]][k2] [![discord][l1]][l2] [![built-with-ink][i1]][i2]
+# link! ‒ The Unstoppable URL Shortener<br/>[![matrix][k1]][k2] [![discord][l1]][l2] [![built-with-ink][i1]][i2]
 
 <br clear="both"/>
 
@@ -11,22 +11,25 @@
 [i1]: /.images/badge.svg
 [i2]: https://github.com/paritytech/ink
 
-## 🤔 What is this?
+This is an unstoppable URL shortener, it allows users to store short versions of URLs, as well
+as resolve them.
 
-This is an unstoppable URL shortener. We built it to illustrate how a
-full-stack DApp can be built with:
+We built it to illustrate how a full-stack DApp can be built with:
 
-* Parity's [ink!](https://github.com/paritytech/ink) for the smart contract,
-  allowing users to store short versions of URLs, as well as resolve them.
-* Substrate's [`pallet-contracts`](https://github.com/paritytech/substrate/tree/master/frame/contracts)
-  as the smart contracts module used in the blockchain.
-* A frontend that enables interactions with the smart contract.
-  For our MVP this is done with hardcoded RPC and node URLs.
-	In our next iteration we want to migrate the frontend to use 
-	[`substrate-connect`](https://github.com/paritytech/substrate-connect)
-	and be truly trustless.
+* __Smart Contract:__ Parity's [ink!](https://github.com/paritytech/ink) as the programing
+  language for the contract.
+* __Blockchain:__ We use the [Substrate blockchain framework](https://github.com/paritytech/substrate)
+  with it's module for smart contracts ([`pallet-contracts`](https://github.com/paritytech/substrate/tree/master/frame/contracts)).
+  You can use Substrate to build either standalone blockchains or parachains for Polkadot and Kusama.
+* __Frontend:__ For our MVP we use the `polkadot-js` API with hardcoded RPC and node URLs.
 
-## 🧐 Why?
+In our next iteration of this MVP we want to migrate the frontend to utilize 
+[`substrate-connect`](https://github.com/paritytech/substrate-connect) under the hood.
+In consequence the frontend would be truly trustless, there would then be no need to 
+put trust in a server that e.g. the RPC return values are indeed what is stored on
+the blockchain.
+
+## 🤔 Why?
 
 Popular URL shorteners are for-profit companies, relying on them to
 infinitely store a URL can only be done by trusting them to always
