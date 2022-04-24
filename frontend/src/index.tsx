@@ -13,7 +13,7 @@ root.render(
     <Router>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path=":id" element={<Resolver />} />
+        <Route path=":slug" element={<Resolver />} />
       </Routes>
     </Router>
   </React.StrictMode>
