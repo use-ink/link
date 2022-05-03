@@ -58,3 +58,103 @@ button {
   font-size: 12px;
   margin-bottom: 16px;
 }
+
+/* Squid Animation */
+
+.squids{
+  @apply absolute w-full h-screen z-0;
+  overflow: hidden;
+  top:0;
+  left:0;
+}
+.squid{
+  position: absolute;
+  bottom:-100px;
+  width:40px;
+  height: 40px;
+  animation: rise 20s infinite ease-in;
+}
+.squid:nth-child(1){
+  height:200px;
+  left:10%;
+  animation-duration:16s;
+  opacity:0.4;
+}
+.squid:nth-child(2){
+  @apply w-6 h-6 opacity-20;
+  left:20%;
+  animation-duration:15s;
+}
+.squid:nth-child(3){
+  @apply w-12 h-12 opacity-40;
+  left:35%;
+  animation-duration:17s;
+}
+.squid:nth-child(4){
+  @apply w-20 h-20 opacity-40;
+  left: 50%;
+  animation-duration:11s;
+}
+.squid:nth-child(5){
+  @apply w-10 h-10 opacity-30;
+  left:55%;
+  animation-duration:16s;
+}
+.squid:nth-child(6){
+  width:80px;
+  height:150px;
+  left:80%;
+  opacity: 0.4;
+  animation-duration:10s;
+}
+.squid:nth-child(7){
+  @apply w-6 h-6 opacity-20;
+  left:90%;
+  animation-duration:16s;
+}
+
+.big-squid{
+  position: absolute;
+  width: 200px;
+  height:600px;
+  left:60%;
+  opacity: 0.5;
+  animation: hovering 4s infinite alternate;
+}
+
+@keyframes rise{
+  0%{
+    bottom:-100px;
+  }
+  100%{
+    bottom:1080px;
+  }
+}
+
+@keyframes hovering {
+  0% {
+    transform:translateY(10%);
+  }
+  100% {
+    transform:translateY(20%)
+  }
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.text-info {
+  @apply flex flex-col relative pb-5 ml-32 self-center z-10;
+  max-width: 480px;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+.tag-line {
+  @apply text-gray-400;
+}

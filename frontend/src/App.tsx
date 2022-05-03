@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import logo from './logo.svg'
 import linkLogo from './link-logo.svg'
+import squid from './squid.svg'
 import { ApiPromise, WsProvider } from '@polkadot/api'
 import { Abi, ContractPromise } from '@polkadot/api-contract'
 import { formatBalance, formatNumber } from '@polkadot/util'
@@ -44,7 +45,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className="top-bar">
+      {/* <div className="top-bar">
         <img src={logo} className="ink-logo" alt="logo"/>
       </div>
       <div className="content">
@@ -62,9 +63,26 @@ function App() {
             <button>Shorten</button>
           </form>
         </div>
+      </div> */}
+      <section className="sticky">
+          <div className="squids">
+            <img src={squid} className="squid" alt="logo"/>
+            <img src={squid} className="squid" alt="logo"/>
+            <img src={squid} className="squid" alt="logo"/>
+            <img src={squid} className="squid" alt="logo"/>
+            <img src={squid} className="squid" alt="logo"/>
+            <img src={squid} className="squid" alt="logo"/>
+            <img src={squid} className="squid" alt="logo"/>
+          </div>
+          <img src={squid} className="big-squid" alt="logo"/>
+        </section>
+        <div className='container'>
+          <div className='text-info'>
+            <h1>Shortened with link!</h1>
+            <div className='tag-line'>The decentralized link shortener build with the ink! smart contract language.</div>
+          </div>
+        </div>
       </div>
-      
-    </div>
   );
 }
 
