@@ -19,6 +19,10 @@ function App() {
   const [url, setUrl] = useState("");
   const [alias, setAlias] = useState(nanoid(5));
   const [estimation, setEstimation] = useState<Estimation>();
+  const [index, setIndex] = useState();
+  const indexFromTabs = (index:any) => {
+    setIndex(index);
+  }
 
   useEffect(() => {
     const wsProvider = new WsProvider("ws://127.0.0.1:9944");
@@ -52,43 +56,47 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      <Header indexFromTabs={indexFromTabs} />
       <div className="content">
-        <div className="form-panel">
-          <img src={linkLogo} className="link-logo" alt="logo" />
-          <form action="#">
-            <label htmlFor="url">Your URL</label>
-            <input
-              type="text"
-              id="url"
-              name="url"
-              placeholder="Your URL"
-              value={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-              }}
-            />
-            <label htmlFor="alias">Your Alias</label>
-            <input
-              type="text"
-              id="alias"
-              name="alias"
-              placeholder="Your Alias"
-              value={alias}
-              onChange={(e) => {
-                setAlias(e.target.value);
-              }}
-            />
-            {estimation && (
-              <div className="estimations">
-                <p>storage deposit: {estimation.storageDeposit}</p>
-                <p>gas required: {estimation.gasRequired}</p>
-              </div>
-            )}
-            <button>Shorten</button>
-          </form>
-        </div>
-        <LinksOverview />
+        {index === 0
+        ?
+          <div className="form-panel">
+            <img src={linkLogo} className="link-logo" alt="logo" />
+            <form action="#">
+              <label htmlFor="url">Your URL</label>
+              <input
+                type="text"
+                id="url"
+                name="url"
+                placeholder="Your URL"
+                value={url}
+                onChange={(e) => {
+                  setUrl(e.target.value);
+                }}
+              />
+              <label htmlFor="alias">Your Alias</label>
+              <input
+                type="text"
+                id="alias"
+                name="alias"
+                placeholder="Your Alias"
+                value={alias}
+                onChange={(e) => {
+                  setAlias(e.target.value);
+                }}
+              />
+              {estimation && (
+                <div className="estimations">
+                  <p>storage deposit: {estimation.storageDeposit}</p>
+                  <p>gas required: {estimation.gasRequired}</p>
+                </div>
+              )}
+              <button>Shorten</button>
+            </form>
+          </div>
+        :
+          <LinksOverview />
+      }
       </div>
     </div>
   );
