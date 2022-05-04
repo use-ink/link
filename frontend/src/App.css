@@ -59,6 +59,10 @@ button {
   margin-bottom: 16px;
 }
 
+a {
+  @apply text-purple-400 hover:text-purple-300;
+}
+
 /* Squid Animation */
 
 .squids{

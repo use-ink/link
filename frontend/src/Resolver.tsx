@@ -56,8 +56,8 @@ const Resolver = () => {
         <div className='text-info'>
           <h1>Shortened with link!</h1>
           <div className='tag-line'>
-            The unstoppable link shortener build with the ink! smart contract language.
-            {resolvedUrl && `Redirecting to ${resolvedUrl}`}
+            The unstoppable link shortener build with the <a href="https://github.com/paritytech/ink" target="_blank" rel="noopener noreferrer">ink! smart contract language</a>.
+            {resolvedUrl && `Redirecting to ${resolvedUrl}.`}
           </div>
         </div>
       </div>
