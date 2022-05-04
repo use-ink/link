@@ -56,7 +56,7 @@ const Resolver = () => {
         <div className='text-info'>
           <h1>Shortened with link!</h1>
           <div className='tag-line'>
-            The decentralized link shortener build with the ink! smart contract language.
+            The unstoppable link shortener build with the ink! smart contract language.
             {resolvedUrl && `Redirecting to ${resolvedUrl}`}
           </div>
         </div>
