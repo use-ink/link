@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import logo from "./logo.svg";
 import linkLogo from "./link-logo.svg";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Abi, ContractPromise } from "@polkadot/api-contract";
 import { formatBalance, formatNumber } from "@polkadot/util";
 import metadata from "./metadata.json";
 import { nanoid } from "nanoid";
+import Header from "./components/Header";
+import LinksOverview from "./components/LinksOverview";
 
 type Estimation = {
   gasRequired: string;
@@ -51,9 +52,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className="top-bar">
-        <img src={logo} className="ink-logo" alt="logo" />
-      </div>
+      <Header />
       <div className="content">
         <div className="form-panel">
           <img src={linkLogo} className="link-logo" alt="logo" />
@@ -89,6 +88,7 @@ function App() {
             <button>Shorten</button>
           </form>
         </div>
+        <LinksOverview />
       </div>
     </div>
   );
