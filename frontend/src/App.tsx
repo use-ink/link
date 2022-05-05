@@ -20,6 +20,7 @@ function App() {
   const [alias, setAlias] = useState(nanoid(5));
   const [estimation, setEstimation] = useState<Estimation>();
   const [index, setIndex] = useState();
+
   const indexFromTabs = (index:any) => {
     setIndex(index);
   }
@@ -53,6 +54,15 @@ function App() {
           : setEstimation(undefined);
       });
   }, [alias, api, url]);
+
+  const handleLocalStorage = () => {
+    if(localStorage.getItem("urls") == null){
+      localStorage.setItem("urls", "[]");
+    }
+    const old_urls = JSON.parse(localStorage.getItem("urls") || "");
+    old_urls.push(url);
+    localStorage.setItem("urls", JSON.stringify(old_urls))
+  }
 
   return (
     <div className="App">
@@ -91,7 +101,11 @@ function App() {
                   <p>gas required: {estimation.gasRequired}</p>
                 </div>
               )}
-              <button>Shorten</button>
+              <button
+                onClick={handleLocalStorage}
+              >
+                Shorten
+              </button>
             </form>
           </div>
         :
