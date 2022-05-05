@@ -20,13 +20,13 @@ const Header = ({indexFromTabs}: Props) => {
                 <Tab.List className="bg-gray-900 p-1 rounded-full">
                     <Tab 
                         className={({ selected }) =>
-                        selected ? 'bg-gray-600 text-white hover:bg-gray-600' : 'bg-transparent text-gray-500 hover:bg-transparent hover:text-white'
+                        selected ? 'bg-gray-600 text-white hover:bg-gray-600 focus:outline-none' : 'bg-transparent text-gray-500 hover:bg-transparent hover:text-white'
                     }>
                         Shorten
                     </Tab>
                     <Tab 
                         className={({ selected }) =>
-                        selected ? 'bg-gray-600 text-white hover:bg-gray-600' : 'bg-transparent text-gray-500 hover:bg-transparent hover:text-white'
+                        selected ? 'bg-gray-600 text-white hover:bg-gray-600 focus:outline-none' : 'bg-transparent text-gray-500 hover:bg-transparent hover:text-white'
                     }>
                         Your Links
                     </Tab>
