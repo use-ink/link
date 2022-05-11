@@ -4,7 +4,7 @@ const LinksOverview = () => {
     return (
         <div className="form-panel" style={{ width: "600px"}}>
             <h2 className="text-2xl font-black pb-6">Your Links</h2>
-            <div className="flex flex-col space-y-4 w-full">
+            <div className="flex flex-col space-y-4 w-full max-h-96 overflow-auto">
                 {urls &&
                     urls.map(
                         (url:string) => {
