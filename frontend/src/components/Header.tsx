@@ -14,8 +14,10 @@ const Header = ({indexFromTabs}: Props) => {
     }, [indexFromTabs, selectedIndex]);
 
     return (
-        <div className="top-bar">
-            <img src={logo} className="ink-logo" alt="logo" />
+        <div className="flex justify-between w-full px-8 py-4">
+            <div className='flex items-center w-32'>
+                <img src={logo} className="ink-logo" alt="logo" />
+            </div>
             <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
                 <Tab.List className="bg-gray-900 p-1 rounded-full">
                     <Tab 
@@ -36,7 +38,9 @@ const Header = ({indexFromTabs}: Props) => {
                     <Tab.Panel>Content 2</Tab.Panel>
                 </Tab.Panels> */}
             </Tab.Group>
-            <button>Connect</button>
+            <div className='flex items-center justify-end w-32'>
+                <button>Connect</button>
+            </div>  
         </div>
     )
 }

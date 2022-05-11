@@ -12,11 +12,7 @@ body {
   background: radial-gradient(100% 100% at 50% 0%, #3D2B52 0%, #2A2442 20.91%, #201F37 100%);
   color: #fff;
 }
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  padding: 28px 32px;
-}
+
 .content {
   display: grid;
   justify-content: center;
