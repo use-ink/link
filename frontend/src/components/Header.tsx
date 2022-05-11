@@ -33,10 +33,6 @@ const Header = ({indexFromTabs}: Props) => {
                         Your Links
                     </Tab>
                 </Tab.List>
-                {/* <Tab.Panels>
-                    <Tab.Panel>Content 1</Tab.Panel>
-                    <Tab.Panel>Content 2</Tab.Panel>
-                </Tab.Panels> */}
             </Tab.Group>
             <div className='flex items-center justify-end w-32'>
                 <button>Connect</button>
