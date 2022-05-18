@@ -172,7 +172,7 @@ mod link {
             if slug.len() < MIN_SLUG_LENGTH {
                 return Err(Error::SlugTooShort)
             }
-            if self.urls.get(&slug).is_some() {
+            if self.urls.contains(&slug) {
                 return Err(Error::SlugUnavailable)
             }
             self.urls.insert(&slug, &url);
