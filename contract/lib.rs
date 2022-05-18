@@ -172,10 +172,9 @@ mod link {
             if slug.len() < MIN_SLUG_LENGTH {
                 return Err(Error::SlugTooShort)
             }
-            if self.urls.contains(&slug) {
+            if self.urls.insert_return_size(&slug, &url).is_some() {
                 return Err(Error::SlugUnavailable)
             }
-            self.urls.insert(&slug, &url);
             self.slugs.insert(&url, &slug);
             self.env().emit_event(Shortened { slug, url });
             Ok(ShorteningOutcome::Shortened)
