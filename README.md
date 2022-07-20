@@ -33,6 +33,15 @@ In consequence the frontend would be truly trustless, there would then be no nee
 put trust in a server that e.g. the RPC return values are indeed what is stored on
 the blockchain.
 
+## Rococo Deployment
+
+The link contract is deployed to Rococo at the following address:
+```
+5GdHQQkRHvEEE4sDkcLkxCCumSkw2SFBJSLKzbMTNARLTXz3
+```
+It's metadata can be [found here](./frontend/src/metadata.json). It is upgradeable by the
+chain's sudo account.
+
 ## 🤔 Why?
 
 Popular URL shorteners are for-profit companies, relying on them to
