@@ -1,8 +1,8 @@
 {
   "source": {
-    "hash": "0x665130c4df142ea9298db52b175f97f278f76549465d238640f74651ff4ea71b",
-    "language": "ink! 3.0.1",
-    "compiler": "rustc 1.62.0-nightly"
+    "hash": "0x43742ae681bc9ed039bd5c88470624d81c4da5d8fd9507bf64ce136c656cf3c0",
+    "language": "ink! 3.3.0",
+    "compiler": "rustc 1.64.0-nightly"
   },
   "contract": {
     "name": "link",
@@ -16,10 +16,29 @@
       "constructors": [
         {
           "args": [],
-          "docs": [],
+          "docs": [
+            "Construct a new contract and set the caller as an upgrader.",
+            "",
+            "The caller will be able to upgrade this contract to use any code. This requires",
+            "users of the contract to trust the upgrader. Probably a multisig should be used",
+            "for that reason. A truly trustless deployment should use the [`unstoppable`]",
+            "constructor."
+          ],
           "label": "default",
           "payable": false,
           "selector": "0xed4b9d1b"
+        },
+        {
+          "args": [],
+          "docs": [
+            "Construct a new contract and don't set an upgrader.",
+            "",
+            "This prevents the contract from being changed and hence makes it truly",
+            "unstoppable."
+          ],
+          "label": "unstoppable",
+          "payable": false,
+          "selector": "0x80f86a83"
         }
       ],
       "docs": [],
@@ -27,109 +46,70 @@
         {
           "args": [
             {
-              "docs": [],
+              "docs": [
+                " The slug of the mapping."
+              ],
               "indexed": false,
               "label": "slug",
               "type": {
                 "displayName": [
-                  "Vec"
+                  "Slug"
                 ],
                 "type": 1
               }
             },
             {
-              "docs": [],
+              "docs": [
+                " The URL that the slug maps to."
+              ],
               "indexed": false,
               "label": "url",
               "type": {
                 "displayName": [
-                  "Vec"
+                  "Url"
                 ],
                 "type": 1
               }
             }
           ],
-          "docs": [],
+          "docs": [
+            " A new slug mapping was created."
+          ],
           "label": "Shortened"
         },
         {
           "args": [
             {
-              "docs": [],
+              "docs": [
+                " The slug of the mapping."
+              ],
               "indexed": false,
               "label": "slug",
               "type": {
                 "displayName": [
-                  "Vec"
+                  "Slug"
                 ],
                 "type": 1
               }
             },
             {
-              "docs": [],
+              "docs": [
+                " The URL that the slug maps to."
+              ],
               "indexed": false,
               "label": "url",
               "type": {
                 "displayName": [
-                  "Vec"
+                  "Url"
                 ],
                 "type": 1
               }
             }
           ],
-          "docs": [],
+          "docs": [
+            " A pre-existing mapping was used."
+          ],
           "label": "Deduplicated"
-        },
-        {
-          "args": [
-            {
-              "docs": [],
-              "indexed": false,
-              "label": "slug",
-              "type": {
-                "displayName": [
-                  "Vec"
-                ],
-                "type": 1
-              }
-            }
-          ],
-          "docs": [],
-          "label": "SlugTooShort"
-        },
-        {
-          "args": [
-            {
-              "docs": [],
-              "indexed": false,
-              "label": "slug",
-              "type": {
-                "displayName": [
-                  "Vec"
-                ],
-                "type": 1
-              }
-            }
-          ],
-          "docs": [],
-          "label": "SlugUnavailable"
-        },
-        {
-          "args": [
-            {
-              "docs": [],
-              "indexed": false,
-              "label": "url",
-              "type": {
-                "displayName": [
-                  "Vec"
-                ],
-                "type": 1
-              }
-            }
-          ],
-          "docs": [],
-          "label": "UrlNotFound"
         }
       ],
       "messages": [
@@ -139,22 +119,24 @@
               "label": "slug",
               "type": {
                 "displayName": [
-                  "Slug"
+                  "SlugCreationMode"
                 ],
-                "type": 5
+                "type": 6
               }
             },
             {
               "label": "url",
               "type": {
                 "displayName": [
-                  "Vec"
+                  "Url"
                 ],
                 "type": 1
               }
             }
           ],
-          "docs": [],
+          "docs": [
+            " Create a a new mapping or use an existing one."
+          ],
           "label": "shorten",
           "mutates": true,
           "payable": false,
@@ -162,7 +144,7 @@
             "displayName": [
               "Result"
             ],
-            "type": 6
+            "type": 7
           },
           "selector": "0x92ccc180"
         },
@@ -172,13 +154,15 @@
               "label": "slug",
               "type": {
                 "displayName": [
-                  "Vec"
+                  "Slug"
                 ],
                 "type": 1
               }
             }
           ],
-          "docs": [],
+          "docs": [
+            " Resolve a slug to its mapped URL."
+          ],
           "label": "resolve",
           "mutates": false,
           "payable": false,
@@ -186,9 +170,37 @@
             "displayName": [
               "Option"
             ],
-            "type": 9
+            "type": 10
           },
           "selector": "0x9e30d65d"
+        },
+        {
+          "args": [
+            {
+              "label": "code_hash",
+              "type": {
+                "displayName": [],
+                "type": 4
+              }
+            }
+          ],
+          "docs": [
+            " Change the code of this contract.",
+            "",
+            " This can only be called by the upgrader specified at contract construction.",
+            " The code cannot be changed in case no upgrader was set because the",
+            " [`unstoppable`] constructor was used."
+          ],
+          "label": "upgrade",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 11
+          },
+          "selector": "0x9852f7b0"
         }
       ]
     },
@@ -212,6 +224,32 @@
               }
             },
             "name": "slugs"
+          },
+          {
+            "layout": {
+              "enum": {
+                "dispatchKey": "0x0200000000000000000000000000000000000000000000000000000000000000",
+                "variants": {
+                  "0": {
+                    "fields": [
+                      {
+                        "layout": {
+                          "cell": {
+                            "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
+                            "ty": 5
+                          }
+                        },
+                        "name": null
+                      }
+                    ]
+                  },
+                  "1": {
+                    "fields": []
+                  }
+                }
+              }
+            },
+            "name": "upgrader"
           }
         ]
       }
@@ -301,13 +339,33 @@
         "id": 5,
         "type": {
           "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 4,
+                  "typeName": "[u8; 32]"
+                }
+              ]
+            }
+          },
+          "path": [
+            "ink_env",
+            "types",
+            "AccountId"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "type": {
+          "def": {
             "variant": {
               "variants": [
                 {
                   "fields": [
                     {
                       "type": 1,
-                      "typeName": "Vec<u8>"
+                      "typeName": "Slug"
                     }
                   ],
                   "index": 0,
@@ -317,7 +375,7 @@
                   "fields": [
                     {
                       "type": 1,
-                      "typeName": "Vec<u8>"
+                      "typeName": "Slug"
                     }
                   ],
                   "index": 1,
@@ -333,12 +391,12 @@
           "path": [
             "link",
             "link",
-            "Slug"
+            "SlugCreationMode"
           ]
         }
       },
       {
-        "id": 6,
+        "id": 7,
         "type": {
           "def": {
             "variant": {
@@ -346,7 +404,7 @@
                 {
                   "fields": [
                     {
-                      "type": 7
+                      "type": 8
                     }
                   ],
                   "index": 0,
@@ -355,7 +413,7 @@
                 {
                   "fields": [
                     {
-                      "type": 8
+                      "type": 9
                     }
                   ],
                   "index": 1,
@@ -367,11 +425,11 @@
           "params": [
             {
               "name": "T",
-              "type": 7
+              "type": 8
             },
             {
               "name": "E",
-              "type": 8
+              "type": 9
             }
           ],
           "path": [
@@ -380,7 +438,7 @@
         }
       },
       {
-        "id": 7,
+        "id": 8,
         "type": {
           "def": {
             "variant": {
@@ -394,7 +452,7 @@
                     {
                       "name": "slug",
                       "type": 1,
-                      "typeName": "Vec<u8>"
+                      "typeName": "Slug"
                     }
                   ],
                   "index": 1,
@@ -411,7 +469,7 @@
         }
       },
       {
-        "id": 8,
+        "id": 9,
         "type": {
           "def": {
             "variant": {
@@ -427,6 +485,14 @@
                 {
                   "index": 2,
                   "name": "UrlNotFound"
+                },
+                {
+                  "index": 3,
+                  "name": "UpgradeDenied"
+                },
+                {
+                  "index": 4,
+                  "name": "UpgradeFailed"
                 }
               ]
             }
@@ -439,7 +505,7 @@
         }
       },
       {
-        "id": 9,
+        "id": 10,
         "type": {
           "def": {
             "variant": {
@@ -469,6 +535,56 @@
           "path": [
             "Option"
           ]
+        }
+      },
+      {
+        "id": 11,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 12
+                    }
+                  ],
+                  "index": 0,
+                  "name": "Ok"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 9
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Err"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 12
+            },
+            {
+              "name": "E",
+              "type": 9
+            }
+          ],
+          "path": [
+            "Result"
+          ]
+        }
+      },
+      {
+        "id": 12,
+        "type": {
+          "def": {
+            "tuple": []
+          }
         }
       }
     ]
