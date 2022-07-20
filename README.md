@@ -35,7 +35,7 @@ the blockchain.
 
 ## Rococo Deployment
 
-The link contract is deployed to Rococo at the following address:
+The link! contract is deployed to Rococo at the following address:
 ```
 5GdHQQkRHvEEE4sDkcLkxCCumSkw2SFBJSLKzbMTNARLTXz3
 ```
