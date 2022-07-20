@@ -39,7 +39,7 @@ The link! contract is deployed to Rococo at the following address:
 ```
 5GdHQQkRHvEEE4sDkcLkxCCumSkw2SFBJSLKzbMTNARLTXz3
 ```
-It's metadata can be [found here](./frontend/src/metadata.json). It is upgradeable by the
+Its metadata can be [found here](./frontend/src/metadata.json). It is upgradeable by the
 chain's sudo account.
 
 ## 🤔 Why?
