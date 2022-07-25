@@ -56,12 +56,10 @@ function App() {
   }, [alias, api, url]);
 
   const handleLocalStorage = () => {
-    if(localStorage.getItem("urls") == null){
-      localStorage.setItem("urls", "[]");
-    }
-    const old_urls = JSON.parse(localStorage.getItem("urls") || "");
-    old_urls.push(url);
-    localStorage.setItem("urls", JSON.stringify(old_urls))
+    const storedUrls = localStorage.getItem("urls");
+    const urls = storedUrls ? JSON.parse(storedUrls) : [];
+    urls.push(url);
+    localStorage.setItem("urls", JSON.stringify(urls))
   }
 
   return (

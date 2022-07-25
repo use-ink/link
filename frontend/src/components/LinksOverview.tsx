@@ -1,5 +1,6 @@
 const LinksOverview = () => {
-    const urls = JSON.parse(localStorage.urls);
+    const storedUrls = localStorage.getItem("urls");
+    const urls = storedUrls ? JSON.parse(storedUrls) : [];
 
     return (
         <div className="form-panel" style={{ width: "600px"}}>
