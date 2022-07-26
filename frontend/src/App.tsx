@@ -52,18 +52,32 @@ function App() {
             >
               {({ isSubmitting, isValid, values }) => (
                 <Form>
-                  <Field type="text" name="url" />
-                  <ErrorMessage name="url" component="div" />
-                  <Field type="text" name="alias" />
-                  <ErrorMessage name="alias" component="div" />
-                  {isValid && contract && (
-                    <CostEstimations
-                      contract={contract}
-                      values={values}
-                      estimation={estimation}
-                      setEstimation={setEstimation}
+                  <div className="group">
+                    <Field type="text" name="url" />
+                    <ErrorMessage
+                      name="url"
+                      component="div"
+                      className="error-message"
                     />
-                  )}
+                  </div>
+                  <div className="group">
+                    <Field type="text" name="alias" />
+                    <ErrorMessage
+                      name="alias"
+                      component="div"
+                      className="error-message"
+                    />
+                  </div>
+                  <div className="group">
+                    {isValid && contract && (
+                      <CostEstimations
+                        contract={contract}
+                        values={values}
+                        estimation={estimation}
+                        setEstimation={setEstimation}
+                      />
+                    )}
+                  </div>
                   <button type="submit" disabled={isSubmitting}>
                     Shorten
                   </button>

@@ -41,7 +41,7 @@ label {
 }
 
 input {
-  @apply w-full bg-gray-800 text-white px-4 py-3 mb-8 border rounded-lg border-gray-700 hover:border-gray-500 focus:outline-none;
+  @apply w-full bg-gray-800 text-white px-4 py-3 mb-2 border rounded-lg border-gray-700 hover:border-gray-500 focus:outline-none;
 }
 
 button[type='submit'], button {
@@ -50,9 +50,8 @@ button[type='submit'], button {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
 }
 .estimations {
-  text-align: left;
-  font-size: 12px;
-  margin-bottom: 16px;
+@apply text-xs text-left absolute bottom-5
+
 }
 
 a {
@@ -152,4 +151,12 @@ h1 {
 
 .tag-line {
   @apply text-gray-400;
+}
+
+.error-message {
+ @apply absolute bottom-4 text-red-500 text-xs
+}
+
+.group {
+  @apply relative pb-8
 }
