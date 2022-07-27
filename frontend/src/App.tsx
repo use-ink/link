@@ -22,6 +22,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (!api || keyringLoadAll) return;
     const loadAccounts = async () => {
       await web3Enable("link-url-shortener");
       let allAccounts = await web3Accounts();
@@ -31,11 +32,10 @@ function App() {
       }));
       keyring.loadAll({ isDevelopment: false }, allAccounts);
     };
-    if (!keyringLoadAll) {
-      keyringLoadAll = true;
-      loadAccounts().catch((e) => console.error(e));
-    }
-  }, []);
+
+    keyringLoadAll = true;
+    loadAccounts().catch((e) => console.error(e));
+  }, [api]);
 
   useEffect(() => {
     if (!api || contract) return;
