@@ -8,7 +8,7 @@ import { keyring } from "@polkadot/ui-keyring";
 import { contractAddress, endpoint } from "./const";
 import Resolver from "./Resolver";
 import { Routes, Route } from "react-router-dom";
-import { FormContainer } from "./components";
+import { FormContainer, Loader } from "./components";
 
 let keyringLoadAll = false;
 
@@ -53,7 +53,7 @@ function App() {
       />
     </Routes>
   ) : (
-    <div> Loading</div>
+    <Loader message="Loading app..." />
   );
 }
 

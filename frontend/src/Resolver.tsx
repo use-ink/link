@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import squid from "./squid.svg";
 import { useParams, useNavigate } from "react-router-dom";
 import { callerAddress } from "./const";
 import { ApiPromise } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
-
+import { Loader } from "./components";
 interface Props {
   api: ApiPromise;
   contract: ContractPromise;
@@ -44,37 +43,7 @@ const Resolver = ({ api, contract }: Props) => {
   }, [api, contract.query, slug]);
   return (
     <div className="App">
-      {/*
-      <div className="slug">Your Slug: {slug}</div>
-      <div className="url">Your Resolved URL: {resolvedUrl}</div> */}
-      <section className="sticky">
-        <div className="squids">
-          <img src={squid} className="squid" alt="logo" />
-          <img src={squid} className="squid" alt="logo" />
-          <img src={squid} className="squid" alt="logo" />
-          <img src={squid} className="squid" alt="logo" />
-          <img src={squid} className="squid" alt="logo" />
-          <img src={squid} className="squid" alt="logo" />
-          <img src={squid} className="squid" alt="logo" />
-        </div>
-        <img src={squid} className="big-squid" alt="logo" />
-      </section>
-      <div className="container">
-        <div className="text-info">
-          <h1>Shortened with link!</h1>
-          <div className="tag-line">
-            The unstoppable link shortener build with the{" "}
-            <a
-              href="https://github.com/paritytech/ink"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              ink! smart contract language
-            </a>
-            .<div>{resolvedUrl && `Redirecting to ${resolvedUrl}.`}</div>
-          </div>
-        </div>
-      </div>
+      <Loader message={resolvedUrl ? `Redirecting to ${resolvedUrl}` : ""} />
     </div>
   );
 };

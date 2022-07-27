@@ -9,6 +9,7 @@ import { ApiPromise } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
+import { Loader } from ".";
 
 interface Props {
   api: ApiPromise;
@@ -20,38 +21,44 @@ export const FormContainer = ({ api, contract }: Props) => {
 
   return (
     <div className="App">
-      <Header />
-      <div className="content">
-        <div className="form-panel">
-          <img src={linkLogo} className="link-logo" alt="logo" />
-          <Formik
-            initialValues={initialValues}
-            validationSchema={UrlShortenerSchema}
-            onSubmit={async (values, helpers) => {
-              if (!estimation || !helpers) return;
-              const submitFn = createSubmitHandler(
-                contract,
-                estimation,
-                api.registry
-              );
-              await submitFn(values, helpers);
-            }}
-          >
-            {({ status: { finalized, events, slug } = {} }) =>
-              finalized ? (
-                <SubmitResult events={events} slug={slug} />
-              ) : (
-                <UrlShortenerForm
-                  api={api}
-                  contract={contract}
-                  estimation={estimation}
-                  setEstimation={setEstimation}
-                />
-              )
-            }
-          </Formik>
-        </div>
-      </div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={UrlShortenerSchema}
+        onSubmit={async (values, helpers) => {
+          if (!estimation || !helpers) return;
+          const submitFn = createSubmitHandler(
+            contract,
+            estimation,
+            api.registry
+          );
+          await submitFn(values, helpers);
+        }}
+      >
+        {({ status: { finalized, events, slug } = {}, isSubmitting }) => {
+          return isSubmitting ? (
+            <Loader message="Submitting transaction..." />
+          ) : (
+            <>
+              <Header />
+              <div className="content">
+                <div className="form-panel">
+                  <img src={linkLogo} className="link-logo" alt="logo" />{" "}
+                  {finalized ? (
+                    <SubmitResult events={events} slug={slug} />
+                  ) : (
+                    <UrlShortenerForm
+                      api={api}
+                      contract={contract}
+                      estimation={estimation}
+                      setEstimation={setEstimation}
+                    />
+                  )}
+                </div>
+              </div>
+            </>
+          );
+        }}
+      </Formik>
     </div>
   );
 };
