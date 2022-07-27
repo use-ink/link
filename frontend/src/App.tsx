@@ -3,16 +3,25 @@ import "./App.css";
 import linkLogo from "./link-logo.svg";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Abi, ContractPromise } from "@polkadot/api-contract";
+
+import { web3Enable, web3Accounts } from "@polkadot/extension-dapp";
 import metadata from "./metadata.json";
-import { Header, LinksOverview, CostEstimations } from "./components";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Estimation } from "./types";
+import { Header, LinksOverview } from "./components";
+import { Formik } from "formik";
+import { Estimation, UIEvent } from "./types";
+import { keyring } from "@polkadot/ui-keyring";
+
 import {
   initialValues,
   contractAddress,
   endpoint,
   UrlShortenerSchema,
 } from "./const";
+import { Link } from "react-router-dom";
+import { createSubmitHandler } from "./util";
+import { UrlShortenerForm } from "./components/Form";
+
+let keyringLoadAll = false;
 
 function App() {
   const [api, setApi] = useState<ApiPromise | null>(null);
@@ -26,6 +35,22 @@ function App() {
   useEffect(() => {
     const wsProvider = new WsProvider(endpoint);
     ApiPromise.create({ provider: wsProvider }).then((api) => setApi(api));
+  }, []);
+
+  useEffect(() => {
+    const loadAccounts = async () => {
+      await web3Enable("link-url-shortener");
+      let allAccounts = await web3Accounts();
+      allAccounts = allAccounts.map(({ address, meta }) => ({
+        address,
+        meta: { ...meta, name: `${meta.name} (${meta.source})` },
+      }));
+      keyring.loadAll({ isDevelopment: false }, allAccounts);
+    };
+    if (!keyringLoadAll) {
+      keyringLoadAll = true;
+      loadAccounts().catch((e) => console.error(e));
+    }
   }, []);
 
   useEffect(() => {
@@ -45,44 +70,42 @@ function App() {
             <Formik
               initialValues={initialValues}
               validationSchema={UrlShortenerSchema}
-              onSubmit={(values, { setSubmitting }) => {
-                console.log(values);
-                setSubmitting(false);
+              onSubmit={async (values, helpers) => {
+                if (!api || !contract || !estimation || !helpers) return;
+                const submitFn = createSubmitHandler(
+                  contract,
+                  estimation,
+                  api.registry
+                );
+                await submitFn(values, helpers);
               }}
             >
-              {({ isSubmitting, isValid, values }) => (
-                <Form>
-                  <div className="group">
-                    <Field type="text" name="url" />
-                    <ErrorMessage
-                      name="url"
-                      component="div"
-                      className="error-message"
-                    />
-                  </div>
-                  <div className="group">
-                    <Field type="text" name="alias" />
-                    <ErrorMessage
-                      name="alias"
-                      component="div"
-                      className="error-message"
-                    />
-                  </div>
-                  <div className="group">
-                    {isValid && contract && (
-                      <CostEstimations
-                        contract={contract}
-                        values={values}
-                        estimation={estimation}
-                        setEstimation={setEstimation}
-                      />
+              {({ status: { finalized, events, slug } = {} }) =>
+                finalized ? (
+                  <div>
+                    {slug && (
+                      <Link
+                        to={`/${slug}`}
+                      >{`${window.location.host}/${slug}`}</Link>
                     )}
+                    {events.map((ev: UIEvent, index: number) => {
+                      return (
+                        <div key={`${ev.name}-${index}`}>
+                          <div>{ev.name}</div>
+                          <div>{ev.message}</div>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <button type="submit" disabled={isSubmitting}>
-                    Shorten
-                  </button>
-                </Form>
-              )}
+                ) : api && contract ? (
+                  <UrlShortenerForm
+                    api={api}
+                    contract={contract}
+                    estimation={estimation}
+                    setEstimation={setEstimation}
+                  />
+                ) : null
+              }
             </Formik>
           </div>
         ) : (

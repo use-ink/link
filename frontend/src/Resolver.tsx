@@ -4,35 +4,49 @@ import squid from "./squid.svg";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Abi, ContractPromise } from "@polkadot/api-contract";
 import metadata from "./metadata.json";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { callerAddress, contractAddress, endpoint } from "./const";
 
 const Resolver = () => {
-  const { slug } = useParams();
-  const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
+  const params = useParams();
+  const navigate = useNavigate();
+  const { slug } = params;
+  const [resolvedUrl, setResolvedUrl] = useState<string>("");
   const [api, setApi] = useState<ApiPromise | null>(null);
 
   useEffect(() => {
-    const wsProvider = new WsProvider("ws://127.0.0.1:9944");
+    const wsProvider = new WsProvider(endpoint);
     ApiPromise.create({ provider: wsProvider }).then((api) => setApi(api));
   }, []);
 
   useEffect(() => {
+    resolvedUrl && window.location.replace(resolvedUrl);
+  }, [navigate, resolvedUrl]);
+
+  useEffect(() => {
     if (!api) return;
     const abi = api && new Abi(metadata, api.registry.getChainProperties());
-    const contract = new ContractPromise(
-      api,
-      abi,
-      "5DuGo1LGXFs2xW6QGwKLQxRc5wyVsh2FUHCZ4y9wov2Ma9P7"
-    );
-    const params = [slug];
+    const contract = new ContractPromise(api, abi, contractAddress);
     slug &&
       contract.query["resolve"](
-        "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        callerAddress,
         { gasLimit: -1, storageDepositLimit: null },
-        ...params
-      ).then((response) => {
-        const url = response.output?.toHuman()?.toString() || null;
-        setResolvedUrl(url);
+        slug
+      ).then(({ result, output }) => {
+        if (result.isErr && result.asErr.isModule) {
+          const decoded = api.registry.findMetaError(result.asErr.asModule);
+          console.error(
+            `${decoded.section.toUpperCase()}.${decoded.method}: ${
+              decoded.docs
+            }`
+          );
+        }
+        if (result.isOk) {
+          const url = output?.toHuman()?.toString() || "";
+          console.log("url", url);
+          console.log("output", output);
+          setResolvedUrl(url);
+        }
       });
   }, [api, slug]);
   return (
@@ -42,22 +56,29 @@ const Resolver = () => {
       <div className="url">Your Resolved URL: {resolvedUrl}</div> */}
       <section className="sticky">
         <div className="squids">
-          <img src={squid} className="squid" alt="logo"/>
-          <img src={squid} className="squid" alt="logo"/>
-          <img src={squid} className="squid" alt="logo"/>
-          <img src={squid} className="squid" alt="logo"/>
-          <img src={squid} className="squid" alt="logo"/>
-          <img src={squid} className="squid" alt="logo"/>
-          <img src={squid} className="squid" alt="logo"/>
+          <img src={squid} className="squid" alt="logo" />
+          <img src={squid} className="squid" alt="logo" />
+          <img src={squid} className="squid" alt="logo" />
+          <img src={squid} className="squid" alt="logo" />
+          <img src={squid} className="squid" alt="logo" />
+          <img src={squid} className="squid" alt="logo" />
+          <img src={squid} className="squid" alt="logo" />
         </div>
-        <img src={squid} className="big-squid" alt="logo"/>
+        <img src={squid} className="big-squid" alt="logo" />
       </section>
-      <div className='container'>
-        <div className='text-info'>
+      <div className="container">
+        <div className="text-info">
           <h1>Shortened with link!</h1>
-          <div className='tag-line'>
-            The unstoppable link shortener build with the <a href="https://github.com/paritytech/ink" target="_blank" rel="noopener noreferrer">ink! smart contract language</a>.
-            {resolvedUrl && `Redirecting to ${resolvedUrl}.`}
+          <div className="tag-line">
+            The unstoppable link shortener build with the{" "}
+            <a
+              href="https://github.com/paritytech/ink"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ink! smart contract language
+            </a>
+            .<div>{resolvedUrl && `Redirecting to ${resolvedUrl}.`}</div>
           </div>
         </div>
       </div>

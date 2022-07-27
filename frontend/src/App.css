@@ -41,11 +41,11 @@ label {
 }
 
 input {
-  @apply w-full bg-gray-800 text-white px-4 py-3 mb-2 border rounded-lg border-gray-700 hover:border-gray-500 focus:outline-none;
+  @apply w-full bg-gray-800 text-white px-4 py-3 mb-2 border rounded-lg border-gray-700 hover:border-gray-500 focus:outline-none  disabled:opacity-50;
 }
 
 button[type='submit'], button {
-  @apply bg-purple-transparent hover:bg-purple-transparent2 text-white font-medium px-6 py-3 border-none;
+  @apply bg-purple-transparent hover:bg-purple-transparent2 text-white font-medium px-6 py-3 border-none disabled:opacity-50;
   border-radius: 50px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
 }
