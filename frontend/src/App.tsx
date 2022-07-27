@@ -1,32 +1,20 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import linkLogo from "./link-logo.svg";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Abi, ContractPromise } from "@polkadot/api-contract";
-
 import { web3Enable, web3Accounts } from "@polkadot/extension-dapp";
 import metadata from "./metadata.json";
-import { Header } from "./components";
-import { Formik } from "formik";
-import { Estimation, UIEvent } from "./types";
 import { keyring } from "@polkadot/ui-keyring";
-
-import {
-  initialValues,
-  contractAddress,
-  endpoint,
-  UrlShortenerSchema,
-} from "./const";
-import { Link } from "react-router-dom";
-import { createSubmitHandler } from "./util";
-import { UrlShortenerForm } from "./components/Form";
+import { contractAddress, endpoint } from "./const";
+import Resolver from "./Resolver";
+import { Routes, Route } from "react-router-dom";
+import { FormContainer } from "./components";
 
 let keyringLoadAll = false;
 
 function App() {
   const [api, setApi] = useState<ApiPromise | null>(null);
   const [contract, setContract] = useState<ContractPromise>();
-  const [estimation, setEstimation] = useState<Estimation>();
 
   useEffect(() => {
     const wsProvider = new WsProvider(endpoint);
@@ -56,55 +44,16 @@ function App() {
     setContract(c);
   }, [api, contract]);
 
-  return (
-    <div className="App">
-      <Header />
-      <div className="content">
-        <div className="form-panel">
-          <img src={linkLogo} className="link-logo" alt="logo" />
-          <Formik
-            initialValues={initialValues}
-            validationSchema={UrlShortenerSchema}
-            onSubmit={async (values, helpers) => {
-              if (!api || !contract || !estimation || !helpers) return;
-              const submitFn = createSubmitHandler(
-                contract,
-                estimation,
-                api.registry
-              );
-              await submitFn(values, helpers);
-            }}
-          >
-            {({ status: { finalized, events, slug } = {} }) =>
-              finalized ? (
-                <div>
-                  {slug && (
-                    <Link
-                      to={`/${slug}`}
-                    >{`${window.location.host}/${slug}`}</Link>
-                  )}
-                  {events.map((ev: UIEvent, index: number) => {
-                    return (
-                      <div key={`${ev.name}-${index}`}>
-                        <div>{ev.name}</div>
-                        <div>{ev.message}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : api && contract ? (
-                <UrlShortenerForm
-                  api={api}
-                  contract={contract}
-                  estimation={estimation}
-                  setEstimation={setEstimation}
-                />
-              ) : null
-            }
-          </Formik>
-        </div>
-      </div>
-    </div>
+  return api && contract ? (
+    <Routes>
+      <Route index element={<FormContainer api={api} contract={contract} />} />
+      <Route
+        path=":slug"
+        element={<Resolver api={api} contract={contract} />}
+      />
+    </Routes>
+  ) : (
+    <div> Loading</div>
   );
 }
 

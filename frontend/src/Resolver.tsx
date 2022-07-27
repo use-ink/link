@@ -1,32 +1,27 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import squid from "./squid.svg";
-import { ApiPromise, WsProvider } from "@polkadot/api";
-import { Abi, ContractPromise } from "@polkadot/api-contract";
-import metadata from "./metadata.json";
 import { useParams, useNavigate } from "react-router-dom";
-import { callerAddress, contractAddress, endpoint } from "./const";
+import { callerAddress } from "./const";
+import { ApiPromise } from "@polkadot/api";
+import { ContractPromise } from "@polkadot/api-contract";
 
-const Resolver = () => {
+interface Props {
+  api: ApiPromise;
+  contract: ContractPromise;
+}
+
+const Resolver = ({ api, contract }: Props) => {
   const params = useParams();
   const navigate = useNavigate();
   const { slug } = params;
   const [resolvedUrl, setResolvedUrl] = useState<string>("");
-  const [api, setApi] = useState<ApiPromise | null>(null);
-
-  useEffect(() => {
-    const wsProvider = new WsProvider(endpoint);
-    ApiPromise.create({ provider: wsProvider }).then((api) => setApi(api));
-  }, []);
 
   useEffect(() => {
     resolvedUrl && window.location.replace(resolvedUrl);
   }, [navigate, resolvedUrl]);
 
   useEffect(() => {
-    if (!api) return;
-    const abi = api && new Abi(metadata, api.registry.getChainProperties());
-    const contract = new ContractPromise(api, abi, contractAddress);
     slug &&
       contract.query["resolve"](
         callerAddress,
@@ -43,12 +38,10 @@ const Resolver = () => {
         }
         if (result.isOk) {
           const url = output?.toHuman()?.toString() || "";
-          console.log("url", url);
-          console.log("output", output);
           setResolvedUrl(url);
         }
       });
-  }, [api, slug]);
+  }, [api, contract.query, slug]);
   return (
     <div className="App">
       {/*
