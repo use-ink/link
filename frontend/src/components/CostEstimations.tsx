@@ -1,7 +1,7 @@
 import { ContractPromise } from "@polkadot/api-contract";
 import { Registry } from "@polkadot/types/types";
 import { useEffect } from "react";
-import { callerAddress } from "../const";
+import { dryRunCallerAddress } from "../const";
 import { Values, Estimation } from "../types";
 
 interface Props {
@@ -25,7 +25,7 @@ export function CostEstimations({
     const params = [{ deduplicateornew: values.alias }, values.url];
 
     contract.query["shorten"](
-      callerAddress,
+      dryRunCallerAddress,
       { gasLimit: -1, storageDepositLimit: null },
       ...params
     )

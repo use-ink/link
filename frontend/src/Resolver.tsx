@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { callerAddress } from "./const";
+import { dryRunCallerAddress } from "./const";
 import { ApiPromise } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
 import { Loader } from "./components";
@@ -23,7 +23,7 @@ const Resolver = ({ api, contract }: Props) => {
   useEffect(() => {
     slug &&
       contract.query["resolve"](
-        callerAddress,
+        dryRunCallerAddress,
         { gasLimit: -1, storageDepositLimit: null },
         slug
       ).then(({ result, output }) => {

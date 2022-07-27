@@ -9,6 +9,7 @@ interface Props {
   contract: ContractPromise;
   estimation: Estimation | undefined;
   setEstimation: React.Dispatch<React.SetStateAction<Estimation | undefined>>;
+  address?: string;
 }
 export const UrlShortenerForm = ({
   api,
@@ -43,9 +44,12 @@ export const UrlShortenerForm = ({
           />
         )}
       </div>
-      <button type="submit" disabled={isSubmitting}>
-        Shorten
-      </button>
+      <div className="group">
+        <button type="submit" disabled={isSubmitting} name="submit">
+          Shorten
+        </button>
+        <ErrorMessage name="submit" component="div" className="error-message" />
+      </div>
     </Form>
   );
 };

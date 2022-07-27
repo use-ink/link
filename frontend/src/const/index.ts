@@ -15,4 +15,5 @@ export const UrlShortenerSchema = Yup.object().shape({
 export const endpoint = "wss://rococo-contracts-rpc.polkadot.io";
 export const contractAddress =
   "5GdHQQkRHvEEE4sDkcLkxCCumSkw2SFBJSLKzbMTNARLTXz3";
-export const callerAddress = "5EyR7vEk7DtvEWeefGcXXMV6hKwB8Ex5uvjHufm466mbjJkR";
+export const dryRunCallerAddress =
+  "5EyR7vEk7DtvEWeefGcXXMV6hKwB8Ex5uvjHufm466mbjJkR";
