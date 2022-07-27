@@ -1,14 +1,14 @@
 import linkLogo from "../link-logo.svg";
 import { Formik } from "formik";
-import { UIEvent, Estimation } from "../types";
+import { Estimation } from "../types";
 import { initialValues, UrlShortenerSchema } from "../const";
-import { Link } from "react-router-dom";
 import { createSubmitHandler } from "../util";
 import { UrlShortenerForm } from "./Form";
 import { useState } from "react";
 import { ApiPromise } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
 import { Header } from "./Header";
+import { SubmitResult } from "./SubmitResult";
 
 interface Props {
   api: ApiPromise;
@@ -39,21 +39,7 @@ export const FormContainer = ({ api, contract }: Props) => {
           >
             {({ status: { finalized, events, slug } = {} }) =>
               finalized ? (
-                <div>
-                  {slug && (
-                    <Link
-                      to={`/${slug}`}
-                    >{`${window.location.host}/${slug}`}</Link>
-                  )}
-                  {events.map((ev: UIEvent, index: number) => {
-                    return (
-                      <div key={`${ev.name}-${index}`}>
-                        <div>{ev.name}</div>
-                        <div>{ev.message}</div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <SubmitResult events={events} slug={slug} />
               ) : (
                 <UrlShortenerForm
                   api={api}

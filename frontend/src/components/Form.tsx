@@ -32,8 +32,6 @@ export const UrlShortenerForm = ({
           <div>Loading</div>
         ) : (
           isValid &&
-          api &&
-          contract &&
           values.url && (
             <CostEstimations
               registry={api.registry}
