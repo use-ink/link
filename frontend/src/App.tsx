@@ -1,31 +1,40 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import linkLogo from "./link-logo.svg";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Abi, ContractPromise } from "@polkadot/api-contract";
+import { web3Enable, web3Accounts } from "@polkadot/extension-dapp";
 import metadata from "./metadata.json";
-import { Header, LinksOverview, CostEstimations } from "./components";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Estimation } from "./types";
-import {
-  initialValues,
-  contractAddress,
-  endpoint,
-  UrlShortenerSchema,
-} from "./const";
+import { keyring } from "@polkadot/ui-keyring";
+import { contractAddress, endpoint } from "./const";
+import Resolver from "./Resolver";
+import { Routes, Route } from "react-router-dom";
+import { FormContainer, Loader } from "./components";
+
+let keyringLoadAll = false;
 
 function App() {
   const [api, setApi] = useState<ApiPromise | null>(null);
-  const [index, setIndex] = useState();
   const [contract, setContract] = useState<ContractPromise>();
-  const [estimation, setEstimation] = useState<Estimation>();
-  const indexFromTabs = (index: any) => {
-    setIndex(index);
-  };
 
   useEffect(() => {
     const wsProvider = new WsProvider(endpoint);
     ApiPromise.create({ provider: wsProvider }).then((api) => setApi(api));
+  }, []);
+
+  useEffect(() => {
+    const loadAccounts = async () => {
+      await web3Enable("link-url-shortener");
+      let allAccounts = await web3Accounts();
+      allAccounts = allAccounts.map(({ address, meta }) => ({
+        address,
+        meta: { ...meta, name: `${meta.name} (${meta.source})` },
+      }));
+      keyring.loadAll({ isDevelopment: false }, allAccounts);
+    };
+    if (!keyringLoadAll) {
+      keyringLoadAll = true;
+      loadAccounts().catch((e) => console.error(e));
+    }
   }, []);
 
   useEffect(() => {
@@ -35,61 +44,16 @@ function App() {
     setContract(c);
   }, [api, contract]);
 
-  return (
-    <div className="App">
-      <Header indexFromTabs={indexFromTabs} />
-      <div className="content">
-        {index === 0 ? (
-          <div className="form-panel">
-            <img src={linkLogo} className="link-logo" alt="logo" />
-            <Formik
-              initialValues={initialValues}
-              validationSchema={UrlShortenerSchema}
-              onSubmit={(values, { setSubmitting }) => {
-                console.log(values);
-                setSubmitting(false);
-              }}
-            >
-              {({ isSubmitting, isValid, values }) => (
-                <Form>
-                  <div className="group">
-                    <Field type="text" name="url" />
-                    <ErrorMessage
-                      name="url"
-                      component="div"
-                      className="error-message"
-                    />
-                  </div>
-                  <div className="group">
-                    <Field type="text" name="alias" />
-                    <ErrorMessage
-                      name="alias"
-                      component="div"
-                      className="error-message"
-                    />
-                  </div>
-                  <div className="group">
-                    {isValid && contract && (
-                      <CostEstimations
-                        contract={contract}
-                        values={values}
-                        estimation={estimation}
-                        setEstimation={setEstimation}
-                      />
-                    )}
-                  </div>
-                  <button type="submit" disabled={isSubmitting}>
-                    Shorten
-                  </button>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        ) : (
-          <LinksOverview />
-        )}
-      </div>
-    </div>
+  return api && contract ? (
+    <Routes>
+      <Route index element={<FormContainer api={api} contract={contract} />} />
+      <Route
+        path=":slug"
+        element={<Resolver api={api} contract={contract} />}
+      />
+    </Routes>
+  ) : (
+    <Loader message="Loading app..." />
   );
 }
 
