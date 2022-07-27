@@ -1,6 +1,6 @@
 import linkLogo from "../link-logo.svg";
 import { Formik } from "formik";
-import { Estimation } from "../types";
+import { Estimation, InjectedAccount } from "../types";
 import { initialValues, UrlShortenerSchema } from "../const";
 import { createSubmitHandler } from "../util";
 import { UrlShortenerForm } from "./Form";
@@ -14,11 +14,20 @@ import { Loader } from ".";
 interface Props {
   api: ApiPromise;
   contract: ContractPromise;
+  accounts?: InjectedAccount[];
+  setAccounts: React.Dispatch<
+    React.SetStateAction<InjectedAccount[] | undefined>
+  >;
 }
 
-export const FormContainer = ({ api, contract }: Props) => {
+export const FormContainer = ({
+  api,
+  contract,
+  accounts,
+  setAccounts,
+}: Props) => {
   const [estimation, setEstimation] = useState<Estimation>();
-
+  const [callerAddress, setCallerAddress] = useState<string>();
   return (
     <div className="App">
       <Formik
@@ -26,12 +35,19 @@ export const FormContainer = ({ api, contract }: Props) => {
         validationSchema={UrlShortenerSchema}
         onSubmit={async (values, helpers) => {
           if (!estimation || !helpers) return;
-          const submitFn = createSubmitHandler(
-            contract,
-            estimation,
-            api.registry
-          );
-          await submitFn(values, helpers);
+          if (callerAddress) {
+            const submitFn = createSubmitHandler(
+              contract,
+              estimation,
+              api.registry,
+              callerAddress
+            );
+            await submitFn(values, helpers);
+          } else {
+            helpers.setErrors({
+              alias: "No accounts found. Connect signer extension.",
+            });
+          }
         }}
       >
         {({
@@ -42,7 +58,11 @@ export const FormContainer = ({ api, contract }: Props) => {
             <Loader message="Submitting transaction..." />
           ) : (
             <>
-              <Header />
+              <Header
+                setAddress={setCallerAddress}
+                accounts={accounts}
+                setAccounts={setAccounts}
+              />
               <div className="content">
                 <div className="form-panel">
                   <img src={linkLogo} className="link-logo" alt="logo" />{" "}
@@ -58,6 +78,7 @@ export const FormContainer = ({ api, contract }: Props) => {
                       contract={contract}
                       estimation={estimation}
                       setEstimation={setEstimation}
+                      address={callerAddress}
                     />
                   )}
                 </div>
