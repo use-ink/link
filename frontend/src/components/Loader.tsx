@@ -2,7 +2,7 @@ import squid from "../squid.svg";
 
 export const Loader = ({ message }: { message: string }) => {
   return (
-    <>
+    <div className="overflow-hidden">
       <section className="sticky">
         <div className="squids">
           <img src={squid} className="squid" alt="logo" />
@@ -34,6 +34,6 @@ export const Loader = ({ message }: { message: string }) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };

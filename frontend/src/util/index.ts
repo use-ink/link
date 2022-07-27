@@ -14,7 +14,6 @@ export const createSubmitHandler =
     values: Values,
     { setSubmitting, setStatus }: FormikHelpers<Values>
   ) => {
-    console.log("submitting");
     const injector = await web3FromAddress(callerAddress);
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
@@ -58,23 +57,22 @@ export const createSubmitHandler =
                   message,
                 });
             });
-            if (!result.isError) {
-              setStatus({ finalized: true, events, error: null, slug });
+            if (!result.dispatchError) {
+              setStatus({ finalized: true, events, errorMessage: "", slug });
             } else {
               let message = "Unknown Error";
-              if (result.dispatchError?.isModule) {
+              if (result.dispatchError.isModule) {
                 const decoded = registry.findMetaError(
                   result.dispatchError.asModule
                 );
                 message = `${decoded.section.toUpperCase()}.${
                   decoded.method
                 }: ${decoded.docs}`;
-                console.log(message);
               }
               setStatus({
                 finalized: true,
                 events,
-                error: new Error(message),
+                errorMessage: message,
               });
             }
             setSubmitting(false);

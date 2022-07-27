@@ -34,7 +34,10 @@ export const FormContainer = ({ api, contract }: Props) => {
           await submitFn(values, helpers);
         }}
       >
-        {({ status: { finalized, events, slug } = {}, isSubmitting }) => {
+        {({
+          status: { finalized, events, slug, errorMessage } = {},
+          isSubmitting,
+        }) => {
           return isSubmitting ? (
             <Loader message="Submitting transaction..." />
           ) : (
@@ -44,7 +47,11 @@ export const FormContainer = ({ api, contract }: Props) => {
                 <div className="form-panel">
                   <img src={linkLogo} className="link-logo" alt="logo" />{" "}
                   {finalized ? (
-                    <SubmitResult events={events} slug={slug} />
+                    <SubmitResult
+                      events={events}
+                      slug={slug}
+                      errorMessage={errorMessage}
+                    />
                   ) : (
                     <UrlShortenerForm
                       api={api}

@@ -20,7 +20,12 @@ export const UrlShortenerForm = ({
   return (
     <Form>
       <div className="group">
-        <Field type="text" name="url" disabled={isSubmitting} />
+        <Field
+          type="text"
+          name="url"
+          disabled={isSubmitting}
+          placeholder="Url to shorten"
+        />
         <ErrorMessage name="url" component="div" className="error-message" />
       </div>
       <div className="group">
