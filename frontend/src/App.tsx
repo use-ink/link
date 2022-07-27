@@ -6,7 +6,7 @@ import { Abi, ContractPromise } from "@polkadot/api-contract";
 
 import { web3Enable, web3Accounts } from "@polkadot/extension-dapp";
 import metadata from "./metadata.json";
-import { Header, LinksOverview } from "./components";
+import { Header } from "./components";
 import { Formik } from "formik";
 import { Estimation, UIEvent } from "./types";
 import { keyring } from "@polkadot/ui-keyring";
@@ -25,12 +25,8 @@ let keyringLoadAll = false;
 
 function App() {
   const [api, setApi] = useState<ApiPromise | null>(null);
-  const [index, setIndex] = useState();
   const [contract, setContract] = useState<ContractPromise>();
   const [estimation, setEstimation] = useState<Estimation>();
-  const indexFromTabs = (index: any) => {
-    setIndex(index);
-  };
 
   useEffect(() => {
     const wsProvider = new WsProvider(endpoint);
@@ -62,55 +58,51 @@ function App() {
 
   return (
     <div className="App">
-      <Header indexFromTabs={indexFromTabs} />
+      <Header />
       <div className="content">
-        {index === 0 ? (
-          <div className="form-panel">
-            <img src={linkLogo} className="link-logo" alt="logo" />
-            <Formik
-              initialValues={initialValues}
-              validationSchema={UrlShortenerSchema}
-              onSubmit={async (values, helpers) => {
-                if (!api || !contract || !estimation || !helpers) return;
-                const submitFn = createSubmitHandler(
-                  contract,
-                  estimation,
-                  api.registry
-                );
-                await submitFn(values, helpers);
-              }}
-            >
-              {({ status: { finalized, events, slug } = {} }) =>
-                finalized ? (
-                  <div>
-                    {slug && (
-                      <Link
-                        to={`/${slug}`}
-                      >{`${window.location.host}/${slug}`}</Link>
-                    )}
-                    {events.map((ev: UIEvent, index: number) => {
-                      return (
-                        <div key={`${ev.name}-${index}`}>
-                          <div>{ev.name}</div>
-                          <div>{ev.message}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : api && contract ? (
-                  <UrlShortenerForm
-                    api={api}
-                    contract={contract}
-                    estimation={estimation}
-                    setEstimation={setEstimation}
-                  />
-                ) : null
-              }
-            </Formik>
-          </div>
-        ) : (
-          <LinksOverview />
-        )}
+        <div className="form-panel">
+          <img src={linkLogo} className="link-logo" alt="logo" />
+          <Formik
+            initialValues={initialValues}
+            validationSchema={UrlShortenerSchema}
+            onSubmit={async (values, helpers) => {
+              if (!api || !contract || !estimation || !helpers) return;
+              const submitFn = createSubmitHandler(
+                contract,
+                estimation,
+                api.registry
+              );
+              await submitFn(values, helpers);
+            }}
+          >
+            {({ status: { finalized, events, slug } = {} }) =>
+              finalized ? (
+                <div>
+                  {slug && (
+                    <Link
+                      to={`/${slug}`}
+                    >{`${window.location.host}/${slug}`}</Link>
+                  )}
+                  {events.map((ev: UIEvent, index: number) => {
+                    return (
+                      <div key={`${ev.name}-${index}`}>
+                        <div>{ev.name}</div>
+                        <div>{ev.message}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : api && contract ? (
+                <UrlShortenerForm
+                  api={api}
+                  contract={contract}
+                  estimation={estimation}
+                  setEstimation={setEstimation}
+                />
+              ) : null
+            }
+          </Formik>
+        </div>
       </div>
     </div>
   );
