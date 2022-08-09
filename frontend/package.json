@@ -5,7 +5,7 @@
   "dependencies": {
     "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
-    "@polkadot/api": "^8.14.1",
+    "@polkadot/api": "^9.1.1",
     "@polkadot/api-contract": "^8.14.1",
     "@polkadot/extension-dapp": "^0.44.2",
     "@polkadot/ui-keyring": "^2.9.2",
