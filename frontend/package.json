@@ -7,7 +7,7 @@
     "@heroicons/react": "^1.0.6",
     "@polkadot/api": "^9.1.1",
     "@polkadot/api-contract": "^9.1.1",
-    "@polkadot/extension-dapp": "^0.44.4",
+    "@polkadot/extension-dapp": "^0.44.5",
     "@polkadot/ui-keyring": "^2.9.4",
     "bn.js": "^5.2.1",
     "formik": "^2.2.9",
