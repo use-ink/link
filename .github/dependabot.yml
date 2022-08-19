@@ -8,7 +8,13 @@ updates:
   - package-ecosystem: npm
     directory: "/frontend"
     schedule:
-      interval: "daily"
+    interval: "daily"
+    allow:
+      -dependency-type: "production"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          ["version-update:semver-patch", "version-update:semver-minor"]
   - package-ecosystem: cargo
     directory: "/contract"
     schedule:
