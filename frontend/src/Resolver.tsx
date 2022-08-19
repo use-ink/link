@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { dryRunCallerAddress } from "./const";
-import { ApiPromise } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
 import { Loader } from "./components";
+import { useChain } from "./contexts";
 interface Props {
-  api: ApiPromise;
   contract: ContractPromise;
 }
 
-const Resolver = ({ api, contract }: Props) => {
+const Resolver = ({ contract }: Props) => {
   const params = useParams();
   const navigate = useNavigate();
   const { slug } = params;
   const [resolvedUrl, setResolvedUrl] = useState<string>("");
+  const { api } = useChain();
 
   useEffect(() => {
     resolvedUrl && window.location.replace(resolvedUrl);
@@ -22,6 +22,7 @@ const Resolver = ({ api, contract }: Props) => {
 
   useEffect(() => {
     slug &&
+      api &&
       contract.query["resolve"](
         dryRunCallerAddress,
         { gasLimit: -1, storageDepositLimit: null },

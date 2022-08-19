@@ -1,7 +1,7 @@
 import { ContractPromise } from "@polkadot/api-contract";
-import { Registry } from "@polkadot/types/types";
 import { useEffect } from "react";
 import { dryRunCallerAddress } from "../const";
+import { useChain } from "../contexts";
 import { Values, Estimation } from "../types";
 
 interface Props {
@@ -9,7 +9,6 @@ interface Props {
   values: Values;
   estimation: Estimation | undefined;
   setEstimation: React.Dispatch<React.SetStateAction<Estimation | undefined>>;
-  registry: Registry;
 }
 
 export function CostEstimations({
@@ -17,10 +16,11 @@ export function CostEstimations({
   values,
   estimation,
   setEstimation,
-  registry,
 }: Props) {
+  const { api } = useChain();
+
   useEffect(() => {
-    if (!values.url || !values.alias) return;
+    if (!values.url || !values.alias || !api) return;
 
     const params = [{ deduplicateornew: values.alias }, values.url];
 
@@ -31,7 +31,7 @@ export function CostEstimations({
     )
       .then(({ storageDeposit, gasRequired, result }) => {
         if (result.isErr && result.asErr.isModule) {
-          const decoded = registry.findMetaError(result.asErr.asModule);
+          const decoded = api.registry.findMetaError(result.asErr.asModule);
           console.error(
             `${decoded.section.toUpperCase()}.${decoded.method}: ${
               decoded.docs
@@ -45,7 +45,7 @@ export function CostEstimations({
           });
       })
       .catch((e) => console.log(e));
-  }, [contract.query, registry, setEstimation, values.alias, values.url]);
+  }, [api, contract.query, setEstimation, values.alias, values.url]);
 
   return estimation ? (
     <div className="estimations">

@@ -11,16 +11,15 @@ import { FormikHelpers } from "formik";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
 
-export const createSubmitHandler =
-  (
-    contract: ContractPromise,
-    estimation: Estimation,
-    registry: Registry,
-    callerAddress: string
-  ) =>
+export const useSubmitHandler =
+  () =>
   async (
     values: Values,
-    { setSubmitting, setStatus }: FormikHelpers<Values>
+    { setSubmitting, setStatus }: FormikHelpers<Values>,
+    estimation: Estimation,
+    callerAddress: string,
+    contract: ContractPromise,
+    registry: Registry
   ) => {
     const injector = await web3FromAddress(callerAddress);
     try {

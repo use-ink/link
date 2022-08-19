@@ -2,17 +2,16 @@ import linkLogo from "../link-logo.svg";
 import { Formik } from "formik";
 import { Estimation, InjectedAccount } from "../types";
 import { initialValues, UrlShortenerSchema } from "../const";
-import { createSubmitHandler } from "../util";
+import { useSubmitHandler } from "../util";
 import { UrlShortenerForm } from "./Form";
 import { useState } from "react";
-import { ApiPromise } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
 import { Loader } from ".";
+import { useChain } from "../contexts";
 
 interface Props {
-  api: ApiPromise;
   contract: ContractPromise;
   accounts?: InjectedAccount[];
   setAccounts: React.Dispatch<
@@ -20,29 +19,27 @@ interface Props {
   >;
 }
 
-export const FormContainer = ({
-  api,
-  contract,
-  accounts,
-  setAccounts,
-}: Props) => {
+export const FormContainer = ({ contract, accounts, setAccounts }: Props) => {
   const [estimation, setEstimation] = useState<Estimation>();
   const [callerAddress, setCallerAddress] = useState<string>();
+  const { api } = useChain();
+  const submitFn = useSubmitHandler();
   return (
     <div className="App">
       <Formik
         initialValues={initialValues}
         validationSchema={UrlShortenerSchema}
         onSubmit={async (values, helpers) => {
-          if (!estimation || !helpers) return;
+          if (!estimation || !helpers || !api) return;
           if (callerAddress) {
-            const submitFn = createSubmitHandler(
-              contract,
+            await submitFn(
+              values,
+              helpers,
               estimation,
-              api.registry,
-              callerAddress
+              callerAddress,
+              contract,
+              api.registry
             );
-            await submitFn(values, helpers);
           } else {
             helpers.setErrors({
               alias: "No accounts found. Connect signer extension.",
@@ -74,7 +71,6 @@ export const FormContainer = ({
                     />
                   ) : (
                     <UrlShortenerForm
-                      api={api}
                       contract={contract}
                       estimation={estimation}
                       setEstimation={setEstimation}
