@@ -1,26 +1,19 @@
-import { ContractPromise } from "@polkadot/api-contract";
 import { useEffect } from "react";
 import { dryRunCallerAddress } from "../const";
 import { useChain } from "../contexts";
 import { Values, Estimation } from "../types";
 
 interface Props {
-  contract: ContractPromise;
   values: Values;
   estimation: Estimation | undefined;
   setEstimation: React.Dispatch<React.SetStateAction<Estimation | undefined>>;
 }
 
-export function CostEstimations({
-  contract,
-  values,
-  estimation,
-  setEstimation,
-}: Props) {
-  const { api } = useChain();
+export function CostEstimations({ values, estimation, setEstimation }: Props) {
+  const { api, contract } = useChain();
 
   useEffect(() => {
-    if (!values.url || !values.alias || !api) return;
+    if (!values.url || !values.alias || !api || !contract) return;
 
     const params = [{ deduplicateornew: values.alias }, values.url];
 
@@ -45,7 +38,7 @@ export function CostEstimations({
           });
       })
       .catch((e) => console.log(e));
-  }, [api, contract.query, setEstimation, values.alias, values.url]);
+  }, [api, contract, setEstimation, values.alias, values.url]);
 
   return estimation ? (
     <div className="estimations">

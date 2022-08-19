@@ -1,26 +1,26 @@
 import { BN } from "bn.js";
-import { ContractPromise } from "@polkadot/api-contract";
 import {
   web3FromAddress,
   web3Enable,
   web3Accounts,
 } from "@polkadot/extension-dapp";
-import { Registry } from "@polkadot/types/types";
 import { Estimation, Values, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
+import { useChain } from "../contexts";
 
-export const useSubmitHandler =
-  () =>
-  async (
+export const useSubmitHandler = () => {
+  const { api, contract } = useChain();
+
+  return async (
     values: Values,
     { setSubmitting, setStatus }: FormikHelpers<Values>,
     estimation: Estimation,
-    callerAddress: string,
-    contract: ContractPromise,
-    registry: Registry
+    callerAddress: string
   ) => {
+    if (!api || !contract) return;
+
     const injector = await web3FromAddress(callerAddress);
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
@@ -69,7 +69,7 @@ export const useSubmitHandler =
             } else {
               let message = "Unknown Error";
               if (result.dispatchError.isModule) {
-                const decoded = registry.findMetaError(
+                const decoded = api.registry.findMetaError(
                   result.dispatchError.asModule
                 );
                 message = `${decoded.section.toUpperCase()}.${
@@ -91,6 +91,7 @@ export const useSubmitHandler =
       console.error(error);
     }
   };
+};
 
 export const getAccounts = async () => {
   const extensions = await web3Enable("link-url-shortener");

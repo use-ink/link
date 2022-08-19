@@ -1,19 +1,13 @@
 import { CostEstimations } from "./CostEstimations";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { Estimation, Values } from "../types";
-import { ContractPromise } from "@polkadot/api-contract";
 
 interface Props {
-  contract: ContractPromise;
   estimation: Estimation | undefined;
   setEstimation: React.Dispatch<React.SetStateAction<Estimation | undefined>>;
   address?: string;
 }
-export const UrlShortenerForm = ({
-  contract,
-  estimation,
-  setEstimation,
-}: Props) => {
+export const UrlShortenerForm = ({ estimation, setEstimation }: Props) => {
   const { isSubmitting, isValid, values } = useFormikContext<Values>();
 
   return (
@@ -34,7 +28,6 @@ export const UrlShortenerForm = ({
       <div className="group">
         {isValid && values.url && (
           <CostEstimations
-            contract={contract}
             values={values}
             estimation={estimation}
             setEstimation={setEstimation}

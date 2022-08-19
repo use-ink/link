@@ -5,41 +5,31 @@ import { initialValues, UrlShortenerSchema } from "../const";
 import { useSubmitHandler } from "../util";
 import { UrlShortenerForm } from "./Form";
 import { useState } from "react";
-import { ContractPromise } from "@polkadot/api-contract";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
 import { Loader } from ".";
-import { useChain } from "../contexts";
 
 interface Props {
-  contract: ContractPromise;
   accounts?: InjectedAccount[];
   setAccounts: React.Dispatch<
     React.SetStateAction<InjectedAccount[] | undefined>
   >;
 }
 
-export const FormContainer = ({ contract, accounts, setAccounts }: Props) => {
+export const FormContainer = ({ accounts, setAccounts }: Props) => {
   const [estimation, setEstimation] = useState<Estimation>();
   const [callerAddress, setCallerAddress] = useState<string>();
-  const { api } = useChain();
   const submitFn = useSubmitHandler();
+
   return (
     <div className="App">
       <Formik
         initialValues={initialValues}
         validationSchema={UrlShortenerSchema}
         onSubmit={async (values, helpers) => {
-          if (!estimation || !helpers || !api) return;
+          if (!estimation || !helpers) return;
           if (callerAddress) {
-            await submitFn(
-              values,
-              helpers,
-              estimation,
-              callerAddress,
-              contract,
-              api.registry
-            );
+            await submitFn(values, helpers, estimation, callerAddress);
           } else {
             helpers.setErrors({
               alias: "No accounts found. Connect signer extension.",
@@ -71,7 +61,6 @@ export const FormContainer = ({ contract, accounts, setAccounts }: Props) => {
                     />
                   ) : (
                     <UrlShortenerForm
-                      contract={contract}
                       estimation={estimation}
                       setEstimation={setEstimation}
                       address={callerAddress}
