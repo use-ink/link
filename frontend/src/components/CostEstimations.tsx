@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { dryRunCallerAddress } from "../const";
-import { useChain } from "../contexts";
+import { useDryRun } from "../hooks";
 import { Values, Estimation } from "../types";
 
 interface Props {
@@ -10,35 +9,13 @@ interface Props {
 }
 
 export function CostEstimations({ values, estimation, setEstimation }: Props) {
-  const { api, contract } = useChain();
+  const estimate = useDryRun();
 
   useEffect(() => {
-    if (!values.url || !values.alias || !api || !contract) return;
-
+    if (!values.url || !values.alias) return;
     const params = [{ deduplicateornew: values.alias }, values.url];
-
-    contract.query["shorten"](
-      dryRunCallerAddress,
-      { gasLimit: -1, storageDepositLimit: null },
-      ...params
-    )
-      .then(({ storageDeposit, gasRequired, result }) => {
-        if (result.isErr && result.asErr.isModule) {
-          const decoded = api.registry.findMetaError(result.asErr.asModule);
-          console.error(
-            `${decoded.section.toUpperCase()}.${decoded.method}: ${
-              decoded.docs
-            }`
-          );
-        }
-        result.isOk &&
-          setEstimation({
-            gasRequired,
-            storageDeposit,
-          });
-      })
-      .catch((e) => console.log(e));
-  }, [api, contract, setEstimation, values.alias, values.url]);
+    estimate(params).then((v) => setEstimation(v));
+  }, [estimate, setEstimation, values.alias, values.url]);
 
   return estimation ? (
     <div className="estimations">
