@@ -21,7 +21,7 @@ export function AccountsDropdown() {
   }, [accounts, selectedAccount, setCallerAddress]);
 
   return accounts && accounts.length > 0 ? (
-    <div className="fixed top-8 w-72">
+    <div className="fixed top-8 right-16 w-60">
       <Listbox
         value={
           selectedAccount ||

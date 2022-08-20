@@ -19,6 +19,7 @@ type Props = {
   callerAddress?: string;
   setCallerAddress: (a: string | undefined) => void;
   enableAutoConnect: () => void;
+  disableAutoConnect: () => void;
   loadAccounts: () => void;
   shouldAutoConnect: boolean;
 };
@@ -39,10 +40,10 @@ function enableAutoConnect() {
   if (!stored) localStorage.setItem("link-autoconnect", "true");
 }
 
-// function disableAutoConnect() {
-//   const stored = checkAutoConnect();
-//   if (stored) localStorage.removeItem("link-autoconnect");
-// }
+function disableAutoConnect() {
+  const stored = checkAutoConnect();
+  if (stored) localStorage.removeItem("link-autoconnect");
+}
 
 const getAccounts = async () => {
   return await web3Accounts();
@@ -76,6 +77,7 @@ function AccountsProvider({ children }: { children: ReactNode }) {
         enableAutoConnect,
         loadAccounts,
         shouldAutoConnect: shouldAutoConnect ? true : false,
+        disableAutoConnect,
       }}
     >
       {children}
