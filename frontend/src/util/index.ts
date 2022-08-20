@@ -1,9 +1,5 @@
 import { BN } from "bn.js";
-import {
-  web3FromAddress,
-  web3Enable,
-  web3Accounts,
-} from "@polkadot/extension-dapp";
+import { web3FromAddress } from "@polkadot/extension-dapp";
 import { Estimation, Values, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
@@ -91,18 +87,4 @@ export const useSubmitHandler = () => {
       console.error(error);
     }
   };
-};
-
-export const getAccounts = async () => {
-  const extensions = await web3Enable("link-url-shortener");
-  const supportedExtension = extensions.find((e) => e.name === "polkadot-js");
-  const isSignerStored = localStorage.getItem("link-signer") === "polkadot-js";
-  let accounts;
-
-  if (supportedExtension) {
-    accounts = await web3Accounts();
-    !isSignerStored && localStorage.setItem("link-signer", "polkadot-js");
-  }
-
-  return accounts;
 };

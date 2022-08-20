@@ -1,33 +1,82 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+} from "react";
 import { InjectedAccount } from "../types";
-import { getAccounts } from "../util";
+import {
+  web3Enable,
+  web3Accounts,
+  web3EnablePromise,
+} from "@polkadot/extension-dapp";
 
 type Props = {
   accounts?: InjectedAccount[];
   setAccounts: (a: InjectedAccount[] | undefined) => void;
   callerAddress?: string;
   setCallerAddress: (a: string | undefined) => void;
+  enableAutoConnect: () => void;
+  loadAccounts: () => void;
+  shouldAutoConnect: boolean;
 };
 
-const AccountsContext = React.createContext<Props | undefined>(undefined);
+const AccountsContext = createContext<Props | undefined>(undefined);
 
-function AccountsProvider({ children }: { children: React.ReactNode }) {
+async function getExtension() {
+  const extensions = await web3Enable("link-url-shortener");
+  return extensions.find((e) => e.name === "polkadot-js");
+}
+
+function checkAutoConnect() {
+  return localStorage.getItem("link-autoconnect");
+}
+
+function enableAutoConnect() {
+  const stored = checkAutoConnect();
+  if (!stored) localStorage.setItem("link-autoconnect", "true");
+}
+
+// function disableAutoConnect() {
+//   const stored = checkAutoConnect();
+//   if (stored) localStorage.removeItem("link-autoconnect");
+// }
+
+const getAccounts = async () => {
+  return await web3Accounts();
+};
+
+function AccountsProvider({ children }: { children: ReactNode }) {
   const [accounts, setAccounts] = useState<InjectedAccount[]>();
   const [callerAddress, setCallerAddress] = useState<string>();
+  const shouldAutoConnect = checkAutoConnect();
+
+  const loadAccounts = useCallback(() => {
+    !web3EnablePromise && getExtension();
+    getAccounts().then((acc) => setAccounts(acc));
+  }, []);
 
   useEffect(() => {
-    const isSignerStored =
-      localStorage.getItem("link-signer") === "polkadot-js";
-
-    if (isSignerStored) {
-      getAccounts().then((acc) => setAccounts(acc));
+    if (shouldAutoConnect) {
+      loadAccounts();
+    } else {
+      setAccounts(undefined);
     }
-  }, []);
+  }, [loadAccounts, shouldAutoConnect]);
 
   return (
     <AccountsContext.Provider
-      value={{ accounts, setAccounts, callerAddress, setCallerAddress }}
+      value={{
+        accounts,
+        setAccounts,
+        callerAddress,
+        setCallerAddress,
+        enableAutoConnect,
+        loadAccounts,
+        shouldAutoConnect: shouldAutoConnect ? true : false,
+      }}
     >
       {children}
     </AccountsContext.Provider>
@@ -35,7 +84,7 @@ function AccountsProvider({ children }: { children: React.ReactNode }) {
 }
 
 function useAccountsContext() {
-  const context = React.useContext(AccountsContext);
+  const context = useContext(AccountsContext);
   if (context === undefined) {
     throw new Error(
       "useAccountsContext must be used within an AccountsProvider"

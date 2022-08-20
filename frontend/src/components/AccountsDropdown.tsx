@@ -9,7 +9,8 @@ export function AccountsDropdown() {
   const [selectedAccount, setSelectedAccount] = useState<InjectedAccount>();
 
   useEffect(() => {
-    accounts && setSelectedAccount(accounts[0]);
+    if (!accounts) return;
+    accounts.length > 0 && setSelectedAccount(accounts[0]);
   }, [accounts]);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export function AccountsDropdown() {
       setCallerAddress(selectedAccount.address);
   }, [accounts, selectedAccount, setCallerAddress]);
 
-  return (
+  return accounts && accounts.length > 0 ? (
     <div className="fixed top-8 w-72">
       <Listbox
         value={
@@ -78,5 +79,5 @@ export function AccountsDropdown() {
         </div>
       </Listbox>
     </div>
-  );
+  ) : null;
 }
