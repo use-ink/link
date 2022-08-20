@@ -1,17 +1,12 @@
 import logo from "../logo.svg";
-import { InjectedAccount } from "../types";
 import { getAccounts } from "../util";
 import { AccountsDropdown } from "./AccountsDropdown";
+import { useAccountsContext } from "../contexts";
+import { web3EnablePromise } from "@polkadot/extension-dapp";
 
-interface Props {
-  setAddress: React.Dispatch<React.SetStateAction<string | undefined>>;
-  accounts?: InjectedAccount[];
-  setAccounts: React.Dispatch<
-    React.SetStateAction<InjectedAccount[] | undefined>
-  >;
-}
+export const Header = () => {
+  const { setAccounts } = useAccountsContext();
 
-export const Header = ({ setAddress, setAccounts, accounts }: Props) => {
   return (
     <div className="flex justify-between w-full px-8 py-4">
       <div className="flex items-center w-32">
@@ -19,8 +14,8 @@ export const Header = ({ setAddress, setAccounts, accounts }: Props) => {
       </div>
 
       <div className="flex items-center justify-end w-32">
-        {accounts && accounts.length > 0 ? (
-          <AccountsDropdown accounts={accounts} setAddress={setAddress} />
+        {web3EnablePromise ? (
+          <AccountsDropdown />
         ) : (
           <button
             onClick={() => {

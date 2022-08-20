@@ -1,26 +1,17 @@
 import linkLogo from "../link-logo.svg";
 import { Formik } from "formik";
-import { InjectedAccount } from "../types";
 import { initialValues, UrlShortenerSchema } from "../const";
 import { useSubmitHandler } from "../util";
 import { UrlShortenerForm } from "./Form";
-import { useState } from "react";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
 import { Loader } from ".";
-import { useEstimationContext } from "../contexts";
+import { useEstimationContext, useAccountsContext } from "../contexts";
 
-interface Props {
-  accounts?: InjectedAccount[];
-  setAccounts: React.Dispatch<
-    React.SetStateAction<InjectedAccount[] | undefined>
-  >;
-}
-
-export const FormContainer = ({ accounts, setAccounts }: Props) => {
-  const [callerAddress, setCallerAddress] = useState<string>();
+export const FormContainer = () => {
   const submitFn = useSubmitHandler();
   const { estimation } = useEstimationContext();
+  const { callerAddress } = useAccountsContext();
 
   return (
     <div className="App">
@@ -46,11 +37,7 @@ export const FormContainer = ({ accounts, setAccounts }: Props) => {
             <Loader message="Submitting transaction..." />
           ) : (
             <>
-              <Header
-                setAddress={setCallerAddress}
-                accounts={accounts}
-                setAccounts={setAccounts}
-              />
+              <Header />
               <div className="content">
                 <div className="form-panel">
                   <img src={linkLogo} className="link-logo" alt="logo" />{" "}
