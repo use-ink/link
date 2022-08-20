@@ -16,8 +16,6 @@ import {
 type Props = {
   accounts?: InjectedAccount[];
   setAccounts: (a: InjectedAccount[] | undefined) => void;
-  callerAddress?: string;
-  setCallerAddress: (a: string | undefined) => void;
   enableAutoConnect: () => void;
   disableAutoConnect: () => void;
   loadAccounts: () => void;
@@ -51,7 +49,6 @@ const getAccounts = async () => {
 
 function AccountsProvider({ children }: { children: ReactNode }) {
   const [accounts, setAccounts] = useState<InjectedAccount[]>();
-  const [callerAddress, setCallerAddress] = useState<string>();
   const shouldAutoConnect = checkAutoConnect();
 
   const loadAccounts = useCallback(() => {
@@ -72,8 +69,6 @@ function AccountsProvider({ children }: { children: ReactNode }) {
       value={{
         accounts,
         setAccounts,
-        callerAddress,
-        setCallerAddress,
         enableAutoConnect,
         loadAccounts,
         shouldAutoConnect: shouldAutoConnect ? true : false,

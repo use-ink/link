@@ -1,6 +1,6 @@
 import logo from "../logo.svg";
 import { AccountsDropdown } from "./AccountsDropdown";
-import { useAccountsContext } from "../contexts";
+import { useAccountsContext, useCallerContext } from "../contexts";
 import { XCircleIcon } from "@heroicons/react/solid";
 
 export const Header = () => {
@@ -9,9 +9,10 @@ export const Header = () => {
     loadAccounts,
     shouldAutoConnect,
     disableAutoConnect,
-    setCallerAddress,
     setAccounts,
   } = useAccountsContext();
+
+  const { setCaller } = useCallerContext();
 
   return (
     <div className="flex justify-between w-full px-8 py-4">
@@ -27,7 +28,7 @@ export const Header = () => {
               onClick={() => {
                 disableAutoConnect();
                 setAccounts(undefined);
-                setCallerAddress(undefined);
+                setCaller(undefined);
               }}
               className="py-1 px-2 mt-6 text-xs bg-gray-800 bg-opacity-0 text-gray-300 hover:bg-gray-800 hover:bg-opacity-0"
               style={{ position: "relative", left: 4 }}

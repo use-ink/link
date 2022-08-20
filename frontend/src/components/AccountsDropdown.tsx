@@ -1,37 +1,30 @@
 import { InjectedAccount } from "../types";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
-import { useAccountsContext } from "../contexts";
+import { useAccountsContext, useCallerContext } from "../contexts";
 
 export function AccountsDropdown() {
-  const { accounts, setCallerAddress } = useAccountsContext();
-  const [selectedAccount, setSelectedAccount] = useState<InjectedAccount>();
+  const { accounts } = useAccountsContext();
+  const { caller, setCaller } = useCallerContext();
 
   useEffect(() => {
     if (!accounts) return;
-    accounts.length > 0 && setSelectedAccount(accounts[0]);
-  }, [accounts]);
-
-  useEffect(() => {
-    accounts &&
-      accounts.length > 0 &&
-      selectedAccount &&
-      setCallerAddress(selectedAccount.address);
-  }, [accounts, selectedAccount, setCallerAddress]);
+    accounts.length > 0 && setCaller(accounts[0]);
+  }, [accounts, setCaller]);
 
   return accounts && accounts.length > 0 ? (
     <div className="fixed top-8 right-16 w-60">
       <Listbox
         value={
-          selectedAccount ||
+          caller?.meta.name ||
           ({ address: "No accounts found" } as InjectedAccount)
         }
-        onChange={setSelectedAccount}
+        onChange={setCaller}
       >
         <div className="relative mt-1">
           <Listbox.Button className="relative w-full cursor-default rounded-lg  bg-violet-900 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-            <span className="block truncate">{selectedAccount?.meta.name}</span>
+            <span className="block truncate">{caller?.meta.name}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <SelectorIcon
                 className="h-5 w-5 text-gray-400"

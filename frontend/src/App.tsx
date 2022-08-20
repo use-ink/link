@@ -2,7 +2,12 @@ import "./App.css";
 import Resolver from "./Resolver";
 import { Routes, Route } from "react-router-dom";
 import { FormContainer, Loader } from "./components";
-import { AccountsProvider, EstimationProvider, useChain } from "./contexts";
+import {
+  AccountsProvider,
+  CallerProvider,
+  EstimationProvider,
+  useChain,
+} from "./contexts";
 
 function App() {
   const { api } = useChain();
@@ -13,9 +18,11 @@ function App() {
         index
         element={
           <AccountsProvider>
-            <EstimationProvider>
-              <FormContainer />
-            </EstimationProvider>
+            <CallerProvider>
+              <EstimationProvider>
+                <FormContainer />
+              </EstimationProvider>
+            </CallerProvider>
           </AccountsProvider>
         }
       />

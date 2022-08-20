@@ -6,12 +6,9 @@ import { UrlShortenerForm } from "./Form";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
 import { Loader } from ".";
-import { useEstimationContext, useAccountsContext } from "../contexts";
 
 export const FormContainer = () => {
   const submitFn = useSubmitHandler();
-  const { estimation } = useEstimationContext();
-  const { callerAddress } = useAccountsContext();
 
   return (
     <div className="App">
@@ -19,14 +16,8 @@ export const FormContainer = () => {
         initialValues={initialValues}
         validationSchema={UrlShortenerSchema}
         onSubmit={async (values, helpers) => {
-          if (!estimation || !helpers) return;
-          if (callerAddress) {
-            await submitFn(values, helpers, estimation, callerAddress);
-          } else {
-            helpers.setErrors({
-              alias: "No accounts found. Connect signer extension.",
-            });
-          }
+          if (!helpers) return;
+          await submitFn(values, helpers);
         }}
       >
         {({
