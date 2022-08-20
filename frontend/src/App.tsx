@@ -5,7 +5,7 @@ import Resolver from "./Resolver";
 import { Routes, Route } from "react-router-dom";
 import { FormContainer, Loader } from "./components";
 import { InjectedAccount } from "./types";
-import { useChain } from "./contexts";
+import { EstimationProvider, useChain } from "./contexts";
 
 function App() {
   const [accounts, setAccounts] = useState<InjectedAccount[]>();
@@ -24,7 +24,9 @@ function App() {
       <Route
         index
         element={
-          <FormContainer accounts={accounts} setAccounts={setAccounts} />
+          <EstimationProvider>
+            <FormContainer accounts={accounts} setAccounts={setAccounts} />
+          </EstimationProvider>
         }
       />
       <Route path=":slug" element={<Resolver />} />

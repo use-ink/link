@@ -1,13 +1,8 @@
 import { CostEstimations } from "./CostEstimations";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { Estimation, Values } from "../types";
+import { Values } from "../types";
 
-interface Props {
-  estimation: Estimation | undefined;
-  setEstimation: React.Dispatch<React.SetStateAction<Estimation | undefined>>;
-  address?: string;
-}
-export const UrlShortenerForm = ({ estimation, setEstimation }: Props) => {
+export const UrlShortenerForm = () => {
   const { isSubmitting, isValid, values } = useFormikContext<Values>();
 
   return (
@@ -26,13 +21,7 @@ export const UrlShortenerForm = ({ estimation, setEstimation }: Props) => {
         <ErrorMessage name="alias" component="div" className="error-message" />
       </div>
       <div className="group">
-        {isValid && values.url && (
-          <CostEstimations
-            values={values}
-            estimation={estimation}
-            setEstimation={setEstimation}
-          />
-        )}
+        {isValid && values.url && <CostEstimations values={values} />}
       </div>
       <div className="group">
         <button type="submit" disabled={isSubmitting} name="submit">

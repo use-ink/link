@@ -1,15 +1,15 @@
 import { useEffect } from "react";
+import { useEstimationContext } from "../contexts";
 import { useDryRun } from "../hooks";
-import { Values, Estimation } from "../types";
+import { Values } from "../types";
 
 interface Props {
   values: Values;
-  estimation: Estimation | undefined;
-  setEstimation: React.Dispatch<React.SetStateAction<Estimation | undefined>>;
 }
 
-export function CostEstimations({ values, estimation, setEstimation }: Props) {
+export function CostEstimations({ values }: Props) {
   const estimate = useDryRun();
+  const { estimation, setEstimation } = useEstimationContext();
 
   useEffect(() => {
     if (!values.url || !values.alias) return;

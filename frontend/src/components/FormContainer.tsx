@@ -1,6 +1,6 @@
 import linkLogo from "../link-logo.svg";
 import { Formik } from "formik";
-import { Estimation, InjectedAccount } from "../types";
+import { InjectedAccount } from "../types";
 import { initialValues, UrlShortenerSchema } from "../const";
 import { useSubmitHandler } from "../util";
 import { UrlShortenerForm } from "./Form";
@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
 import { Loader } from ".";
+import { useEstimationContext } from "../contexts";
 
 interface Props {
   accounts?: InjectedAccount[];
@@ -17,9 +18,9 @@ interface Props {
 }
 
 export const FormContainer = ({ accounts, setAccounts }: Props) => {
-  const [estimation, setEstimation] = useState<Estimation>();
   const [callerAddress, setCallerAddress] = useState<string>();
   const submitFn = useSubmitHandler();
+  const { estimation } = useEstimationContext();
 
   return (
     <div className="App">
@@ -60,11 +61,7 @@ export const FormContainer = ({ accounts, setAccounts }: Props) => {
                       errorMessage={errorMessage}
                     />
                   ) : (
-                    <UrlShortenerForm
-                      estimation={estimation}
-                      setEstimation={setEstimation}
-                      address={callerAddress}
-                    />
+                    <UrlShortenerForm />
                   )}
                 </div>
               </div>
