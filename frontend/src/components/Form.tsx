@@ -1,23 +1,10 @@
 import { CostEstimations } from "./CostEstimations";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { Estimation, Values } from "../types";
-import { ApiPromise } from "@polkadot/api";
-import { ContractPromise } from "@polkadot/api-contract";
+import { Values } from "../types";
 
-interface Props {
-  api: ApiPromise;
-  contract: ContractPromise;
-  estimation: Estimation | undefined;
-  setEstimation: React.Dispatch<React.SetStateAction<Estimation | undefined>>;
-  address?: string;
-}
-export const UrlShortenerForm = ({
-  api,
-  contract,
-  estimation,
-  setEstimation,
-}: Props) => {
+export const UrlShortenerForm = () => {
   const { isSubmitting, isValid, values } = useFormikContext<Values>();
+
   return (
     <Form>
       <div className="group">
@@ -34,15 +21,7 @@ export const UrlShortenerForm = ({
         <ErrorMessage name="alias" component="div" className="error-message" />
       </div>
       <div className="group">
-        {isValid && values.url && (
-          <CostEstimations
-            registry={api.registry}
-            contract={contract}
-            values={values}
-            estimation={estimation}
-            setEstimation={setEstimation}
-          />
-        )}
+        {isValid && values.url && <CostEstimations values={values} />}
       </div>
       <div className="group">
         <button type="submit" disabled={isSubmitting} name="submit">
