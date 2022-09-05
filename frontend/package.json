@@ -6,7 +6,7 @@
     "@headlessui/react": "^1.6.6",
     "@heroicons/react": "^1.0.6",
     "@polkadot/api": "^9.2.2",
-    "@polkadot/api-contract": "^9.2.2",
+    "@polkadot/api-contract": "^9.3.2",
     "@polkadot/extension-dapp": "^0.44.5",
     "@polkadot/ui-keyring": "^2.9.5",
     "bn.js": "^5.2.1",
