@@ -20,7 +20,7 @@ export function CostEstimations({ values }: Props) {
   return estimation ? (
     <div className="estimations">
       <p>storage deposit: {estimation.storageDeposit.asCharge.toHuman()}</p>
-      <p>gas required: {estimation.gasRequired.toHuman()}</p>
+      <p>gas fee: {estimation.partialFee.toHuman()}</p>
     </div>
   ) : null;
 }
