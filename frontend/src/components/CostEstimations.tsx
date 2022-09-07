@@ -2,48 +2,64 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useEstimationContext } from "../contexts";
 import { useDryRun } from "../hooks";
-import { Values } from "../types";
+import { Estimation, Values } from "../types";
 
 interface Props {
   values: Values;
+  isValid: boolean;
 }
 
-export function CostEstimations({ values }: Props) {
+function Shortened({ estimation }: { estimation: Estimation }) {
+  return (
+    <>
+      <p>storage deposit: {estimation.storageDeposit.asCharge.toHuman()}</p>
+      <p>gas fee: {estimation.partialFee.toHuman()}</p>
+    </>
+  );
+}
+
+function Deduplicated({ slug }: { slug: string }) {
+  return (
+    <>
+      <div>This url has already been shortened. </div>
+      <div>
+        {<Link to={`/${slug}`}>{`${window.location.host}/${slug}`}</Link>}
+      </div>
+    </>
+  );
+}
+
+export function CostEstimations({ values, isValid }: Props) {
   const estimate = useDryRun();
-  const { estimation, setEstimation } = useEstimationContext();
+  const { estimation, setEstimation, setError, error } = useEstimationContext();
 
   useEffect(() => {
-    if (!values.url || !values.alias) return;
-    setEstimation(undefined);
-    const params = [{ deduplicateornew: values.alias }, values.url];
-    estimate(params).then((v) => setEstimation(v));
-  }, [estimate, setEstimation, values.alias, values.url]);
+    async function getOutcome() {
+      if (!isValid) return;
+      setEstimation(undefined);
+      setError(undefined);
+      const params = [{ deduplicateornew: values.alias }, values.url];
+      const e = await estimate(params);
+      if ("message" in e) {
+        setError(e);
+      } else {
+        setEstimation(e);
+      }
+    }
+    getOutcome().catch();
+  }, [estimate, isValid, setError, setEstimation, values.alias, values.url]);
 
   return estimation ? (
     <div className="estimations">
-      {"Ok" in estimation.result &&
+      {"result" in estimation &&
+        "Ok" in estimation.result &&
         (estimation.result.Ok === "Shortened" ? (
-          <>
-            <p>
-              storage deposit: {estimation.storageDeposit.asCharge.toHuman()}
-            </p>
-            <p>gas fee: {estimation.partialFee.toHuman()}</p>
-          </>
+          <Shortened estimation={estimation} />
         ) : (
-          <>
-            <div>This url has already been shortened. </div>
-            <div>
-              {
-                <Link
-                  to={`/${estimation.result.Ok.Deduplicated.slug}`}
-                >{`${window.location.host}/${estimation.result.Ok.Deduplicated.slug}`}</Link>
-              }
-            </div>
-          </>
+          <Deduplicated slug={estimation.result.Ok.Deduplicated.slug} />
         ))}
-      {"Err" in estimation.result && (
-        <p className="mb-4">Slug unavailable. Try something else.</p>
-      )}
     </div>
+  ) : error ? (
+    <p className="estimations mb-4">{error.message}</p>
   ) : null;
 }

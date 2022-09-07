@@ -28,3 +28,7 @@ export type ShorteningOutcome =
   | { Deduplicated: { slug: string } };
 
 export type ShorteningResult = { Ok: ShorteningOutcome } | { Err: string };
+
+export type UIError = {
+  message: string;
+};

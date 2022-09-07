@@ -9,6 +9,7 @@ export const UrlShortenerForm = () => {
 
   const isOkToShorten =
     estimation &&
+    "result" in estimation &&
     "Ok" in estimation.result &&
     estimation.result.Ok === "Shortened";
 
@@ -28,12 +29,14 @@ export const UrlShortenerForm = () => {
         <ErrorMessage name="alias" component="div" className="error-message" />
       </div>
       <div className="group">
-        {isValid && values.url && <CostEstimations values={values} />}
+        {isValid && values.url && (
+          <CostEstimations values={values} isValid={isValid} />
+        )}
       </div>
       <div className="group">
         <button
           type="submit"
-          disabled={isSubmitting || !isOkToShorten}
+          disabled={isSubmitting || !isOkToShorten || !isValid}
           name="submit"
         >
           Shorten
