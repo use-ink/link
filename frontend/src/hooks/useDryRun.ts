@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { dryRunCallerAddress } from "../const";
 import { useChain } from "../contexts";
-import { Estimation } from "../types";
+import { Estimation, ShorteningResult } from "../types";
 
 function useDryRun() {
   const { api, contract } = useChain();
@@ -12,13 +12,12 @@ function useDryRun() {
     ): Promise<Estimation | undefined> {
       if (!contract) return;
       try {
-        const { storageDeposit, gasRequired, result } = await contract.query[
-          "shorten"
-        ](
-          dryRunCallerAddress,
-          { gasLimit: -1, storageDepositLimit: null },
-          ...params
-        );
+        const { storageDeposit, gasRequired, result, output } =
+          await contract.query["shorten"](
+            dryRunCallerAddress,
+            { gasLimit: -1, storageDepositLimit: null },
+            ...params
+          );
         if (result.isErr && result.asErr.isModule) {
           const decoded = api?.registry.findMetaError(result.asErr.asModule);
           console.error(
@@ -42,6 +41,7 @@ function useDryRun() {
             gasRequired,
             storageDeposit,
             partialFee,
+            result: output?.toHuman() as ShorteningResult,
           };
         }
       } catch (e) {

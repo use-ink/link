@@ -1,9 +1,16 @@
 import { CostEstimations } from "./CostEstimations";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { Values } from "../types";
+import { useEstimationContext } from "../contexts";
 
 export const UrlShortenerForm = () => {
   const { isSubmitting, isValid, values } = useFormikContext<Values>();
+  const { estimation } = useEstimationContext();
+
+  const isOkToShorten =
+    estimation &&
+    "Ok" in estimation.result &&
+    estimation.result.Ok === "Shortened";
 
   return (
     <Form>
@@ -24,7 +31,11 @@ export const UrlShortenerForm = () => {
         {isValid && values.url && <CostEstimations values={values} />}
       </div>
       <div className="group">
-        <button type="submit" disabled={isSubmitting} name="submit">
+        <button
+          type="submit"
+          disabled={isSubmitting || !isOkToShorten}
+          name="submit"
+        >
           Shorten
         </button>
         <ErrorMessage name="submit" component="div" className="error-message" />

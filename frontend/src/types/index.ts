@@ -6,6 +6,7 @@ export type Estimation = {
   gasRequired: u64;
   storageDeposit: StorageDeposit;
   partialFee: Balance;
+  result: ShorteningResult;
 };
 
 export interface Values {
@@ -21,3 +22,9 @@ export interface UIEvent {
 export type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
 export type InjectedAccount = Flatten<Awaited<ReturnType<typeof web3Accounts>>>;
+
+export type ShorteningOutcome =
+  | "Shortened"
+  | { Deduplicated: { slug: string } };
+
+export type ShorteningResult = { Ok: ShorteningOutcome } | { Err: string };
