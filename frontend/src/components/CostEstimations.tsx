@@ -36,13 +36,13 @@ export function CostEstimations({ values, isValid }: Props) {
   useEffect(() => {
     async function getOutcome() {
       if (!isValid) return;
-      setEstimation(undefined);
-      setError(undefined);
       const params = [{ deduplicateornew: values.alias }, values.url];
       const e = await estimate(params);
       if ("message" in e) {
+        setEstimation(undefined);
         setError(e);
       } else {
+        setError(undefined);
         setEstimation(e);
       }
     }
