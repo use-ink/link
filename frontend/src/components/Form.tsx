@@ -2,9 +2,11 @@ import { CostEstimations } from "./CostEstimations";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { Values } from "../types";
 import { useEstimationContext } from "../contexts";
+import { ChangeEvent } from "react";
 
 export const UrlShortenerForm = () => {
-  const { isSubmitting, isValid, values } = useFormikContext<Values>();
+  const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
+    useFormikContext<Values>();
   const { estimation } = useEstimationContext();
 
   const isOkToShorten =
@@ -21,11 +23,23 @@ export const UrlShortenerForm = () => {
           name="url"
           disabled={isSubmitting}
           placeholder="Url to shorten"
+          onChange={(e: ChangeEvent) => {
+            setFieldTouched("url");
+            handleChange(e);
+          }}
         />
         <ErrorMessage name="url" component="div" className="error-message" />
       </div>
       <div className="group">
-        <Field type="text" name="alias" disabled={isSubmitting} />
+        <Field
+          type="text"
+          name="alias"
+          disabled={isSubmitting}
+          onChange={(e: ChangeEvent) => {
+            setFieldTouched("alias");
+            handleChange(e);
+          }}
+        />
         <ErrorMessage name="alias" component="div" className="error-message" />
       </div>
       <div className="group">
