@@ -41,7 +41,7 @@ export const useSubmitHandler = () => {
             let slug = "";
             setSubmitting(true);
 
-            if (result.isFinalized) {
+            if (result.isInBlock) {
               result.contractEvents?.forEach(({ event, args }) => {
                 slug = args[0].toHuman()?.toString() || "";
                 events.push({
