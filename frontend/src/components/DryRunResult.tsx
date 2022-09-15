@@ -23,13 +23,13 @@ function Deduplicated({ slug }: { slug: string }) {
     <>
       <div>This url has already been shortened. </div>
       <div>
-        {<Link to={`/${slug}`}>{`${window.location.host}/${slug}`}</Link>}
+        <Link to={`/${slug}`}>{`${window.location.host}/${slug}`}</Link>
       </div>
     </>
   );
 }
 
-export function CostEstimations({ values, isValid }: Props) {
+export function DryRunResult({ values, isValid }: Props) {
   const estimate = useDryRun();
   const { estimation, setEstimation, setError, error } = useEstimationContext();
 

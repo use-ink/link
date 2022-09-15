@@ -1,4 +1,4 @@
-import { CostEstimations } from "./CostEstimations";
+import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { Values } from "../types";
 import { useEstimationContext } from "../contexts";
@@ -44,7 +44,7 @@ export const UrlShortenerForm = () => {
       </div>
       <div className="group">
         {isValid && values.url && (
-          <CostEstimations values={values} isValid={isValid} />
+          <DryRunResult values={values} isValid={isValid} />
         )}
       </div>
       <div className="group">
