@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Estimation, UIError } from "../types";
 
 type Props = {
+  isEstimating: boolean;
+  setIsEstimating: (_: boolean) => void;
   estimation?: Estimation;
   setEstimation: (e: Estimation | undefined) => void;
   error?: UIError;
@@ -14,10 +16,18 @@ const EstimationContext = React.createContext<Props | undefined>(undefined);
 function EstimationProvider({ children }: { children: React.ReactNode }) {
   const [estimation, setEstimation] = useState<Estimation>();
   const [error, setError] = useState<UIError>();
+  const [isEstimating, setIsEstimating] = useState(false);
 
   return (
     <EstimationContext.Provider
-      value={{ estimation, setEstimation, error, setError }}
+      value={{
+        estimation,
+        setEstimation,
+        error,
+        setError,
+        isEstimating,
+        setIsEstimating,
+      }}
     >
       {children}
     </EstimationContext.Provider>

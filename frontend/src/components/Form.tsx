@@ -14,7 +14,7 @@ export const UrlShortenerForm = () => {
   const { api } = useChain();
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<Values>();
-  const { estimation } = useEstimationContext();
+  const { estimation, isEstimating } = useEstimationContext();
   const { accounts, shouldAutoConnect, signer } = useAccountsContext();
   const { caller } = useCallerContext();
   const [hasFunds, setHasFunds] = useState(false);
@@ -82,7 +82,7 @@ export const UrlShortenerForm = () => {
           Shorten
         </button>
       </div>
-      {estimation?.error && isValid && (
+      {isValid && estimation?.error && !isEstimating && (
         <div className="text-xs text-left mb-2 text-red-500">
           {estimation.error.message}
         </div>
