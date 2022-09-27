@@ -7,6 +7,7 @@ export type Estimation = {
   storageDeposit: StorageDeposit;
   partialFee: Balance;
   result: ShorteningResult;
+  error?: UIError;
 };
 
 export interface Values {

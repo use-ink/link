@@ -31,35 +31,28 @@ function Deduplicated({ slug }: { slug: string }) {
 
 export function DryRunResult({ values, isValid }: Props) {
   const estimate = useDryRun();
-  const { estimation, setEstimation, setError, error } = useEstimationContext();
+  const { estimation, setEstimation } = useEstimationContext();
 
   useEffect(() => {
     async function getOutcome() {
       if (!isValid) return;
       const params = [{ deduplicateornew: values.alias }, values.url];
       const e = await estimate(params);
-      if ("message" in e) {
-        setEstimation(undefined);
-        setError(e);
-      } else {
-        setError(undefined);
-        setEstimation(e);
-      }
+      setEstimation(e);
     }
     getOutcome().catch();
-  }, [estimate, isValid, setError, setEstimation, values.alias, values.url]);
+  }, [estimate, isValid, setEstimation, values.alias, values.url]);
 
   return estimation ? (
     <div className="estimations">
-      {"result" in estimation &&
-        "Ok" in estimation.result &&
-        (estimation.result.Ok === "Shortened" ? (
-          <Fees estimation={estimation} />
-        ) : (
+      <div>
+        {"Ok" in estimation.result &&
+        typeof estimation.result.Ok === "object" ? (
           <Deduplicated slug={estimation.result.Ok.Deduplicated.slug} />
-        ))}
+        ) : (
+          <Fees estimation={estimation} />
+        )}
+      </div>
     </div>
-  ) : error ? (
-    <p className="estimations mb-4">{error.message}</p>
   ) : null;
 }

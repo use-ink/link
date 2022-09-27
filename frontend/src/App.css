@@ -54,6 +54,10 @@ button[type='submit'], button {
 @apply text-xs text-left absolute bottom-5 text-gray-300
 
 }
+.estimations.has-error {
+@apply text-xs text-left absolute bottom-2 text-gray-300
+
+}
 
 a {
   @apply text-purple-400 hover:text-purple-300;
