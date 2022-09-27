@@ -6,10 +6,11 @@ import { XCircleIcon } from "@heroicons/react/solid";
 export const Header = () => {
   const {
     enableAutoConnect,
-    loadAccounts,
+    initAccounts,
     shouldAutoConnect,
     disableAutoConnect,
     setAccounts,
+    setSigner,
   } = useAccountsContext();
 
   const { setCaller } = useCallerContext();
@@ -29,6 +30,7 @@ export const Header = () => {
                 disableAutoConnect();
                 setAccounts(undefined);
                 setCaller(undefined);
+                setSigner(undefined);
               }}
               className="py-1 px-2 mt-6 text-xs bg-gray-800 bg-opacity-0 text-gray-300 hover:bg-gray-800 hover:bg-opacity-0"
               style={{ position: "relative", left: 4 }}
@@ -44,7 +46,7 @@ export const Header = () => {
           <button
             onClick={() => {
               enableAutoConnect();
-              loadAccounts();
+              initAccounts();
             }}
           >
             Connect

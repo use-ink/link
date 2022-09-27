@@ -9,7 +9,7 @@ interface Props {
   isValid: boolean;
 }
 
-function Shortened({ estimation }: { estimation: Estimation }) {
+export function Fees({ estimation }: { estimation: Estimation }) {
   return (
     <>
       <p>storage deposit: {estimation.storageDeposit.asCharge.toHuman()}</p>
@@ -54,7 +54,7 @@ export function DryRunResult({ values, isValid }: Props) {
       {"result" in estimation &&
         "Ok" in estimation.result &&
         (estimation.result.Ok === "Shortened" ? (
-          <Shortened estimation={estimation} />
+          <Fees estimation={estimation} />
         ) : (
           <Deduplicated slug={estimation.result.Ok.Deduplicated.slug} />
         ))}

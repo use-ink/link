@@ -1,13 +1,37 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { Values } from "../types";
-import { useEstimationContext } from "../contexts";
-import { ChangeEvent } from "react";
+import {
+  useEstimationContext,
+  useChain,
+  useAccountsContext,
+  useCallerContext,
+} from "../contexts";
+import { ChangeEvent, useEffect, useState } from "react";
+import { NewUserGuide } from "./NewUserGuide";
 
 export const UrlShortenerForm = () => {
+  const { api } = useChain();
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<Values>();
   const { estimation } = useEstimationContext();
+  const { accounts, shouldAutoConnect, signer } = useAccountsContext();
+  const { caller } = useCallerContext();
+  const [hasFunds, setHasFunds] = useState(false);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      if (!api || !accounts || !caller) {
+        setHasFunds(false);
+        return;
+      }
+      const { freeBalance } = await api.derive.balances.account(caller.address);
+      freeBalance.isEmpty || freeBalance.isZero()
+        ? setHasFunds(false)
+        : setHasFunds(true);
+    };
+    getBalance().catch((e) => console.error(e));
+  }, [api, accounts, caller]);
 
   const isOkToShorten =
     estimation &&
@@ -22,7 +46,7 @@ export const UrlShortenerForm = () => {
           type="text"
           name="url"
           disabled={isSubmitting}
-          placeholder="Url to shorten"
+          placeholder="Paste an URL to get cost estimations"
           onChange={(e: ChangeEvent) => {
             setFieldTouched("url");
             handleChange(e);
@@ -50,12 +74,20 @@ export const UrlShortenerForm = () => {
       <div className="group">
         <button
           type="submit"
-          disabled={isSubmitting || !isOkToShorten || !isValid}
+          disabled={
+            isSubmitting || !isOkToShorten || !isValid || !accounts || !hasFunds
+          }
           name="submit"
         >
           Shorten
         </button>
-        <ErrorMessage name="submit" component="div" className="error-message" />
+      </div>
+      <div className="group">
+        <NewUserGuide
+          hasAccounts={!!accounts && accounts?.length > 0}
+          hasFunds={hasFunds}
+          walletConnected={shouldAutoConnect && !!signer}
+        />
       </div>
     </Form>
   );

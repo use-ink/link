@@ -13,84 +13,78 @@ export const useSubmitHandler = () => {
 
   return async (
     values: Values,
-    { setSubmitting, setStatus, setErrors }: FormikHelpers<Values>
+    { setSubmitting, setStatus }: FormikHelpers<Values>
   ) => {
-    if (!api || !contract || !estimation) return;
+    if (!api || !contract || !estimation || !caller) return;
 
-    if (!caller) {
-      setErrors({
-        alias: "No accounts found. Connect signer extension.",
-      });
-    } else {
-      const injector = await web3FromAddress(caller.address);
-      try {
-        const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
-          contract.tx["shorten"](
-            {
-              gasLimit: new BN(estimation.gasRequired).addn(1),
-              storageDepositLimit: estimation.storageDeposit.asCharge,
-            },
-            { DeduplicateOrNew: values.alias },
-            values.url
-          );
-        const unsub = await tx.signAndSend(
-          caller.address,
-          { signer: injector.signer },
-          async (result) => {
-            const events: UIEvent[] = [];
-            let slug = "";
-            setSubmitting(true);
-
-            if (result.isInBlock) {
-              result.contractEvents?.forEach(({ event, args }) => {
-                slug = args[0].toHuman()?.toString() || "";
-                events.push({
-                  name: event.identifier,
-                  message: `${event.docs.join()}`,
-                });
-              });
-              result.events.forEach(({ event }) => {
-                let message = "";
-                if (event.section === "balances") {
-                  const data = event.data.toHuman() as {
-                    who: string;
-                    amount: string;
-                  };
-
-                  message = `Amount: ${data.amount}`;
-                }
-                event.method !== "ContractEmitted" &&
-                  events.push({
-                    name: `${event.section}:${event.method}`,
-                    message,
-                  });
-              });
-              if (!result.dispatchError) {
-                setStatus({ finalized: true, events, errorMessage: "", slug });
-              } else {
-                let message = "Unknown Error";
-                if (result.dispatchError.isModule) {
-                  const decoded = api.registry.findMetaError(
-                    result.dispatchError.asModule
-                  );
-                  message = `${decoded.section.toUpperCase()}.${
-                    decoded.method
-                  }: ${decoded.docs}`;
-                }
-                setStatus({
-                  finalized: true,
-                  events,
-                  errorMessage: message,
-                });
-              }
-              setSubmitting(false);
-              unsub && unsub();
-            }
-          }
+    const injector = await web3FromAddress(caller.address);
+    try {
+      const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
+        contract.tx["shorten"](
+          {
+            gasLimit: new BN(estimation.gasRequired).addn(1),
+            storageDepositLimit: estimation.storageDeposit.asCharge,
+          },
+          { DeduplicateOrNew: values.alias },
+          values.url
         );
-      } catch (error) {
-        console.error(error);
-      }
+      const unsub = await tx.signAndSend(
+        caller.address,
+        { signer: injector.signer },
+        (result) => {
+          const events: UIEvent[] = [];
+          let slug = "";
+          setSubmitting(true);
+
+          if (result.isInBlock) {
+            result.contractEvents?.forEach(({ event, args }) => {
+              slug = args[0].toHuman()?.toString() || "";
+              events.push({
+                name: event.identifier,
+                message: `${event.docs.join()}`,
+              });
+            });
+            result.events.forEach(({ event }) => {
+              let message = "";
+              if (event.section === "balances") {
+                const data = event.data.toHuman() as {
+                  who: string;
+                  amount: string;
+                };
+
+                message = `Amount: ${data.amount}`;
+              }
+              event.method !== "ContractEmitted" &&
+                events.push({
+                  name: `${event.section}:${event.method}`,
+                  message,
+                });
+            });
+            if (!result.dispatchError) {
+              setStatus({ finalized: true, events, errorMessage: "", slug });
+            } else {
+              let message = "Unknown Error";
+              if (result.dispatchError.isModule) {
+                const decoded = api.registry.findMetaError(
+                  result.dispatchError.asModule
+                );
+                message = `${decoded.section.toUpperCase()}.${
+                  decoded.method
+                }: ${decoded.docs}`;
+              }
+              setStatus({
+                finalized: true,
+                events,
+                errorMessage: message,
+              });
+            }
+            setSubmitting(false);
+            unsub && unsub();
+          }
+        }
+      );
+    } catch (error) {
+      console.error(error);
     }
   };
 };
