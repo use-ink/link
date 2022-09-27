@@ -11,6 +11,8 @@ export const Header = () => {
     disableAutoConnect,
     setAccounts,
     setSigner,
+    signer,
+    accounts,
   } = useAccountsContext();
 
   const { setCaller } = useCallerContext();
@@ -22,9 +24,13 @@ export const Header = () => {
       </div>
 
       <div className="flex items-center justify-end w-60">
-        {shouldAutoConnect ? (
+        {shouldAutoConnect && !!signer ? (
           <>
-            <AccountsDropdown />
+            {accounts && accounts.length > 0 ? (
+              <AccountsDropdown />
+            ) : (
+              <div className="py-1 px-2 mt-6 text-xs">No accounts found. </div>
+            )}
             <button
               onClick={() => {
                 disableAutoConnect();

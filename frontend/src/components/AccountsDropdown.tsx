@@ -13,7 +13,7 @@ export function AccountsDropdown() {
     accounts.length > 0 && setCaller(accounts[0]);
   }, [accounts, setCaller]);
 
-  return accounts && accounts.length > 0 ? (
+  return (
     <div className="fixed top-8 right-16 w-60">
       <Listbox
         value={
@@ -75,5 +75,5 @@ export function AccountsDropdown() {
         </div>
       </Listbox>
     </div>
-  ) : null;
+  );
 }
