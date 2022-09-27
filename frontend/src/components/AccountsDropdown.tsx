@@ -49,22 +49,25 @@ export function AccountsDropdown() {
                   }
                   value={account}
                 >
-                  {({ selected }) => (
-                    <>
-                      <span
-                        className={`block truncate ${
-                          selected ? "font-medium" : "font-normal"
-                        }`}
-                      >
-                        {account.meta.name || account.address}
-                      </span>
-                      {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                  {() => {
+                    const selected = caller?.address === account.address;
+                    return (
+                      <>
+                        <span
+                          className={`block truncate ${
+                            selected ? "font-medium" : "font-normal"
+                          }`}
+                        >
+                          {account.meta.name || account.address}
                         </span>
-                      ) : null}
-                    </>
-                  )}
+                        {selected ? (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        ) : null}
+                      </>
+                    );
+                  }}
                 </Listbox.Option>
               ))}
             </Listbox.Options>
