@@ -6,10 +6,13 @@ import { XCircleIcon } from "@heroicons/react/solid";
 export const Header = () => {
   const {
     enableAutoConnect,
-    loadAccounts,
+    initAccounts,
     shouldAutoConnect,
     disableAutoConnect,
     setAccounts,
+    setSigner,
+    signer,
+    accounts,
   } = useAccountsContext();
 
   const { setCaller } = useCallerContext();
@@ -21,14 +24,19 @@ export const Header = () => {
       </div>
 
       <div className="flex items-center justify-end w-60">
-        {shouldAutoConnect ? (
+        {shouldAutoConnect && !!signer ? (
           <>
-            <AccountsDropdown />
+            {accounts && accounts.length > 0 ? (
+              <AccountsDropdown />
+            ) : (
+              <div className="py-1 px-2 mt-6 text-xs">No accounts found. </div>
+            )}
             <button
               onClick={() => {
                 disableAutoConnect();
                 setAccounts(undefined);
                 setCaller(undefined);
+                setSigner(undefined);
               }}
               className="py-1 px-2 mt-6 text-xs bg-gray-800 bg-opacity-0 text-gray-300 hover:bg-gray-800 hover:bg-opacity-0"
               style={{ position: "relative", left: 4 }}
@@ -44,7 +52,7 @@ export const Header = () => {
           <button
             onClick={() => {
               enableAutoConnect();
-              loadAccounts();
+              initAccounts();
             }}
           >
             Connect

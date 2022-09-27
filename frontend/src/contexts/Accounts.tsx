@@ -6,20 +6,18 @@ import {
   useCallback,
   useContext,
 } from "react";
-import { InjectedAccount } from "../types";
-import {
-  web3Enable,
-  web3Accounts,
-  web3EnablePromise,
-} from "@polkadot/extension-dapp";
+import { InjectedAccount, InjectedExtension } from "../types";
+import { web3Enable, web3Accounts } from "@polkadot/extension-dapp";
 
 type Props = {
   accounts?: InjectedAccount[];
   setAccounts: (a: InjectedAccount[] | undefined) => void;
   enableAutoConnect: () => void;
   disableAutoConnect: () => void;
-  loadAccounts: () => void;
+  initAccounts: () => Promise<void>;
   shouldAutoConnect: boolean;
+  signer?: InjectedExtension;
+  setSigner: (s: InjectedExtension | undefined) => void;
 };
 
 const AccountsContext = createContext<Props | undefined>(undefined);
@@ -30,7 +28,7 @@ async function getExtension() {
 }
 
 function checkAutoConnect() {
-  return localStorage.getItem("link-autoconnect");
+  return localStorage.getItem("link-autoconnect") === null ? false : true;
 }
 
 function enableAutoConnect() {
@@ -43,26 +41,29 @@ function disableAutoConnect() {
   if (stored) localStorage.removeItem("link-autoconnect");
 }
 
-const getAccounts = async () => {
-  return await web3Accounts();
-};
-
 function AccountsProvider({ children }: { children: ReactNode }) {
   const [accounts, setAccounts] = useState<InjectedAccount[]>();
-  const shouldAutoConnect = checkAutoConnect();
+  const [signer, setSigner] = useState<InjectedExtension>();
+  let shouldAutoConnect = checkAutoConnect();
 
-  const loadAccounts = useCallback(() => {
-    !web3EnablePromise && getExtension();
-    getAccounts().then((acc) => setAccounts(acc));
-  }, []);
+  const initAccounts = useCallback(async () => {
+    if (!signer) {
+      const s = await getExtension();
+      setSigner(s);
+    } else {
+      const acc = await web3Accounts();
+      setAccounts(acc);
+    }
+  }, [signer]);
 
   useEffect(() => {
     if (shouldAutoConnect) {
-      loadAccounts();
+      initAccounts().catch((e) => console.error(e));
     } else {
       setAccounts(undefined);
+      setSigner(undefined);
     }
-  }, [loadAccounts, shouldAutoConnect]);
+  }, [initAccounts, shouldAutoConnect, signer]);
 
   return (
     <AccountsContext.Provider
@@ -70,9 +71,11 @@ function AccountsProvider({ children }: { children: ReactNode }) {
         accounts,
         setAccounts,
         enableAutoConnect,
-        loadAccounts,
-        shouldAutoConnect: shouldAutoConnect ? true : false,
+        initAccounts,
+        shouldAutoConnect,
         disableAutoConnect,
+        setSigner,
+        signer,
       }}
     >
       {children}

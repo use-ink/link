@@ -1,7 +1,7 @@
 import linkLogo from "../link-logo.svg";
 import { Formik } from "formik";
 import { initialValues, UrlShortenerSchema } from "../const";
-import { useSubmitHandler } from "../util";
+import { useSubmitHandler } from "../hooks";
 import { UrlShortenerForm } from "./Form";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
