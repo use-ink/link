@@ -165,6 +165,9 @@ h1 {
 .group {
   @apply relative pb-7
 }
+.group:last-child {
+  @apply relative pb-2
+}
 
 .ui-event {
  @apply border-b border-gray-700 pb-2 mb-2

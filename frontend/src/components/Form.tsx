@@ -82,7 +82,7 @@ export const UrlShortenerForm = () => {
           Shorten
         </button>
       </div>
-      {estimation?.error && (
+      {estimation?.error && isValid && (
         <div className="text-xs text-left mb-2 text-red-500">
           {estimation.error.message}
         </div>

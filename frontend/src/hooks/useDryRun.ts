@@ -82,9 +82,15 @@ function useDryRun() {
             storageDeposit,
             partialFee,
             result: decodedOutput,
-            error: { message: "Slug unavailable. Try something else!" },
+            error: {
+              message:
+                decodedOutput.Err === "SlugTooShort"
+                  ? "The supplied slug is too short."
+                  : "Slug unavailable. Try something else.",
+            },
           };
         }
+
         return {
           gasRequired,
           storageDeposit,
