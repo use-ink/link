@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@headlessui/react": "^1.7.2",
+    "@headlessui/react": "^1.7.3",
     "@heroicons/react": "1.0.6",
     "@polkadot/api": "^9.4.2",
     "@polkadot/api-contract": "^9.4.2",
