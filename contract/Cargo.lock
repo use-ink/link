@@ -303,9 +303,9 @@ dependencies = [
 
 [[package]]
 name = "ink_prelude"
-version = "3.3.1"
+version = "3.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e38d71af62cfec3425727d28665a947d636c3be6ae71ac3a79868ef8a08633f3"
+checksum = "1f031e6b8495594a7288b089bf4122e76c26b994959d1b2b693bdfe846b14c0e"
 dependencies = [
  "cfg-if",
 ]
