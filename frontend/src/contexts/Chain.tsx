@@ -1,8 +1,10 @@
-import { ApiPromise, WsProvider } from "@polkadot/api";
+import { ScProvider, WellKnownChain } from "@polkadot/rpc-provider/substrate-connect";
+import { ApiPromise } from "@polkadot/api";
 import { Abi, ContractPromise } from "@polkadot/api-contract";
 import * as React from "react";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { endpoint, contractAddress } from "../const";
+import jsonParachainSpec from '../chainspec.json';
 import metadata from "../metadata.json";
 
 const ChainContext = React.createContext<
@@ -14,8 +16,12 @@ function ChainProvider({ children }: PropsWithChildren<{ api?: ApiPromise }>) {
   const [contract, setContract] = useState<ContractPromise>();
 
   useEffect(() => {
-    const wsProvider = new WsProvider(endpoint);
-    ApiPromise.create({ provider: wsProvider }).then((api) => setApi(api));
+    const relayProvider = new ScProvider(WellKnownChain.rococo_v2_2);
+    const parachainSpec = JSON.stringify(jsonParachainSpec);
+    const provider = new ScProvider(parachainSpec, relayProvider);
+    provider.connect()
+        .then(() =>
+            ApiPromise.create({ provider }).then((api) => setApi(api)));
   }, []);
 
   useEffect(() => {
