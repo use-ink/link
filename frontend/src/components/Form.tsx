@@ -92,6 +92,7 @@ export const UrlShortenerForm = () => {
           hasAccounts={!!accounts && accounts?.length > 0}
           hasFunds={hasFunds}
           walletConnected={shouldAutoConnect && !!signer}
+          address={caller?.address}
         />
       </div>
     </Form>

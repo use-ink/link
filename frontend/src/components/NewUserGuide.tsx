@@ -2,10 +2,12 @@ export const NewUserGuide = ({
   hasAccounts,
   hasFunds,
   walletConnected,
+  address,
 }: {
   hasAccounts: boolean;
   hasFunds: boolean;
   walletConnected: boolean;
+  address: string | null | undefined
 }) => {
   return (
     <div className="user-guide">
@@ -47,7 +49,7 @@ export const NewUserGuide = ({
           </div>
           <div>
             {" "}
-            <code>!drip YOUR_SS_58_ADDRESS:1002</code>
+            <code>!drip {address ?? "YOUR_SS_58_ADDRESS"}:1002</code>
           </div>
         </>
       )}
