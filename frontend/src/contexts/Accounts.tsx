@@ -24,7 +24,7 @@ const AccountsContext = createContext<Props | undefined>(undefined);
 
 async function getExtension() {
   const extensions = await web3Enable("link-url-shortener");
-  return extensions.find((e) => e.name === "polkadot-js");
+  return extensions.find((e) => e.name === "polkadot-js" || e.name === "talisman");
 }
 
 function checkAutoConnect() {
