@@ -8,7 +8,7 @@
     "@polkadot/api": "^9.5.1",
     "@polkadot/api-contract": "^9.5.1",
     "@polkadot/extension-dapp": "^0.44.6",
-    "@polkadot/ui-keyring": "^2.9.11",
+    "@polkadot/ui-keyring": "^2.9.15",
     "bn.js": "^5.2.1",
     "formik": "^2.2.9",
     "nanoid": "^4.0.0",
