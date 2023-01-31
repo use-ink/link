@@ -19,10 +19,7 @@ use ink_lang as ink;
 #[ink::contract]
 mod link {
     use ink_prelude::vec::Vec;
-    use ink_storage::{
-        traits::SpreadAllocate,
-        Mapping,
-    };
+    use ink_storage::{traits::SpreadAllocate, Mapping};
 
     /// Slugs shorter than this are rejected by [`shorten`].
     const MIN_SLUG_LENGTH: usize = 5;
@@ -158,7 +155,7 @@ mod link {
                         slug: slug.clone(),
                         url,
                     });
-                    return Ok(ShorteningOutcome::Deduplicated { slug })
+                    return Ok(ShorteningOutcome::Deduplicated { slug });
                 }
                 (SlugCreationMode::Deduplicate, None) => return Err(Error::UrlNotFound),
                 (
@@ -170,10 +167,10 @@ mod link {
 
             // No dedup: Insert new slug
             if slug.len() < MIN_SLUG_LENGTH {
-                return Err(Error::SlugTooShort)
+                return Err(Error::SlugTooShort);
             }
             if self.urls.insert_return_size(&slug, &url).is_some() {
-                return Err(Error::SlugUnavailable)
+                return Err(Error::SlugUnavailable);
             }
             self.slugs.insert(&url, &slug);
             self.env().emit_event(Shortened { slug, url });
@@ -198,7 +195,7 @@ mod link {
                 .map(|id| id != self.env().caller())
                 .unwrap_or(true)
             {
-                return Err(Error::UpgradeDenied)
+                return Err(Error::UpgradeDenied);
             }
             ink_env::set_code_hash(&code_hash).map_err(|_| Error::UpgradeFailed)
         }
