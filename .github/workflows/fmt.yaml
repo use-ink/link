@@ -15,6 +15,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       working-directory: ./contract
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
     steps:
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@b2417cde72dcf67f306c0ae8e0828a81bf0b189f # v1.0.7
