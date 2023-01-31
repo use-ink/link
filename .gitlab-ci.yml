@@ -22,6 +22,7 @@ variables:
   RUST_LIB_BACKTRACE:              "0"
   RUST_LOG:                        "info"
   CI_IMAGE:                        "paritytech/ink-waterfall-ci:latest"
+  RUSTC_WRAPPER:                   ""
 
 
 .default-refs:
@@ -40,14 +41,14 @@ variables:
   - cargo +nightly --version
   - bash --version
 
-.kubernetes-env:                   &kubernetes-env
+.docker-env:                        &docker-env
   image:                           "${CI_IMAGE}"
   tags:
-    - kubernetes-parity-build
+    - linux-docker-vm-c2
 
 check-contract:
   stage:                           build
-  <<:                              *kubernetes-env
+  <<:                              *docker-env
   script:
     - *rust-info-script
     - cd contract/
