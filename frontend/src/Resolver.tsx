@@ -5,15 +5,17 @@ import "./App.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { dryRunCallerAddress } from "./const";
 import { Loader } from "./components";
-import { useChain } from "./contexts";
+import { useLinkContract } from "./contexts";
 import { getReturnTypeName } from "./helpers";
+import { useApi } from "useink";
 
 const Resolver = () => {
   const params = useParams();
   const navigate = useNavigate();
   const { slug } = params;
   const [resolvedUrl, setResolvedUrl] = useState<string>("");
-  const { api, contract } = useChain();
+  const { api } = useApi();
+  const { contract } = useLinkContract();
 
   useEffect(() => {
     resolvedUrl && window.location.replace(resolvedUrl);

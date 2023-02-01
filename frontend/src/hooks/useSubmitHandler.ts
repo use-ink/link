@@ -3,20 +3,22 @@ import { Values, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
-import { useCallerContext, useChain, useEstimationContext } from "../contexts";
+import { useEstimationContext, useLinkContract } from "../contexts";
+import { useApi, useExtension } from "useink";
 
 export const useSubmitHandler = () => {
-  const { api, contract } = useChain();
+  const { api } = useApi();
+  const { account } = useExtension();
+  const { contract } = useLinkContract();
   const { estimation } = useEstimationContext();
-  const { caller } = useCallerContext();
 
   return async (
     values: Values,
     { setSubmitting, setStatus }: FormikHelpers<Values>
   ) => {
-    if (!api || !contract || !estimation || !caller) return;
+    if (!api || !contract || !estimation || !account) return;
 
-    const injector = await web3FromAddress(caller.address);
+    const injector = await web3FromAddress(account.address);
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
         contract.tx["shorten"](
@@ -28,7 +30,7 @@ export const useSubmitHandler = () => {
           values.url
         );
       const unsub = await tx.signAndSend(
-        caller.address,
+        account.address,
         { signer: injector.signer },
         (result) => {
           const events: UIEvent[] = [];
