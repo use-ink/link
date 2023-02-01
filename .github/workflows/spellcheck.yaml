@@ -21,7 +21,7 @@ jobs:
     container:
       image: "paritytech/ink-waterfall-ci:latest"
       volumes:
-        - my_docker_volume:/volume_mount
+        - ./:/volume_mount
     steps:
       - name: Run spellcheck
         shell: bash
