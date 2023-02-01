@@ -13,11 +13,14 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
     runs-on: ${{ matrix.os }}
+    env:
+      working-directory: ./contract
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
     container:
       image: "paritytech/ink-waterfall-ci:latest"
     steps:
       - name: Run spellcheck
         shell: bash
-        env:
-          working-directory: ./contract
         run: cargo spellcheck check -vvvv --cfg=.config/cargo_spellcheck.toml --checkers hunspell --code 1
