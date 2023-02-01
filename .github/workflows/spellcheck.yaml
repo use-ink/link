@@ -15,9 +15,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     # env:
     #   working-directory: ./contract
-    defaults:
-      run:
-        working-directory: ${{ env.working-directory }}
+    # defaults:
+    #   run:
+    #     working-directory: ${{ env.working-directory }}
     container:
       image: "paritytech/ink-waterfall-ci:latest"
       volumes:
