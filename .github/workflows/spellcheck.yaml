@@ -26,5 +26,7 @@ jobs:
       - name: Run spellcheck
         shell: bash
         run: |
-          cd /volume_mount/contract
+          ls -la
+          pwd
+          cd ./contract
           cargo spellcheck check -vvvv --cfg=.config/cargo_spellcheck.toml --checkers hunspell --code 1
