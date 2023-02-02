@@ -1,9 +1,12 @@
-import type { StorageDeposit, Balance } from "@polkadot/types/interfaces";
-import type { u64 } from "@polkadot/types";
+import type {
+  StorageDeposit,
+  Balance,
+  WeightV2,
+} from "@polkadot/types/interfaces";
 import { web3Accounts, web3Enable } from "@polkadot/extension-dapp";
 
 export type Estimation = {
-  gasRequired: u64;
+  gasRequired: WeightV2;
   storageDeposit: StorageDeposit;
   partialFee: Balance;
   result: ShorteningResult;
