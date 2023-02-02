@@ -52,6 +52,6 @@ jobs:
         shell: bash
         run: |
           cd ./contract
-          cargo add ink
-          cargo +nightly add ink
+          cargo add --git https://github.com/paritytech/ink --tag 3.4.0
+          cargo +nightly add --git https://github.com/paritytech/ink --tag 3.4.0
           cargo +nightly contract check
