@@ -21,4 +21,4 @@ jobs:
         shell: bash
         run: |
           cd ./contract
-          cargo clippy --verbose --no-default-features --target wasm32-unknown-unknown -- -D warnings
+          cargo +nightly clippy --verbose --no-default-features --target wasm32-unknown-unknown -- -D warnings
