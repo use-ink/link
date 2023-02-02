@@ -13,6 +13,8 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
     runs-on: ${{ matrix.os }}
+    env:
+      RUSTC_WRAPPER: ""
     container:
       image: "paritytech/ink-waterfall-ci:latest"
     steps:
