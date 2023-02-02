@@ -6,7 +6,7 @@ import type { Registry, TypeDef } from "@polkadot/types/types";
 import type { AbiMessage } from "@polkadot/api-contract/types";
 import { ShorteningResult } from "../types";
 
-function getReturnTypeName(type: TypeDef | null | undefined) {
+export function getReturnTypeName(type: TypeDef | null | undefined) {
   return type?.lookupName || type?.type || "";
 }
 

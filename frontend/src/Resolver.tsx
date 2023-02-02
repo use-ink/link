@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import type { ContractExecResult } from "@polkadot/types/interfaces";
+import { hexToString } from "@polkadot/util";
 import "./App.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { dryRunCallerAddress } from "./const";
 import { Loader } from "./components";
 import { useChain } from "./contexts";
+import { getReturnTypeName } from "./helpers";
 
 const Resolver = () => {
   const params = useParams();
@@ -18,23 +21,42 @@ const Resolver = () => {
 
   useEffect(() => {
     if (!api || !contract || !slug) return;
-    contract.query["resolve"](
-      dryRunCallerAddress,
-      { gasLimit: -1, storageDepositLimit: null },
-      slug
-    ).then(({ result, output }) => {
-      if (result.isErr && result.asErr.isModule) {
-        const decoded = api.registry.findMetaError(result.asErr.asModule);
-        console.error(
-          `${decoded.section.toUpperCase()}.${decoded.method}: ${decoded.docs}`
-        );
-      }
-      if (result.isOk) {
-        const url = output?.toHuman()?.toString() || "";
-        setResolvedUrl(url);
-      }
-    });
+    const message = contract.abi.findMessage("resolve");
+    const inputData = message.toU8a([slug]);
+    api.call.contractsApi
+      .call<ContractExecResult>(
+        dryRunCallerAddress,
+        contract.address,
+        0,
+        null,
+        null,
+        inputData
+      )
+      .then(({ result }) => {
+        if (result.isErr && result.asErr.isModule) {
+          const decoded = api.registry.findMetaError(result.asErr.asModule);
+          console.error(
+            `${decoded.section.toUpperCase()}.${decoded.method}: ${
+              decoded.docs
+            }`
+          );
+        }
+        if (result.isOk) {
+          const returnTypeName = getReturnTypeName(message.returnType);
+          const r = (
+            message.returnType
+              ? contract.registry
+                  .createTypeUnsafe(returnTypeName, [result.asOk.data])
+                  .toHuman()
+              : "()"
+          ) as string;
+          const url = hexToString(r);
+          const sanitized = url.substring(url.indexOf("http"));
+          setResolvedUrl(sanitized);
+        }
+      });
   }, [api, contract, slug]);
+
   return (
     <div className="App">
       <Loader message={resolvedUrl ? `Redirecting to ${resolvedUrl}` : ""} />
