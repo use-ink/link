@@ -50,6 +50,6 @@ jobs:
       - name: Run contract check
         shell: bash
         run: |
-          cargo add ink --git https://github.com/paritytech/ink --tag v3.4.0
-          cargo +nightly add ink --git https://github.com/paritytech/ink --tag v3.4.0
+          cargo add ink_env --git https://github.com/paritytech/ink --tag v3.4.0
+          cargo +nightly add ink_env --git https://github.com/paritytech/ink --tag v3.4.0
           cargo +nightly contract check
