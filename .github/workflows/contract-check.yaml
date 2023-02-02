@@ -13,10 +13,9 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
     runs-on: ${{ matrix.os }}
-    env:
-      RUSTC_WRAPPER: ""
-    container:
-      image: "paritytech/ink-waterfall-ci:latest"
+    defaults:
+      run:
+        working-directory: contract
     steps:
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@b2417cde72dcf67f306c0ae8e0828a81bf0b189f # v1.0.7
@@ -51,7 +50,6 @@ jobs:
       - name: Run contract check
         shell: bash
         run: |
-          cd ./contract
-          cargo add --git https://github.com/paritytech/ink --tag v3.4.0
-          cargo +nightly add --git https://github.com/paritytech/ink --tag v3.4.0
+          cargo add ink --git https://github.com/paritytech/ink --tag v3.4.0
+          cargo +nightly add ink --git https://github.com/paritytech/ink --tag v3.4.0
           cargo +nightly contract check
