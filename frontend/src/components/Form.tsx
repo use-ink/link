@@ -34,6 +34,7 @@ export const UrlShortenerForm = () => {
   }, [api, accounts, caller]);
 
   const isOkToShorten =
+    !isEstimating &&
     estimation &&
     "result" in estimation &&
     "Ok" in estimation.result &&

@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import type { DispatchError } from "@polkadot/types/interfaces";
+import type {
+  DispatchError,
+  ContractExecResult,
+} from "@polkadot/types/interfaces";
 import { dryRunCallerAddress } from "../const";
 import { useCallerContext, useChain } from "../contexts";
-import { Estimation, ShorteningResult } from "../types";
+import { Estimation } from "../types";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
+import { getDecodedOutput } from "../helpers";
 
 function decodeError(error: DispatchError, api: ApiPromise) {
   let message = "Unknown dispacth error";
@@ -44,17 +48,24 @@ function useDryRun() {
     ): Promise<Estimation | undefined> {
       try {
         if (!api || !contract) return;
+        const message = contract.abi.findMessage("shorten");
+        const inputData = message.toU8a(params);
 
-        const { storageDeposit, gasRequired, result, output } =
-          await contract.query["shorten"](
-            dryRunCallerAddress,
-            { gasLimit: -1 },
-            ...params
+        const { storageDeposit, gasRequired, result } =
+          await api.call.contractsApi.call<ContractExecResult>(
+            caller?.address,
+            contract.address,
+            0,
+            null,
+            null,
+            inputData
           );
 
-        const decodedOutput = (output?.toHuman() ?? {
-          Err: "",
-        }) as ShorteningResult;
+        const decodedOutput = getDecodedOutput(
+          result,
+          message.returnType,
+          contract.abi.registry
+        );
 
         const tx = contract.tx["shorten"](
           {
@@ -71,12 +82,12 @@ function useDryRun() {
             gasRequired,
             storageDeposit,
             partialFee,
-            result: decodedOutput,
+            result: decodedOutput!,
             error: { message: decodeError(result.asErr, api) },
           };
         }
 
-        if (result.isOk && "Err" in decodedOutput) {
+        if (result.isOk && decodedOutput && "Err" in decodedOutput) {
           return {
             gasRequired,
             storageDeposit,
@@ -95,7 +106,7 @@ function useDryRun() {
           gasRequired,
           storageDeposit,
           partialFee,
-          result: decodedOutput,
+          result: decodedOutput!,
           error: balance?.lt(storageDeposit.asCharge)
             ? { message: "Insufficient funds!" }
             : undefined,
@@ -104,7 +115,7 @@ function useDryRun() {
         console.error(e);
       }
     },
-    [api, balance, contract]
+    [api, balance, caller?.address, contract]
   );
   return estimate;
 }
