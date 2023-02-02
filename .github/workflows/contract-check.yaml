@@ -52,4 +52,6 @@ jobs:
         shell: bash
         run: |
           cd ./contract
+          cargo add ink
+          cargo +nightly add ink
           cargo +nightly contract check
