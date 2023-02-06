@@ -38,8 +38,6 @@ export function DryRunResult({ values, isValid }: Props) {
     setIsEstimating(true);
 
     async function getOutcome() {
-      console.log("get");
-
       if (!isValid) return;
       const params = [{ deduplicateornew: values.alias }, values.url];
       const e = await estimate(params);

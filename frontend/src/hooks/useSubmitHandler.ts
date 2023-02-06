@@ -1,4 +1,3 @@
-import { BN } from "bn.js";
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import { Values, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
@@ -22,7 +21,7 @@ export const useSubmitHandler = () => {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
         contract.tx["shorten"](
           {
-            gasLimit: new BN(estimation.gasRequired).addn(1),
+            gasLimit: estimation.gasRequired,
             storageDepositLimit: estimation.storageDeposit.asCharge,
           },
           { DeduplicateOrNew: values.alias },
