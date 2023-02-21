@@ -9,7 +9,7 @@ interface Props {
   isValid: boolean;
 }
 
-export function Fees({ estimation }: { estimation: Estimation }) {
+function Fees({ estimation }: { estimation: Estimation }) {
   return (
     <>
       <p>storage deposit: {estimation.storageDeposit.asCharge.toHuman()}</p>
@@ -65,8 +65,8 @@ export function DryRunResult({ values, isValid }: Props) {
   return estimation ? (
     <div className="estimations">
       <div>
-        {"Ok" in estimation.result &&
-        typeof estimation.result.Ok === "object" ? (
+        {estimation.result && "Ok" in estimation.result &&
+          typeof estimation.result.Ok === "object" ? (
           <Deduplicated slug={estimation.result.Ok.Deduplicated.slug} />
         ) : (
           <Fees estimation={estimation} />
