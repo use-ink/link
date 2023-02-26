@@ -14,15 +14,10 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use ink_lang as ink;
-
 #[ink::contract]
 mod link {
-    use ink_prelude::vec::Vec;
-    use ink_storage::{
-        traits::SpreadAllocate,
-        Mapping,
-    };
+
+    use ink::{prelude::vec::Vec, storage::Mapping};
 
     /// Slugs shorter than this are rejected by [`shorten`].
     const MIN_SLUG_LENGTH: usize = 5;
@@ -47,7 +42,6 @@ mod link {
 
     /// The in-storage representation of this contract.
     #[ink(storage)]
-    #[derive(SpreadAllocate)]
     pub struct Link {
         /// Needed in order to resolve slugs to URLs.
         urls: Mapping<Slug, Url>,
@@ -59,7 +53,10 @@ mod link {
 
     /// The error type used for all messages.
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    #[cfg_attr(
+        feature = "std",
+        derive(::scale_info::TypeInfo, ink::storage::traits::StorageLayout)
+    )]
     pub enum Error {
         /// The slug is already in use for another URL.
         SlugUnavailable,
@@ -75,7 +72,10 @@ mod link {
 
     /// Used by users to specify whether an URL should be de-duplicated.
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    #[cfg_attr(
+        feature = "std",
+        derive(::scale_info::TypeInfo, ink::storage::traits::StorageLayout)
+    )]
     pub enum SlugCreationMode {
         /// Always create a new slug even if the URL was already shortened.
         New(Slug),
@@ -87,7 +87,10 @@ mod link {
 
     /// Specifies the outcome of a [`shorten`] message.
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    #[cfg_attr(
+        feature = "std",
+        derive(::scale_info::TypeInfo, ink::storage::traits::StorageLayout)
+    )]
     pub enum ShorteningOutcome {
         /// A new mapping from the supplied slug was created.
         Shortened,
@@ -125,9 +128,12 @@ mod link {
         /// constructor.
         #[ink(constructor)]
         pub fn default() -> Self {
-            ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.upgrader = Some(contract.env().caller());
-            })
+            let caller = Self::env().caller();
+            Self {
+                urls: Mapping::default(),
+                slugs: Mapping::default(),
+                upgrader: Some(caller),
+            }
         }
 
         /// Construct a new contract and don't set an upgrader.
@@ -136,9 +142,11 @@ mod link {
         /// unstoppable.
         #[ink(constructor)]
         pub fn unstoppable() -> Self {
-            ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.upgrader = None;
-            })
+            Self {
+                urls: Mapping::default(),
+                slugs: Mapping::default(),
+                upgrader: None,
+            }
         }
 
         /// Create a a new mapping or use an existing one.
@@ -158,7 +166,7 @@ mod link {
                         slug: slug.clone(),
                         url,
                     });
-                    return Ok(ShorteningOutcome::Deduplicated { slug })
+                    return Ok(ShorteningOutcome::Deduplicated { slug });
                 }
                 (SlugCreationMode::Deduplicate, None) => return Err(Error::UrlNotFound),
                 (
@@ -170,10 +178,11 @@ mod link {
 
             // No dedup: Insert new slug
             if slug.len() < MIN_SLUG_LENGTH {
-                return Err(Error::SlugTooShort)
+                return Err(Error::SlugTooShort);
             }
-            if self.urls.insert_return_size(&slug, &url).is_some() {
-                return Err(Error::SlugUnavailable)
+
+            if self.urls.insert(&slug, &url).is_some() {
+                return Err(Error::SlugUnavailable);
             }
             self.slugs.insert(&url, &slug);
             self.env().emit_event(Shortened { slug, url });
@@ -198,9 +207,128 @@ mod link {
                 .map(|id| id != self.env().caller())
                 .unwrap_or(true)
             {
-                return Err(Error::UpgradeDenied)
+                return Err(Error::UpgradeDenied);
             }
-            ink_env::set_code_hash(&code_hash).map_err(|_| Error::UpgradeFailed)
+            ink::env::set_code_hash(&code_hash).map_err(|_| Error::UpgradeFailed)
+        }
+
+        /// Get contract account owner
+        #[ink(message)]
+        pub fn contract_owner(&self) -> Option<AccountId> {
+            self.upgrader
+        }
+    }
+
+    /// This is how you'd write end-to-end (E2E) or integration tests for ink! contracts.
+    ///
+    /// When running these you need to make sure that you:
+    /// - Compile the tests with the `e2e-tests` feature flag enabled (`--features e2e-tests`)
+    /// - Are running a Substrate node which contains `pallet-contracts` in the background
+    #[cfg(all(test, feature = "e2e-tests"))]
+    mod e2e_tests {
+        /// Imports all the definations from the outer scope so we can use theme here.
+        use super::*;
+
+        /// A helper function used for calling contract message
+        use ink_e2e::build_message;
+
+        /// The End-to-End test `Result` type.
+        type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+
+        /// We test that we can upload and instantiate the contract using its default constructor.
+        #[ink_e2e::test]
+        async fn default_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
+            // Given
+            let constructor = LinkRef::default();
+
+            // When
+            let contract_account_id = client
+                .instantiate("link", &ink_e2e::alice(), constructor, 0, None)
+                .await
+                .expect("instantiate failed")
+                .account_id;
+
+            // Then
+            let get_owner = build_message::<LinkRef>(contract_account_id.clone())
+                .call(|contract| contract.contract_owner());
+            let get_owner_result = client
+                .call_dry_run(&ink_e2e::alice(), &get_owner, 0, None)
+                .await;
+
+            // Check the owner
+            assert_eq!(
+                get_owner_result.return_value(),
+                Some(ink_e2e::account_id(ink_e2e::AccountKeyring::Alice))
+            );
+
+            Ok(())
+        }
+
+        #[ink_e2e::test]
+        async fn unstoppable_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
+            // Given
+            let constructor = LinkRef::unstoppable();
+
+            // When
+            let contract_account_id = client
+                .instantiate("link", &ink_e2e::alice(), constructor, 0, None)
+                .await
+                .expect("instantiate failed")
+                .account_id;
+
+            // Then
+            let get_owner = build_message::<LinkRef>(contract_account_id.clone())
+                .call(|contract| contract.contract_owner());
+            let get_owner_result = client
+                .call_dry_run(&ink_e2e::alice(), &get_owner, 0, None)
+                .await;
+
+            // Check the owner
+            assert_eq!(get_owner_result.return_value(), None,);
+
+            Ok(())
+        }
+
+        #[ink_e2e::test]
+        async fn shorten_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
+            // Given
+            let constructor = LinkRef::default();
+
+            // When
+            let contract_account_id = client
+                .instantiate("link", &ink_e2e::alice(), constructor, 0, None)
+                .await
+                .expect("instantiate failed")
+                .account_id;
+
+            // Given
+            let new_slug = "new shorten".to_string();
+            let new_url = "https://docs.imperva.com/bundle/on-premises-knowledgebase-reference-guide/page/abnormally_long_url.htm";
+
+            let create_shorten = build_message::<LinkRef>(contract_account_id.clone())
+                .call(|contract| {
+                    contract.shorten(
+                        SlugCreationMode::New(new_slug.clone().into()),
+                        new_url.into(),
+                    )
+                });
+            let _ = client
+                .call(&ink_e2e::alice(), create_shorten, 0, None)
+                .await
+                .expect("create shorten failed");
+
+            // Then
+            let get_resolve = build_message::<LinkRef>(contract_account_id.clone())
+                .call(|contract| contract.resolve(new_slug.clone().into()));
+
+            let get_resolve_result = client
+                .call_dry_run(&ink_e2e::alice(), &get_resolve, 0, None)
+                .await;
+
+            // Resolve a slug to its mapped URL
+            assert_eq!(get_resolve_result.return_value(), Some(new_url.into()));
+
+            Ok(())
         }
     }
 }
