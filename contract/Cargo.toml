@@ -7,7 +7,7 @@ publish = false
 
 [dependencies]
 ink_primitives = { version = "3", default-features = false }
-ink_metadata = { version = "3", default-features = false, features = ["derive"], optional = true }
+ink_metadata = { version = "4", default-features = false, features = ["derive"], optional = true }
 ink_env = { version = "3", default-features = false }
 ink_storage = { version = "3", default-features = false }
 ink_lang = { version = "3", default-features = false }
