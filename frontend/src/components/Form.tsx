@@ -1,37 +1,19 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { Values } from "../types";
-import {
-  useEstimationContext,
-  useChain,
-  useAccountsContext,
-  useCallerContext,
-} from "../contexts";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEstimationContext } from "../contexts";
+import { ChangeEvent } from "react";
 import { NewUserGuide } from "./NewUserGuide";
+import { useBalance, useExtension } from "useink";
 
 export const UrlShortenerForm = () => {
-  const { api } = useChain();
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<Values>();
   const { estimation, isEstimating } = useEstimationContext();
-  const { accounts, shouldAutoConnect, signer } = useAccountsContext();
-  const { caller } = useCallerContext();
-  const [hasFunds, setHasFunds] = useState(false);
-
-  useEffect(() => {
-    const getBalance = async () => {
-      if (!api || !accounts || !caller) {
-        setHasFunds(false);
-        return;
-      }
-      const { freeBalance } = await api.derive.balances.account(caller.address);
-      freeBalance.isEmpty || freeBalance.isZero()
-        ? setHasFunds(false)
-        : setHasFunds(true);
-    };
-    getBalance().catch((e) => console.error(e));
-  }, [api, accounts, caller]);
+  const { account, accounts } = useExtension();
+  const balance = useBalance(account);
+  const hasFunds =
+    !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
 
   const isOkToShorten =
     !isEstimating &&
@@ -90,9 +72,9 @@ export const UrlShortenerForm = () => {
       )}
       <div className="group">
         <NewUserGuide
-          hasAccounts={!!accounts && accounts?.length > 0}
+          hasAccounts={!!accounts && accounts.length > 0}
           hasFunds={hasFunds}
-          walletConnected={shouldAutoConnect && !!signer}
+          walletConnected={!!account}
         />
       </div>
     </Form>

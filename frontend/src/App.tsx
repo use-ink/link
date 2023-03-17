@@ -2,28 +2,20 @@ import "./App.css";
 import Resolver from "./Resolver";
 import { Routes, Route } from "react-router-dom";
 import { FormContainer, Loader } from "./components";
-import {
-  AccountsProvider,
-  CallerProvider,
-  EstimationProvider,
-  useChain,
-} from "./contexts";
+import { useApi } from "useink";
+import { EstimationProvider } from "./contexts";
 
 function App() {
-  const { api } = useChain();
+  const { api } = useApi();
 
   return api ? (
     <Routes>
       <Route
         index
         element={
-          <AccountsProvider>
-            <CallerProvider>
-              <EstimationProvider>
-                <FormContainer />
-              </EstimationProvider>
-            </CallerProvider>
-          </AccountsProvider>
+          <EstimationProvider>
+            <FormContainer />
+          </EstimationProvider>
         }
       />
       <Route path=":slug" element={<Resolver />} />

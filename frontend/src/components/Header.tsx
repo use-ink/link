@@ -1,21 +1,10 @@
 import logo from "../logo.svg";
 import { AccountsDropdown } from "./AccountsDropdown";
-import { useAccountsContext, useCallerContext } from "../contexts";
 import { XCircleIcon } from "@heroicons/react/solid";
+import { useExtension } from "useink";
 
 export const Header = () => {
-  const {
-    enableAutoConnect,
-    initAccounts,
-    shouldAutoConnect,
-    disableAutoConnect,
-    setAccounts,
-    setSigner,
-    signer,
-    accounts,
-  } = useAccountsContext();
-
-  const { setCaller } = useCallerContext();
+  const { account, accounts, connect, disconnect } = useExtension();
 
   return (
     <div className="flex justify-between w-full px-8 py-4">
@@ -24,7 +13,7 @@ export const Header = () => {
       </div>
 
       <div className="flex items-center justify-end w-60">
-        {shouldAutoConnect && !!signer ? (
+        {account ? (
           <>
             {accounts && accounts.length > 0 ? (
               <AccountsDropdown />
@@ -32,14 +21,8 @@ export const Header = () => {
               <div className="py-1 px-2 mt-6 text-xs">No accounts found. </div>
             )}
             <button
-              onClick={() => {
-                disableAutoConnect();
-                setAccounts(undefined);
-                setCaller(undefined);
-                setSigner(undefined);
-              }}
-              className="py-1 px-2 mt-6 text-xs bg-gray-800 bg-opacity-0 text-gray-300 hover:bg-gray-800 hover:bg-opacity-0"
-              style={{ position: "relative", left: 4 }}
+              onClick={disconnect}
+              className="py-1 px-2 mt-6 text-xs bg-gray-800 bg-opacity-0 text-gray-300 hover:bg-gray-800 hover:bg-opacity-0 relative left-[4px]"
               title="disconnect extension"
             >
               <XCircleIcon
@@ -49,14 +32,7 @@ export const Header = () => {
             </button>
           </>
         ) : (
-          <button
-            onClick={() => {
-              enableAutoConnect();
-              initAccounts();
-            }}
-          >
-            Connect
-          </button>
+          <button onClick={() => connect()}>Connect</button>
         )}
       </div>
     </div>

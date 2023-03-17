@@ -4,11 +4,12 @@ import type {
   ContractExecResult,
 } from "@polkadot/types/interfaces";
 import { dryRunCallerAddress } from "../const";
-import { useCallerContext, useChain } from "../contexts";
 import { Estimation } from "../types";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { getDecodedOutput } from "../helpers";
+import { useApi, useExtension } from "useink";
+import { useLinkContract } from "../contexts";
 
 function decodeError(error: DispatchError, api: ApiPromise) {
   let message = "Unknown dispacth error";
@@ -29,18 +30,21 @@ function decodeError(error: DispatchError, api: ApiPromise) {
 }
 
 function useDryRun() {
-  const { caller } = useCallerContext();
-  const { api, contract } = useChain();
+  const { account } = useExtension();
+  const { api } = useApi();
+  const { contract } = useLinkContract();
   const [balance, setBalance] = useState<BN>();
 
   useEffect(() => {
     const getBalance = async () => {
-      if (!api || !caller) return;
-      const { freeBalance } = await api.derive.balances.account(caller.address);
+      if (!api || !account) return;
+      const { freeBalance } = await api.derive.balances.account(
+        account.address
+      );
       setBalance(freeBalance);
     };
     getBalance().catch((e) => console.error(e));
-  }, [api, caller]);
+  }, [api, account]);
 
   const estimate = useCallback(
     async function estimate(
@@ -53,7 +57,7 @@ function useDryRun() {
 
         const { storageDeposit, gasRequired, result } =
           await api.call.contractsApi.call<ContractExecResult>(
-            caller?.address,
+            account?.address,
             contract.address,
             0,
             null,
@@ -115,7 +119,7 @@ function useDryRun() {
         console.error(e);
       }
     },
-    [api, balance, caller?.address, contract]
+    [api, balance, account?.address, contract]
   );
   return estimate;
 }
