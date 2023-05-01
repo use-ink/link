@@ -1,6 +1,6 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { Values } from "../types";
+import { PinkValues } from "../types";
 import { useEstimationContext } from "../contexts";
 import { ChangeEvent, useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
@@ -12,10 +12,11 @@ import { modelUrl } from "../const";
 
 export const GenerateForm = () => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
-    useFormikContext<Values>();
+    useFormikContext<PinkValues>();
   const { estimation, isEstimating } = useEstimationContext();
   const { account, accounts } = useExtension();
   const [ robotImage, setRobotImage ] = useState(robot_bestia);
+  const [ huggingFaceStatus, setHuggingFaceStatus ] = useState("");
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
@@ -30,7 +31,9 @@ export const GenerateForm = () => {
   const fetchImage = async () => {
     console.log("modelUrl", modelUrl);
     console.log("ENV", process.env.REACT_APP_HUGGING_FACE_API_KEY? "ok": "not found");
+    console.log("prompt:", "pink robot, " + values.prompt);
     try {
+      setHuggingFaceStatus("fetching from AI server...");
         const response = await axios({
             url: modelUrl,
             method: 'POST',
@@ -40,7 +43,7 @@ export const GenerateForm = () => {
                 'Content-Type': 'application/json',
             },
             data: JSON.stringify({
-                inputs: "pink robot, " + values.url, options: { wait_for_model: true },
+                inputs: "pink robot, " + values.prompt, options: { wait_for_model: true },
             }),
             responseType: 'arraybuffer',
         });
@@ -51,11 +54,14 @@ export const GenerateForm = () => {
         const base64data = Buffer.from(response.data).toString('base64');
         const aiImage = `data:${contentType};base64,` + base64data;
         setRobotImage(aiImage);
-        console.log("aiImage", aiImage? "generiran":"nije generiran");
+        console.log("aiImage", aiImage? "generated":"empty");
+        
 
     } catch (error) {
         console.error(error);
+
     }
+    setHuggingFaceStatus("");
 };
 
   return (
@@ -63,21 +69,17 @@ export const GenerateForm = () => {
       <div className="group">
         <Field
           type="text"
-          name="url"
+          name="prompt"
           disabled={isSubmitting}
           placeholder="Short description of your robot"
           onChange={(e: ChangeEvent) => {
-            setFieldTouched("url");
+            setFieldTouched("prompt");
             handleChange(e);
           }}
         />
         <ErrorMessage name="url" component="div" className="error-message" />
       </div>
-      <div className="group">
-        {isValid && values.url && (
-          <DryRunResult values={values} isValid={isValid} />
-        )}
-      </div>
+
       <img src={robotImage} className="pink-example" alt="example" />{" "}
       <div className="group">
         <button
@@ -90,6 +92,13 @@ export const GenerateForm = () => {
           Genetate New
         </button>
       </div>
+
+      <div className="group">
+        {isValid && values.prompt && (
+          <DryRunResult values={values} isValid={isValid} />
+        )}
+      </div>
+
       <div className="group">
         <button
           type="submit"
@@ -105,6 +114,17 @@ export const GenerateForm = () => {
           {estimation.error.message}
         </div>
       )}
+
+      <div className="group">
+        {huggingFaceStatus && (
+          <>
+          <div className="mb-1">
+          <p className="mb-1">{huggingFaceStatus}</p>
+          </div>
+        </>
+        )}
+      </div>
+
       <div className="group">
         <NewUserGuide
           hasAccounts={!!accounts && accounts.length > 0}

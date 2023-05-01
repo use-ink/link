@@ -13,9 +13,9 @@ export type Estimation = {
   error?: UIError;
 };
 
-export interface Values {
-  url: string;
-  alias: string;
+export interface PinkValues {
+  prompt: string;
+  ipfs: string;
 }
 
 export interface UIEvent {

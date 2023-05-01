@@ -2,10 +2,10 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useEstimationContext } from "../contexts";
 import { useDryRun } from "../hooks";
-import { Estimation, Values } from "../types";
+import { Estimation, PinkValues } from "../types";
 
 interface Props {
-  values: Values;
+  values: PinkValues;
   isValid: boolean;
 }
 
@@ -39,7 +39,7 @@ export function DryRunResult({ values, isValid }: Props) {
 
     async function getOutcome() {
       if (!isValid) return;
-      const params = [{ deduplicateornew: values.alias }, values.url];
+      const params = [{ deduplicateornew: values.prompt }, values.ipfs];
       const e = await estimate(params);
       setEstimation(e);
       setIsEstimating(false);
@@ -58,8 +58,8 @@ export function DryRunResult({ values, isValid }: Props) {
     isValid,
     setEstimation,
     setIsEstimating,
-    values.alias,
-    values.url,
+    values.prompt,
+    values.ipfs,
   ]);
 
   return estimation ? (

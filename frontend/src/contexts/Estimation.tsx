@@ -9,6 +9,8 @@ type Props = {
   setEstimation: (e: Estimation | undefined) => void;
   error?: UIError;
   setError: (e: UIError | undefined) => void;
+  price?: number;
+  setPrice: (p: number | undefined) => void;
 };
 
 const EstimationContext = React.createContext<Props | undefined>(undefined);
@@ -17,6 +19,7 @@ function EstimationProvider({ children }: { children: React.ReactNode }) {
   const [estimation, setEstimation] = useState<Estimation>();
   const [error, setError] = useState<UIError>();
   const [isEstimating, setIsEstimating] = useState(false);
+  const [price, setPrice] = useState<number>();
 
   return (
     <EstimationContext.Provider
@@ -27,6 +30,8 @@ function EstimationProvider({ children }: { children: React.ReactNode }) {
         setError,
         isEstimating,
         setIsEstimating,
+        price,
+        setPrice,
       }}
     >
       {children}

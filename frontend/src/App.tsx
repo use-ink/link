@@ -1,7 +1,7 @@
 import "./App.css";
 import Resolver from "./Resolver";
 import { Routes, Route } from "react-router-dom";
-import { FormContainer, Loader } from "./components";
+import { Loader } from "./components";
 import { useApi } from "useink";
 import { EstimationProvider } from "./contexts";
 import { PinkContainer } from "./components/PinkContainer";
