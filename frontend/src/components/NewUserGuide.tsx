@@ -27,7 +27,7 @@ export const NewUserGuide = ({
       )}
       {walletConnected && !hasAccounts && (
         <div className="mb-2">
-          <p>No Substrate accounts found.</p>
+          <p>No Astar accounts found.</p>
           <p>You can import or create one in the extension.</p>
         </div>
       )}
@@ -35,19 +35,6 @@ export const NewUserGuide = ({
         <>
           <div className="mb-1">
             <p className="mb-1">Account balance is zero.</p>
-            To obtain Rococo testnet tokens (ROC) join our Matrix chat room{" "}
-            <a
-              href="https://matrix.to/#/#rococo-faucet:matrix.org"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              #rococo-faucet:matrix.org
-            </a>{" "}
-            and post the following command
-          </div>
-          <div>
-            {" "}
-            <code>!drip YOUR_SS_58_ADDRESS:1002</code>
           </div>
         </>
       )}

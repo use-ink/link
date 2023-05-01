@@ -9,7 +9,7 @@ import { endpoint as providerUrl } from "./const";
 
 const config: Pick<InkConfig, "config"> = {
   config: {
-    dappName: "link! - URL shortener",
+    dappName: "Pink Robot - AI generator and minter",
     providerUrl,
   },
 };

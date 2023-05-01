@@ -1,20 +1,18 @@
-import linkLogo from "../link-logo.svg";
 import { Formik } from "formik";
-import { initialValues, UrlShortenerSchema } from "../const";
+import { initialPinkValues, PinkFormSchema } from "../const";
 import { useSubmitHandler } from "../hooks";
-import { UrlShortenerForm } from "./Form";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
-import { Loader } from ".";
+import { GenerateForm } from "./GenerateForm";
 
-export const FormContainer = () => {
+export const PinkContainer = () => {
   const submitFn = useSubmitHandler();
 
   return (
     <div className="App">
       <Formik
-        initialValues={initialValues}
-        validationSchema={UrlShortenerSchema}
+        initialValues={initialPinkValues}
+        validationSchema={PinkFormSchema}
         onSubmit={async (values, helpers) => {
           if (!helpers) return;
           await submitFn(values, helpers);
@@ -24,14 +22,13 @@ export const FormContainer = () => {
           status: { finalized, events, slug, errorMessage } = {},
           isSubmitting,
         }) => {
-          return isSubmitting ? (
-            <Loader message="Submitting transaction..." />
-          ) : (
+          return (
             <>
               <Header />
               <div className="content">
                 <div className="form-panel">
-                  <img src={linkLogo} className="link-logo" alt="logo" />{" "}
+                  <h2>Describe pink robot</h2>
+                  <br />
                   {finalized ? (
                     <SubmitResult
                       events={events}
@@ -39,7 +36,7 @@ export const FormContainer = () => {
                       errorMessage={errorMessage}
                     />
                   ) : (
-                    <UrlShortenerForm />
+                    <GenerateForm />
                   )}
                 </div>
               </div>

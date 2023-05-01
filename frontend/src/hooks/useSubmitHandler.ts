@@ -1,5 +1,5 @@
 import { web3FromAddress } from "@polkadot/extension-dapp";
-import { Values, UIEvent } from "../types";
+import { PinkValues, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
@@ -13,8 +13,8 @@ export const useSubmitHandler = () => {
   const { estimation } = useEstimationContext();
 
   return async (
-    values: Values,
-    { setSubmitting, setStatus }: FormikHelpers<Values>
+    values: PinkValues,
+    { setSubmitting, setStatus }: FormikHelpers<PinkValues>
   ) => {
     if (!api || !contract || !estimation || !account) return;
 
@@ -26,8 +26,8 @@ export const useSubmitHandler = () => {
             gasLimit: estimation.gasRequired,
             storageDepositLimit: estimation.storageDeposit.asCharge,
           },
-          { DeduplicateOrNew: values.alias },
-          values.url
+          { DeduplicateOrNew: values.prompt },
+          values.ipfs
         );
       const unsub = await tx.signAndSend(
         account.address,

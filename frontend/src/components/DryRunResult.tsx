@@ -2,18 +2,20 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useEstimationContext } from "../contexts";
 import { useDryRun } from "../hooks";
-import { Estimation, Values } from "../types";
+import { Estimation, PinkValues } from "../types";
 
 interface Props {
-  values: Values;
+  values: PinkValues;
   isValid: boolean;
 }
 
 function Fees({ estimation }: { estimation: Estimation }) {
   return (
     <>
-      <p>storage deposit: {estimation.storageDeposit.asCharge.toHuman()}</p>
-      <p>gas fee: {estimation.partialFee.toHuman()}</p>
+      <p>storage: {estimation.storageDeposit.asCharge.toHuman()}</p>
+      <p>gas: {estimation.partialFee.toHuman()}</p>
+      <p>price: {estimation.price}</p>
+      <p>total: {estimation.partialFee.toNumber() + estimation.price}</p>
     </>
   );
 }
@@ -39,7 +41,7 @@ export function DryRunResult({ values, isValid }: Props) {
 
     async function getOutcome() {
       if (!isValid) return;
-      const params = [{ deduplicateornew: values.alias }, values.url];
+      const params = [{ deduplicateornew: values.prompt }, values.ipfs];
       const e = await estimate(params);
       setEstimation(e);
       setIsEstimating(false);
@@ -58,8 +60,8 @@ export function DryRunResult({ values, isValid }: Props) {
     isValid,
     setEstimation,
     setIsEstimating,
-    values.alias,
-    values.url,
+    values.prompt,
+    values.ipfs,
   ]);
 
   return estimation ? (

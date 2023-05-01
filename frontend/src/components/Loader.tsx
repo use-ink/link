@@ -3,7 +3,7 @@ import squid from "../squid.svg";
 export const Loader = ({ message }: { message: string }) => {
   return (
     <div className="overflow-hidden">
-      <section className="sticky">
+      {/* <section className="sticky">
         <div className="squids">
           <img src={squid} className="squid" alt="logo" />
           <img src={squid} className="squid" alt="logo" />
@@ -14,12 +14,12 @@ export const Loader = ({ message }: { message: string }) => {
           <img src={squid} className="squid" alt="logo" />
         </div>
         <img src={squid} className="big-squid" alt="logo" />
-      </section>
+      </section> */}
       <div className="container">
         <div className="text-info">
-          <h1>Shortened with link!</h1>
+          <h1>Pink Robot</h1>
           <div className="tag-line">
-            <div>
+            {/* <div>
               {" "}
               The unstoppable link shortener build with the{" "}
               <a
@@ -29,7 +29,7 @@ export const Loader = ({ message }: { message: string }) => {
               >
                 ink! smart contract language
               </a>
-            </div>
+            </div> */}
             .<div className="animate-pulse">{message}</div>
           </div>
         </div>

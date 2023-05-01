@@ -11,11 +11,12 @@ export type Estimation = {
   partialFee: Balance;
   result: ShorteningResult;
   error?: UIError;
+  price: number;
 };
 
-export interface Values {
-  url: string;
-  alias: string;
+export interface PinkValues {
+  prompt: string;
+  ipfs: string;
 }
 
 export interface UIEvent {

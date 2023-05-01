@@ -1,4 +1,4 @@
-import logo from "../logo.svg";
+import logo from "../pink-logo.jpeg";
 import { AccountsDropdown } from "./AccountsDropdown";
 import { XCircleIcon } from "@heroicons/react/solid";
 import { useExtension } from "useink";
@@ -9,7 +9,7 @@ export const Header = () => {
   return (
     <div className="flex justify-between w-full px-8 py-4">
       <div className="flex items-center w-32">
-        <img src={logo} className="ink-logo" alt="logo" />
+        <img src={logo} className="pink-logo" alt="logo" />
       </div>
 
       <div className="flex items-center justify-end w-60">
