@@ -16,24 +16,27 @@ export const GenerateForm = () => {
   const { estimation, isEstimating } = useEstimationContext();
   const { account, accounts } = useExtension();
   const [ robotImage, setRobotImage ] = useState(robot_bestia);
-  const [ huggingFaceStatus, setHuggingFaceStatus ] = useState("");
+  const [ waitingHuggingFace, setWaitinghuggingFace ] = useState(false);
+  const [ isGenerated, setIsGenerated ] = useState(false);
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
 
-  const isOkToShorten =
-    !isEstimating &&
-    estimation &&
-    estimation.result &&
-    "Ok" in estimation.result &&
-    estimation.result.Ok === "Shortened";
+  const isOkToMint =
+    !isEstimating 
+    // &&
+    // estimation &&
+    // estimation.result &&
+    // "Ok" in estimation.result 
+    // &&
+    // estimation.result.Ok === "Shortened";
 
   const fetchImage = async () => {
     console.log("modelUrl", modelUrl);
     console.log("ENV", process.env.REACT_APP_HUGGING_FACE_API_KEY? "ok": "not found");
     console.log("prompt:", "pink robot, " + values.prompt);
     try {
-      setHuggingFaceStatus("fetching from AI server...");
+      setWaitinghuggingFace(true);
         const response = await axios({
             url: modelUrl,
             method: 'POST',
@@ -55,13 +58,13 @@ export const GenerateForm = () => {
         const aiImage = `data:${contentType};base64,` + base64data;
         setRobotImage(aiImage);
         console.log("aiImage", aiImage? "generated":"empty");
-        
+        setIsGenerated(true)
 
     } catch (error) {
         console.error(error);
 
     }
-    setHuggingFaceStatus("");
+    setWaitinghuggingFace(false);
 };
 
   return (
@@ -85,8 +88,8 @@ export const GenerateForm = () => {
         <button
           type = "button"
           onClick = {fetchImage}
-          disabled={false
-          //   isSubmitting || !isOkToShorten || !isValid || !accounts || !hasFunds
+          disabled={
+            waitingHuggingFace || isSubmitting || !isValid || !accounts || !hasFunds
           }
         >
           Genetate New
@@ -94,7 +97,7 @@ export const GenerateForm = () => {
       </div>
 
       <div className="group">
-        {isValid && values.prompt && (
+        {isGenerated && isValid && values.prompt && (
           <DryRunResult values={values} isValid={isValid} />
         )}
       </div>
@@ -103,12 +106,13 @@ export const GenerateForm = () => {
         <button
           type="submit"
           disabled={
-            isSubmitting || !isOkToShorten || !isValid || !accounts || !hasFunds
+            !isGenerated || waitingHuggingFace || isSubmitting || !isOkToMint || !isValid || !accounts || !hasFunds
           }
           name="submit"
           >Mint
         </button>
       </div>
+
       {isValid && estimation?.error && !isEstimating && (
         <div className="text-xs text-left mb-2 text-red-500">
           {estimation.error.message}
@@ -116,10 +120,10 @@ export const GenerateForm = () => {
       )}
 
       <div className="group">
-        {huggingFaceStatus && (
+        {waitingHuggingFace && (
           <>
           <div className="mb-1">
-          <p className="mb-1">{huggingFaceStatus}</p>
+          <p className="mb-1">Fetching from AI server...</p>
           </div>
         </>
         )}

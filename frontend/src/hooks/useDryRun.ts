@@ -88,6 +88,7 @@ function useDryRun() {
             partialFee,
             result: decodedOutput!,
             error: { message: decodeError(result.asErr, api) },
+            price: 0,
           };
         }
 
@@ -103,6 +104,7 @@ function useDryRun() {
                   ? "The supplied slug is too short."
                   : "Slug unavailable. Try something else.",
             },
+            price: 0,
           };
         }
 
@@ -114,6 +116,7 @@ function useDryRun() {
           error: balance?.lt(storageDeposit.asCharge)
             ? { message: "Insufficient funds!" }
             : undefined,
+          price: 0,
         };
       } catch (e) {
         console.error(e);

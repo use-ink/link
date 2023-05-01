@@ -12,8 +12,10 @@ interface Props {
 function Fees({ estimation }: { estimation: Estimation }) {
   return (
     <>
-      <p>storage deposit: {estimation.storageDeposit.asCharge.toHuman()}</p>
-      <p>gas fee: {estimation.partialFee.toHuman()}</p>
+      <p>storage: {estimation.storageDeposit.asCharge.toHuman()}</p>
+      <p>gas: {estimation.partialFee.toHuman()}</p>
+      <p>price: {estimation.price}</p>
+      <p>total: {estimation.partialFee.toNumber() + estimation.price}</p>
     </>
   );
 }

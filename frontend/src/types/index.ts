@@ -11,6 +11,7 @@ export type Estimation = {
   partialFee: Balance;
   result: ShorteningResult;
   error?: UIError;
+  price: number;
 };
 
 export interface PinkValues {
