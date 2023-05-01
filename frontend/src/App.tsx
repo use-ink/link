@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { FormContainer, Loader } from "./components";
 import { useApi } from "useink";
 import { EstimationProvider } from "./contexts";
+import { PinkContainer } from "./components/PinkContainer";
 
 function App() {
   const { api } = useApi();
@@ -14,7 +15,7 @@ function App() {
         index
         element={
           <EstimationProvider>
-            <FormContainer />
+            <PinkContainer />
           </EstimationProvider>
         }
       />
