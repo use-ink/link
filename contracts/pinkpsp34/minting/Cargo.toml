@@ -1,0 +1,26 @@
+[package]
+name = "psp34_minting"
+version = "0.1.0"
+authors = ["Astar builder"]
+edition = "2021"
+
+[dependencies]
+ink = { version = "4.1.0", default-features = false }
+
+scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
+
+openbrush = { tag = "3.1.0", git = "https://github.com/727-Ventures/openbrush-contracts", default-features = false, features = ["psp34", "ownable", "reentrancy_guard"] }
+
+[lib]
+path = "lib.rs"
+crate-type = ["rlib"]
+
+[features]
+default = ["std"]
+std = [
+    "ink/std",
+    "scale/std",
+    "scale-info",
+    "openbrush/std",
+]

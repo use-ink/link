@@ -1,0 +1,32 @@
+[package]
+name = "pinkrobot"
+version = "0.1.0"
+authors = ["[Mario] <[mario@arrakis.com]>"]
+edition = "2021"
+
+[dependencies]
+ink = { version = "4.1.0", default-features = false }
+
+scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
+# pinkrmrk = { path = "pinkrmrk", default-features = false, features = ["ink-as-dependency"] }
+pinkpsp34 = { path = "../pinkpsp34", default-features = false, features = ["ink-as-dependency"] }
+
+[dev-dependencies]
+ink_e2e = "4.1.0"
+
+[lib]
+path = "lib.rs"
+crate-type = ["cdylib"]
+
+[features]
+default = ["std"]
+std = [
+    "ink/std",
+    "scale/std",
+    "scale-info/std",
+    "pinkpsp34/std",
+    # "pinkrmrk/std"
+]
+ink-as-dependency = []
+e2e-tests = []
