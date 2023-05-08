@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import type {
   DispatchError,
   ContractExecResult,
+  Balance,
 } from "@polkadot/types/interfaces";
 import { dryRunCallerAddress } from "../const";
 import { Estimation } from "../types";
@@ -52,8 +53,26 @@ function useDryRun() {
     ): Promise<Estimation | undefined> {
       try {
         if (!api || !contract) return;
-        const message = contract.abi.findMessage("shorten");
+
+        // get price
+        const priceMessage = contract.abi.findMessage("getPrice");
+        const { result: mintResult } = await api.call.contractsApi.call<ContractExecResult>(
+            account?.address,
+            contract.address,
+            0,
+            null,
+            null,
+            priceMessage.toU8a([]),
+          );
+        console.log("mintResult value", mintResult.value.toJSON());
+        const price = mintResult.value.toHuman();
+
+        // dry run pink_mint to get gasRequired and storageDeposit
+        const message = contract.abi.findMessage("pinkMint");
+        console.log("params", params);
+        console.log("message", message);
         const inputData = message.toU8a(params);
+        console.log("inputData", inputData);
 
         const { storageDeposit, gasRequired, result } =
           await api.call.contractsApi.call<ContractExecResult>(
@@ -71,7 +90,7 @@ function useDryRun() {
           contract.abi.registry
         );
 
-        const tx = contract.tx["shorten"](
+        const tx = contract.tx["pinkMint"](
           {
             gasLimit: gasRequired,
             storageDepositLimit: storageDeposit.asCharge,
@@ -88,23 +107,7 @@ function useDryRun() {
             partialFee,
             result: decodedOutput!,
             error: { message: decodeError(result.asErr, api) },
-            price: 0,
-          };
-        }
-
-        if (result.isOk && decodedOutput && "Err" in decodedOutput) {
-          return {
-            gasRequired,
-            storageDeposit,
-            partialFee,
-            result: decodedOutput,
-            error: {
-              message:
-                decodedOutput.Err === "SlugTooShort"
-                  ? "The supplied slug is too short."
-                  : "Slug unavailable. Try something else.",
-            },
-            price: 0,
+            price: price,
           };
         }
 
@@ -116,7 +119,7 @@ function useDryRun() {
           error: balance?.lt(storageDeposit.asCharge)
             ? { message: "Insufficient funds!" }
             : undefined,
-          price: 0,
+          price: price,
         };
       } catch (e) {
         console.error(e);
@@ -124,6 +127,7 @@ function useDryRun() {
     },
     [api, balance, account?.address, contract]
   );
+
   return estimate;
 }
 export { useDryRun };

@@ -76,6 +76,11 @@ mod pinkrobot {
             Ok(())
         }
 
+        #[ink(message)]
+        pub fn get_price(&self) -> Balance {
+            self.price
+        }
+
         #[ink(message, payable)]
         pub fn pink_mint(&mut self, entry: u8, metadata: Vec<u8>) -> Result<()> {
             let caller = self.env().caller();

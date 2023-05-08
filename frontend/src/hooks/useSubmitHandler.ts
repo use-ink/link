@@ -21,12 +21,12 @@ export const useSubmitHandler = () => {
     const injector = await web3FromAddress(account.address);
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
-        contract.tx["shorten"](
+        contract.tx["pinkMint"](
           {
             gasLimit: estimation.gasRequired,
             storageDepositLimit: estimation.storageDeposit.asCharge,
           },
-          { DeduplicateOrNew: values.prompt },
+          values.contractType,
           values.ipfs
         );
       const unsub = await tx.signAndSend(

@@ -14,6 +14,7 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
   const [submitOutcome, setSubmitOutcome] = useState("");
   useEffect(() => {
     events.forEach((e) => {
+      console.log("SubmitResult event:", e);
       if (e.name === "Shortened") {
         setSubmitOutcome("Your link was shortened to the following url:");
       }

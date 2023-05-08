@@ -123,7 +123,7 @@ export const GenerateForm = () => {
         {waitingHuggingFace && (
           <>
           <div className="mb-1">
-          <p className="mb-1">Fetching from AI server...</p>
+          <p className="mb-1">Generating on AI server... Can take a minute</p>
           </div>
         </>
         )}

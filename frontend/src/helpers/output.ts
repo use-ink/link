@@ -4,7 +4,7 @@
 import type { ContractExecResult } from "@polkadot/types/interfaces";
 import type { Registry, TypeDef } from "@polkadot/types/types";
 import type { AbiMessage } from "@polkadot/api-contract/types";
-import { ShorteningResult } from "../types";
+import { MintingResult } from "../types";
 
 export function getReturnTypeName(type: TypeDef | null | undefined) {
   return type?.lookupName || type?.type || "";
@@ -14,7 +14,7 @@ export function getDecodedOutput(
   result: ContractExecResult["result"],
   returnType: AbiMessage["returnType"],
   registry: Registry
-): ShorteningResult | undefined {
+): MintingResult | undefined {
   if (result.isOk) {
     const returnTypeName = getReturnTypeName(returnType);
     const r = (
@@ -23,7 +23,7 @@ export function getDecodedOutput(
             .createTypeUnsafe(returnTypeName, [result.asOk.data])
             .toHuman()
         : "()"
-    ) as ShorteningResult;
+    ) as MintingResult;
 
     return r;
   }
