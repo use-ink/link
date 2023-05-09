@@ -1,7 +1,7 @@
 // Copyright 2022 @paritytech/contracts-ui authors & contributors
 // SPDX-License-Identifier: GPL-3.0-only
 
-import type { ContractExecResult, Balance } from "@polkadot/types/interfaces";
+import type { ContractExecResult } from "@polkadot/types/interfaces";
 import type { Registry, TypeDef } from "@polkadot/types/types";
 import type { AbiMessage } from "@polkadot/api-contract/types";
 import { MintingResult } from "../types";
@@ -47,9 +47,8 @@ export function getDecodedPrice(
 
     type ObjectKey = keyof typeof r;
     const okKey = 'Ok' as ObjectKey;
-    console.log("decodedPrice var", r[okKey]);
+    console.log("decodedPrice", r[okKey]);
     const p = r[okKey].toString().replace(/,/g, '')
-    console.log("decodedPrice value2", p);
     return p;
   }
   return '0';

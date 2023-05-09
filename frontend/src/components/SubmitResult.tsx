@@ -25,7 +25,7 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
       }
       if (e.name === "system:ExtrinsicFailed") {
         setSubmitOutcome(
-          "The transaction was not successful. Try again with another slug."
+          "The transaction was not successful. Try again with another Pink robot."
         );
       }
     });
@@ -86,7 +86,7 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
       )}
       <div>
         <button onClick={() => window.location.reload()}>
-          Shorten another
+          Try another
         </button>
       </div>
     </>

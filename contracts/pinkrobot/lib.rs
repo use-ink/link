@@ -88,7 +88,6 @@ mod pinkrobot {
                 self.price == self.env().transferred_value(),
                 Error::BadMintingFee
             );
-            ensure!(self.env().caller() == self.owner, Error::NotOwner);
             let contract = self
                 .contracts_map
                 .get(&entry)

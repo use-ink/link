@@ -41,7 +41,9 @@ function useDryRun() {
       const { freeBalance } = await api.derive.balances.account(
         account.address
       );
-      setBalance(freeBalance);
+      setBalance(freeBalance?.div(new BN(10).pow(new BN(18))));
+      console.log("connected account", account.address);
+      console.log("balance", freeBalance.div(new BN(10).pow(new BN(18))));
     };
     getBalance().catch((e) => console.error(e));
   }, [api, account]);
@@ -68,16 +70,18 @@ function useDryRun() {
           priceMessage.returnType,
           contract.abi.registry
         );
-        const price: Balance = contract.api.createType("Balance", decodedPrice);
+        // const price: Balance = contract.api.createType("Balance", decodedPrice);
+        const price: Balance = contract.api.createType("Balance", "1000000000000000000");
+        console.log("price", price);
 
         // dry run pink_mint to get gasRequired and storageDeposit
         const message = contract.abi.findMessage("pinkMint");
-        console.log("params", params);
-        console.log("message", message);
+        console.log("minting params", params);
+        // console.log("message", message);
         const inputData = message.toU8a(params);
-        console.log("inputData", inputData);
+        // console.log("inputData", inputData);
 
-        const { storageDeposit, gasRequired, result } =
+        const { storageDeposit, gasRequired, result, debugMessage } =
           await api.call.contractsApi.call<ContractExecResult>(
             account?.address,
             contract.address,
@@ -86,17 +90,22 @@ function useDryRun() {
             null,
             inputData
           );
+        console.log("debugMessage", debugMessage.toString());
+        console.log("gasRequired", gasRequired.toString());
+
 
         const decodedOutput = getDecodedOutput(
           result,
           message.returnType,
           contract.abi.registry
         );
+        console.log("decodedOutput for pink_mint dry-run", decodedOutput);
 
         const tx = contract.tx["pinkMint"](
           {
             gasLimit: gasRequired,
             storageDepositLimit: storageDeposit.asCharge,
+            value: price,
           },
           ...params
         );

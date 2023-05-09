@@ -19,12 +19,15 @@ export const useSubmitHandler = () => {
     if (!api || !contract || !estimation || !account) return;
 
     const injector = await web3FromAddress(account.address);
+    console.log("PinkValues", values);
+    console.log("Estimations", estimation);
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
         contract.tx["pinkMint"](
           {
             gasLimit: estimation.gasRequired,
             storageDepositLimit: estimation.storageDeposit.asCharge,
+            value: estimation.price,
           },
           values.contractType,
           values.ipfs
