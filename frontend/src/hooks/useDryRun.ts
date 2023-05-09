@@ -8,7 +8,7 @@ import { dryRunCallerAddress } from "../const";
 import { Estimation } from "../types";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { getDecodedOutput } from "../helpers";
+import { getDecodedOutput, getDecodedPrice } from "../helpers";
 import { useApi, useExtension } from "useink";
 import { useLinkContract } from "../contexts";
 
@@ -22,9 +22,8 @@ function decodeError(error: DispatchError, api: ApiPromise) {
     ) {
       message = "Not enough funds in the selected account.";
     } else {
-      message = `${decoded?.section.toUpperCase()}.${decoded?.method}: ${
-        decoded?.docs
-      }`;
+      message = `${decoded?.section.toUpperCase()}.${decoded?.method}: ${decoded?.docs
+        }`;
     }
   }
   return message;
@@ -56,17 +55,20 @@ function useDryRun() {
 
         // get price
         const priceMessage = contract.abi.findMessage("getPrice");
-        const { result: mintResult } = await api.call.contractsApi.call<ContractExecResult>(
-            account?.address,
-            contract.address,
-            0,
-            null,
-            null,
-            priceMessage.toU8a([]),
-          );
-        console.log("mintResult value", mintResult.value.toHuman());
-        // const price = mintResult.value.toHuman();
-
+        const { result: priceResult } = await api.call.contractsApi.call<ContractExecResult>(
+          account?.address,
+          contract.address,
+          0,
+          null,
+          null,
+          priceMessage.toU8a([]),
+        );
+        const decodedPrice = getDecodedPrice(
+          priceResult,
+          priceMessage.returnType,
+          contract.abi.registry
+        );
+        const price: Balance = contract.api.createType("Balance", decodedPrice);
 
         // dry run pink_mint to get gasRequired and storageDeposit
         const message = contract.abi.findMessage("pinkMint");
@@ -101,7 +103,13 @@ function useDryRun() {
 
         const { partialFee } = await tx.paymentInfo(dryRunCallerAddress);
 
-        const price: Balance = contract.api.createType("Balance", "10000000000000000");
+        // calculate total cost for minting
+        const cost = partialFee
+          .add(price)
+          .add(storageDeposit.asCharge);
+        const total: Balance = contract.api.createType("Balance", cost.toString());
+
+
         if (result.isErr) {
           return {
             gasRequired,
@@ -110,6 +118,7 @@ function useDryRun() {
             result: decodedOutput!,
             error: { message: decodeError(result.asErr, api) },
             price,
+            total,
           };
         }
 
@@ -121,7 +130,8 @@ function useDryRun() {
           error: balance?.lt(storageDeposit.asCharge)
             ? { message: "Insufficient funds!" }
             : undefined,
-          price: price,
+          price,
+          total
         };
       } catch (e) {
         console.error(e);
