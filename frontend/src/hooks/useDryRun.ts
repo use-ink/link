@@ -64,8 +64,9 @@ function useDryRun() {
             null,
             priceMessage.toU8a([]),
           );
-        console.log("mintResult value", mintResult.value.toJSON());
-        const price = mintResult.value.toHuman();
+        console.log("mintResult value", mintResult.value.toHuman());
+        // const price = mintResult.value.toHuman();
+
 
         // dry run pink_mint to get gasRequired and storageDeposit
         const message = contract.abi.findMessage("pinkMint");
@@ -100,6 +101,7 @@ function useDryRun() {
 
         const { partialFee } = await tx.paymentInfo(dryRunCallerAddress);
 
+        const price: Balance = contract.api.createType("Balance", "10000000000000000");
         if (result.isErr) {
           return {
             gasRequired,
@@ -107,7 +109,7 @@ function useDryRun() {
             partialFee,
             result: decodedOutput!,
             error: { message: decodeError(result.asErr, api) },
-            price: price,
+            price,
           };
         }
 

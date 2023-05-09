@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { useEstimationContext } from "../contexts";
 import { useDryRun } from "../hooks";
 import { Estimation, PinkValues } from "../types";
@@ -10,12 +10,15 @@ interface Props {
 }
 
 function Fees({ estimation }: { estimation: Estimation }) {
+  const total = estimation.partialFee
+    .add(estimation.price)
+    .add(estimation.storageDeposit.asCharge);
   return (
     <>
       <p>storage: {estimation.storageDeposit.asCharge.toHuman()}</p>
       <p>gas: {estimation.partialFee.toHuman()}</p>
       <p>price: {estimation.price.toHuman()}</p>
-      <p>total: {estimation.partialFee.toNumber()}</p>
+      <p>total: {total.toString()}</p>
     </>
   );
 }

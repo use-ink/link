@@ -11,7 +11,7 @@ export type Estimation = {
   partialFee: Balance;
   result: MintingResult;
   error?: UIError;
-  price: Balance | any;
+  price: Balance;
 };
 
 export interface PinkValues {
