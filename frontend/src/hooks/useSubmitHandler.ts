@@ -1,4 +1,4 @@
-import { web3FromAddress } from "@polkadot/extension-dapp";
+import { web3Enable, web3FromAddress } from "@polkadot/extension-dapp";
 import { Values, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
@@ -17,7 +17,7 @@ export const useSubmitHandler = () => {
     { setSubmitting, setStatus }: FormikHelpers<Values>
   ) => {
     if (!api || !contract || !estimation || !account) return;
-
+    await web3Enable('link!');
     const injector = await web3FromAddress(account.address);
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
