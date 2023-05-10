@@ -37,7 +37,7 @@ form {
   width: 100%;
   text-align: center;
 }
-label, input {
+label, input, select {
   display: block;
 }
 
@@ -46,6 +46,10 @@ label {
 }
 
 input {
+  @apply w-full bg-gray-800 text-white px-4 py-3 mb-2 border rounded-lg border-gray-700 hover:border-gray-500 focus:outline-none  disabled:opacity-50;
+}
+
+select {
   @apply w-full bg-gray-800 text-white px-4 py-3 mb-2 border rounded-lg border-gray-700 hover:border-gray-500 focus:outline-none  disabled:opacity-50;
 }
 

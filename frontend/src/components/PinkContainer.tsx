@@ -19,7 +19,7 @@ export const PinkContainer = () => {
         }}
       >
         {({
-          status: { finalized, events, slug, errorMessage } = {},
+          status: { finalized, events, values, errorMessage } = {},
           isSubmitting,
         }) => {
           return (
@@ -31,8 +31,8 @@ export const PinkContainer = () => {
                   <br />
                   {finalized ? (
                     <SubmitResult
+                    values={values}
                       events={events}
-                      slug={slug}
                       errorMessage={errorMessage}
                     />
                   ) : (

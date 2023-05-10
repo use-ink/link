@@ -17,7 +17,6 @@ export const GenerateForm = () => {
     useFormikContext<PinkValues>();
   const { estimation, isEstimating } = useEstimationContext();
   const { account, accounts } = useExtension();
-  const [robotImage, setRobotImage] = useState(robot_bestia);
   const [waitingHuggingFace, setWaitinghuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [imageData, setImageData] = useState(new Uint8Array());
@@ -61,7 +60,7 @@ export const GenerateForm = () => {
       // const base64ImageData = Buffer.from(response.data, 'binary').toString('base64');
       const base64data = Buffer.from(response.data).toString('base64');
       const aiImage = `data:${contentType};base64,` + base64data;
-      setRobotImage(aiImage);
+      values.aiImage = aiImage;
       console.log("aiImage", aiImage ? "generated" : "empty");
       setIsGenerated(true)
       setImageData(response.data);
@@ -155,7 +154,7 @@ export const GenerateForm = () => {
         </select>
       </div>
 
-      <img src={robotImage} className="pink-example" alt="example" />{" "}
+      <img src={values.aiImage} className="pink-example" alt="example" />{" "}
       <div className="group">
         <button
           type="button"

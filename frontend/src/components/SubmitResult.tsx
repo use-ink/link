@@ -1,16 +1,16 @@
-import { UIEvent } from "../types";
+import { PinkValues, UIEvent } from "../types";
 import { Link } from "react-router-dom";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 
 interface Props {
-  slug: string;
+  values: PinkValues;
   events: UIEvent[];
   errorMessage: string;
 }
 
-export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
+export const SubmitResult = ({ values, events, errorMessage }: Props) => {
   const [submitOutcome, setSubmitOutcome] = useState("");
   useEffect(() => {
     events.forEach((e) => {
@@ -28,18 +28,16 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
           "The transaction was not successful. Try again with another Pink robot."
         );
       }
+      if (e.name === "system:ExtrinsicSuccess") {
+        setSubmitOutcome(
+          "Hurray! Your Pink robot is now on the blockchain. Find it on marketplace."
+        );
+      }
     });
   }, [events]);
 
   return (
     <>
-      <div className="submit-outcome">
-        <div className="mb-3">{submitOutcome}</div>
-        {slug && (
-          <Link to={`/${slug}`}>{`${window.location.host}/${slug}`}</Link>
-        )}
-      </div>
-
       <Disclosure>
         {({ open }) => (
           <>
@@ -84,6 +82,7 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
           )}
         </Disclosure>
       )}
+      {/* <img src={values.aiImage} className="pink-example" alt="minted nft" />{" "} */}
       <div>
         <button onClick={() => window.location.reload()}>
           Try another
