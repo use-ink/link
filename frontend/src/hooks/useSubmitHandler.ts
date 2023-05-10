@@ -1,10 +1,23 @@
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import { PinkValues, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
-import { SubmittableExtrinsic } from "@polkadot/api/types";
+import { ApiBase, SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
 import { useEstimationContext, useLinkContract } from "../contexts";
 import { useApi, useExtension } from "useink";
+import { genericAsset } from "@polkadot/types/interfaces/definitions";
+import { ApiPromise } from "@polkadot/api";
+import { WeightV2 } from "@polkadot/types/interfaces";
+
+const doubleGasLimit = (
+  api: ApiPromise | ApiBase<'promise'>,
+  weight: WeightV2
+): WeightV2 => {
+  return api.registry.createType('WeightV2', {
+    refTime: weight.refTime.toBn().muln(2),
+    proofSize: weight.proofSize.toBn().muln(2),
+  }) as WeightV2;
+};
 
 export const useSubmitHandler = () => {
   const { api } = useApi();
@@ -21,12 +34,15 @@ export const useSubmitHandler = () => {
     const injector = await web3FromAddress(account.address);
     console.log("PinkValues", values);
     console.log("Estimations", estimation);
+
+    const newLimit = doubleGasLimit(api, estimation.gasRequired);
+
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
         contract.tx["pinkMint"](
           {
-            gasLimit: estimation.gasRequired,
-            storageDepositLimit: estimation.storageDeposit.asCharge,
+            gasLimit: newLimit,
+            storageDepositLimit: null,
             value: estimation.price,
           },
           values.contractType,
@@ -72,9 +88,8 @@ export const useSubmitHandler = () => {
                 const decoded = api.registry.findMetaError(
                   result.dispatchError.asModule
                 );
-                message = `${decoded.section.toUpperCase()}.${
-                  decoded.method
-                }: ${decoded.docs}`;
+                message = `${decoded.section.toUpperCase()}.${decoded.method
+                  }: ${decoded.docs}`;
               }
               setStatus({
                 finalized: true,
@@ -90,5 +105,8 @@ export const useSubmitHandler = () => {
     } catch (error) {
       console.error(error);
     }
+
+
   };
+
 };
