@@ -20,6 +20,7 @@ export interface PinkValues {
   prompt: string;
   contractType: number;
   ipfs: string;
+  aimodel: string;
 }
 
 export interface UIEvent {

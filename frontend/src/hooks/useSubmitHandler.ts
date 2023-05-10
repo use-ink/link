@@ -5,7 +5,6 @@ import { ApiBase, SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
 import { useEstimationContext, useLinkContract } from "../contexts";
 import { useApi, useExtension } from "useink";
-import { genericAsset } from "@polkadot/types/interfaces/definitions";
 import { ApiPromise } from "@polkadot/api";
 import { WeightV2 } from "@polkadot/types/interfaces";
 
