@@ -70,8 +70,8 @@ function useDryRun() {
           priceMessage.returnType,
           contract.abi.registry
         );
-        // const price: Balance = contract.api.createType("Balance", decodedPrice);
-        const price: Balance = contract.api.createType("Balance", "1000000000000000000");
+        const price: Balance = contract.api.createType("Balance", decodedPrice);
+        // const price: Balance = contract.api.createType("Balance", "1000000000000000000");
         console.log("price", price);
 
         // dry run pink_mint to get gasRequired and storageDeposit
