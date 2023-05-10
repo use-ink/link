@@ -5,7 +5,6 @@ import { useEstimationContext } from "../contexts";
 import { ChangeEvent, SetStateAction, useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
-import robot_bestia from "../robot-bestia.jpeg";
 import axios from 'axios';
 import { Buffer } from 'buffer';
 import { PINK_DESCRIPTION } from "../const";
@@ -141,15 +140,15 @@ export const GenerateForm = () => {
           <option value="" label="Select an AI model">
             Select a model{" "}
           </option>
+          <option value="https://api-inference.huggingface.co/models/Joeythemonster/anything-midjourney-v-4-1" label="Joeythemonster anything-midjourney v4.1">
+            Joeythemonster anything-midjourney v4.1
+          </option>
           <option value="https://api-inference.huggingface.co/models/CompVis/stable-diffusion-v1-4" label="CompVis stable-diffusion v1.4">
             {" "}
             red
           </option>
           <option value="https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2" label="stabilityai stable-diffusion v2.0">
             blue
-          </option>
-          <option value="https://api-inference.huggingface.co/models/Joeythemonster/anything-midjourney-v-4-1" label="Joeythemonster anything-midjourney v4.1">
-            Joeythemonster anything-midjourney v4.1
           </option>
         </select>
       </div>
