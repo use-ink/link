@@ -1,0 +1,592 @@
+{
+  "source": {
+    "hash": "0x43742ae681bc9ed039bd5c88470624d81c4da5d8fd9507bf64ce136c656cf3c0",
+    "language": "ink! 3.3.0",
+    "compiler": "rustc 1.64.0-nightly"
+  },
+  "contract": {
+    "name": "link",
+    "version": "0.1.0",
+    "authors": [
+      "Parity Technologies <admin@parity.io>"
+    ]
+  },
+  "V3": {
+    "spec": {
+      "constructors": [
+        {
+          "args": [],
+          "docs": [
+            "Construct a new contract and set the caller as an upgrader.",
+            "",
+            "The caller will be able to upgrade this contract to use any code. This requires",
+            "users of the contract to trust the upgrader. Probably a multisig should be used",
+            "for that reason. A truly trustless deployment should use the [`unstoppable`]",
+            "constructor."
+          ],
+          "label": "default",
+          "payable": false,
+          "selector": "0xed4b9d1b"
+        },
+        {
+          "args": [],
+          "docs": [
+            "Construct a new contract and don't set an upgrader.",
+            "",
+            "This prevents the contract from being changed and hence makes it truly",
+            "unstoppable."
+          ],
+          "label": "unstoppable",
+          "payable": false,
+          "selector": "0x80f86a83"
+        }
+      ],
+      "docs": [],
+      "events": [
+        {
+          "args": [
+            {
+              "docs": [
+                " The slug of the mapping."
+              ],
+              "indexed": false,
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "Slug"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "docs": [
+                " The URL that the slug maps to."
+              ],
+              "indexed": false,
+              "label": "url",
+              "type": {
+                "displayName": [
+                  "Url"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [
+            " A new slug mapping was created."
+          ],
+          "label": "Shortened"
+        },
+        {
+          "args": [
+            {
+              "docs": [
+                " The slug of the mapping."
+              ],
+              "indexed": false,
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "Slug"
+                ],
+                "type": 1
+              }
+            },
+            {
+              "docs": [
+                " The URL that the slug maps to."
+              ],
+              "indexed": false,
+              "label": "url",
+              "type": {
+                "displayName": [
+                  "Url"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [
+            " A pre-existing mapping was used."
+          ],
+          "label": "Deduplicated"
+        }
+      ],
+      "messages": [
+        {
+          "args": [
+            {
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "SlugCreationMode"
+                ],
+                "type": 6
+              }
+            },
+            {
+              "label": "url",
+              "type": {
+                "displayName": [
+                  "Url"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [
+            " Create a a new mapping or use an existing one."
+          ],
+          "label": "shorten",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 7
+          },
+          "selector": "0x92ccc180"
+        },
+        {
+          "args": [
+            {
+              "label": "slug",
+              "type": {
+                "displayName": [
+                  "Slug"
+                ],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [
+            " Resolve a slug to its mapped URL."
+          ],
+          "label": "resolve",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Option"
+            ],
+            "type": 10
+          },
+          "selector": "0x9e30d65d"
+        },
+        {
+          "args": [
+            {
+              "label": "code_hash",
+              "type": {
+                "displayName": [],
+                "type": 4
+              }
+            }
+          ],
+          "docs": [
+            " Change the code of this contract.",
+            "",
+            " This can only be called by the upgrader specified at contract construction.",
+            " The code cannot be changed in case no upgrader was set because the",
+            " [`unstoppable`] constructor was used."
+          ],
+          "label": "upgrade",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 11
+          },
+          "selector": "0x9852f7b0"
+        }
+      ]
+    },
+    "storage": {
+      "struct": {
+        "fields": [
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "ty": 0
+              }
+            },
+            "name": "urls"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0100000000000000000000000000000000000000000000000000000000000000",
+                "ty": 0
+              }
+            },
+            "name": "slugs"
+          },
+          {
+            "layout": {
+              "enum": {
+                "dispatchKey": "0x0200000000000000000000000000000000000000000000000000000000000000",
+                "variants": {
+                  "0": {
+                    "fields": [
+                      {
+                        "layout": {
+                          "cell": {
+                            "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
+                            "ty": 5
+                          }
+                        },
+                        "name": null
+                      }
+                    ]
+                  },
+                  "1": {
+                    "fields": []
+                  }
+                }
+              }
+            },
+            "name": "upgrader"
+          }
+        ]
+      }
+    },
+    "types": [
+      {
+        "id": 0,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "name": "offset_key",
+                  "type": 3,
+                  "typeName": "Key"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 1
+            },
+            {
+              "name": "V",
+              "type": 1
+            }
+          ],
+          "path": [
+            "ink_storage",
+            "lazy",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": {
+          "def": {
+            "primitive": "u8"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 4,
+                  "typeName": "[u8; 32]"
+                }
+              ]
+            }
+          },
+          "path": [
+            "ink_primitives",
+            "Key"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "type": {
+          "def": {
+            "array": {
+              "len": 32,
+              "type": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 4,
+                  "typeName": "[u8; 32]"
+                }
+              ]
+            }
+          },
+          "path": [
+            "ink_env",
+            "types",
+            "AccountId"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 1,
+                      "typeName": "Slug"
+                    }
+                  ],
+                  "index": 0,
+                  "name": "New"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 1,
+                      "typeName": "Slug"
+                    }
+                  ],
+                  "index": 1,
+                  "name": "DeduplicateOrNew"
+                },
+                {
+                  "index": 2,
+                  "name": "Deduplicate"
+                }
+              ]
+            }
+          },
+          "path": [
+            "link",
+            "link",
+            "SlugCreationMode"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 8
+                    }
+                  ],
+                  "index": 0,
+                  "name": "Ok"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 9
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Err"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 8
+            },
+            {
+              "name": "E",
+              "type": 9
+            }
+          ],
+          "path": [
+            "Result"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "index": 0,
+                  "name": "Shortened"
+                },
+                {
+                  "fields": [
+                    {
+                      "name": "slug",
+                      "type": 1,
+                      "typeName": "Slug"
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Deduplicated"
+                }
+              ]
+            }
+          },
+          "path": [
+            "link",
+            "link",
+            "ShorteningOutcome"
+          ]
+        }
+      },
+      {
+        "id": 9,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "index": 0,
+                  "name": "SlugUnavailable"
+                },
+                {
+                  "index": 1,
+                  "name": "SlugTooShort"
+                },
+                {
+                  "index": 2,
+                  "name": "UrlNotFound"
+                },
+                {
+                  "index": 3,
+                  "name": "UpgradeDenied"
+                },
+                {
+                  "index": 4,
+                  "name": "UpgradeFailed"
+                }
+              ]
+            }
+          },
+          "path": [
+            "link",
+            "link",
+            "Error"
+          ]
+        }
+      },
+      {
+        "id": 10,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "index": 0,
+                  "name": "None"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 1
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Some"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 1
+            }
+          ],
+          "path": [
+            "Option"
+          ]
+        }
+      },
+      {
+        "id": 11,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 12
+                    }
+                  ],
+                  "index": 0,
+                  "name": "Ok"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 9
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Err"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 12
+            },
+            {
+              "name": "E",
+              "type": 9
+            }
+          ],
+          "path": [
+            "Result"
+          ]
+        }
+      },
+      {
+        "id": 12,
+        "type": {
+          "def": {
+            "tuple": []
+          }
+        }
+      }
+    ]
+  }
+}

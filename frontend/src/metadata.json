@@ -1,592 +1,806 @@
 {
   "source": {
-    "hash": "0x43742ae681bc9ed039bd5c88470624d81c4da5d8fd9507bf64ce136c656cf3c0",
-    "language": "ink! 3.3.0",
-    "compiler": "rustc 1.64.0-nightly"
+    "hash": "0x5496a364d3ada561f70a0e9e7ee5f35cbeb2729d3edc4d224d78c0d1197d9624",
+    "language": "ink! 4.2.0",
+    "compiler": "rustc 1.68.0-nightly",
+    "build_info": {
+      "build_mode": "Release",
+      "cargo_contract_version": "2.1.0",
+      "rust_toolchain": "nightly-aarch64-apple-darwin",
+      "wasm_opt_settings": {
+        "keep_debug_symbols": false,
+        "optimization_passes": "Z"
+      }
+    }
   },
   "contract": {
-    "name": "link",
+    "name": "pinkrobot",
     "version": "0.1.0",
     "authors": [
-      "Parity Technologies <admin@parity.io>"
+      "[Mario] <[mario@arrakis.com]>"
     ]
   },
-  "V3": {
-    "spec": {
-      "constructors": [
-        {
-          "args": [],
-          "docs": [
-            "Construct a new contract and set the caller as an upgrader.",
-            "",
-            "The caller will be able to upgrade this contract to use any code. This requires",
-            "users of the contract to trust the upgrader. Probably a multisig should be used",
-            "for that reason. A truly trustless deployment should use the [`unstoppable`]",
-            "constructor."
+  "spec": {
+    "constructors": [
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "new",
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink_primitives",
+            "ConstructorResult"
           ],
-          "label": "default",
-          "payable": false,
-          "selector": "0xed4b9d1b"
+          "type": 4
         },
-        {
-          "args": [],
-          "docs": [
-            "Construct a new contract and don't set an upgrader.",
-            "",
-            "This prevents the contract from being changed and hence makes it truly",
-            "unstoppable."
-          ],
-          "label": "unstoppable",
-          "payable": false,
-          "selector": "0x80f86a83"
-        }
-      ],
-      "docs": [],
-      "events": [
-        {
-          "args": [
-            {
-              "docs": [
-                " The slug of the mapping."
-              ],
-              "indexed": false,
-              "label": "slug",
-              "type": {
-                "displayName": [
-                  "Slug"
-                ],
-                "type": 1
-              }
-            },
-            {
-              "docs": [
-                " The URL that the slug maps to."
-              ],
-              "indexed": false,
-              "label": "url",
-              "type": {
-                "displayName": [
-                  "Url"
-                ],
-                "type": 1
-              }
-            }
-          ],
-          "docs": [
-            " A new slug mapping was created."
-          ],
-          "label": "Shortened"
-        },
-        {
-          "args": [
-            {
-              "docs": [
-                " The slug of the mapping."
-              ],
-              "indexed": false,
-              "label": "slug",
-              "type": {
-                "displayName": [
-                  "Slug"
-                ],
-                "type": 1
-              }
-            },
-            {
-              "docs": [
-                " The URL that the slug maps to."
-              ],
-              "indexed": false,
-              "label": "url",
-              "type": {
-                "displayName": [
-                  "Url"
-                ],
-                "type": 1
-              }
-            }
-          ],
-          "docs": [
-            " A pre-existing mapping was used."
-          ],
-          "label": "Deduplicated"
-        }
-      ],
-      "messages": [
-        {
-          "args": [
-            {
-              "label": "slug",
-              "type": {
-                "displayName": [
-                  "SlugCreationMode"
-                ],
-                "type": 6
-              }
-            },
-            {
-              "label": "url",
-              "type": {
-                "displayName": [
-                  "Url"
-                ],
-                "type": 1
-              }
-            }
-          ],
-          "docs": [
-            " Create a a new mapping or use an existing one."
-          ],
-          "label": "shorten",
-          "mutates": true,
-          "payable": false,
-          "returnType": {
-            "displayName": [
-              "Result"
-            ],
-            "type": 7
-          },
-          "selector": "0x92ccc180"
-        },
-        {
-          "args": [
-            {
-              "label": "slug",
-              "type": {
-                "displayName": [
-                  "Slug"
-                ],
-                "type": 1
-              }
-            }
-          ],
-          "docs": [
-            " Resolve a slug to its mapped URL."
-          ],
-          "label": "resolve",
-          "mutates": false,
-          "payable": false,
-          "returnType": {
-            "displayName": [
-              "Option"
-            ],
-            "type": 10
-          },
-          "selector": "0x9e30d65d"
-        },
-        {
-          "args": [
-            {
-              "label": "code_hash",
-              "type": {
-                "displayName": [],
-                "type": 4
-              }
-            }
-          ],
-          "docs": [
-            " Change the code of this contract.",
-            "",
-            " This can only be called by the upgrader specified at contract construction.",
-            " The code cannot be changed in case no upgrader was set because the",
-            " [`unstoppable`] constructor was used."
-          ],
-          "label": "upgrade",
-          "mutates": true,
-          "payable": false,
-          "returnType": {
-            "displayName": [
-              "Result"
-            ],
-            "type": 11
-          },
-          "selector": "0x9852f7b0"
-        }
-      ]
+        "selector": "0x9bae9d5e"
+      }
+    ],
+    "docs": [],
+    "environment": {
+      "accountId": {
+        "displayName": [
+          "AccountId"
+        ],
+        "type": 0
+      },
+      "balance": {
+        "displayName": [
+          "Balance"
+        ],
+        "type": 3
+      },
+      "blockNumber": {
+        "displayName": [
+          "BlockNumber"
+        ],
+        "type": 14
+      },
+      "chainExtension": {
+        "displayName": [
+          "ChainExtension"
+        ],
+        "type": 19
+      },
+      "hash": {
+        "displayName": [
+          "Hash"
+        ],
+        "type": 17
+      },
+      "maxEventTopics": 4,
+      "timestamp": {
+        "displayName": [
+          "Timestamp"
+        ],
+        "type": 18
+      }
     },
-    "storage": {
-      "struct": {
-        "fields": [
+    "events": [],
+    "lang_error": {
+      "displayName": [
+        "ink",
+        "LangError"
+      ],
+      "type": 6
+    },
+    "messages": [
+      {
+        "args": [
           {
-            "layout": {
-              "cell": {
-                "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
-                "ty": 0
-              }
-            },
-            "name": "urls"
+            "label": "entry",
+            "type": {
+              "displayName": [
+                "u8"
+              ],
+              "type": 2
+            }
           },
           {
-            "layout": {
-              "cell": {
-                "key": "0x0100000000000000000000000000000000000000000000000000000000000000",
-                "ty": 0
-              }
-            },
-            "name": "slugs"
-          },
-          {
-            "layout": {
-              "enum": {
-                "dispatchKey": "0x0200000000000000000000000000000000000000000000000000000000000000",
-                "variants": {
-                  "0": {
-                    "fields": [
-                      {
-                        "layout": {
-                          "cell": {
-                            "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
-                            "ty": 5
-                          }
-                        },
-                        "name": null
-                      }
-                    ]
-                  },
-                  "1": {
-                    "fields": []
-                  }
-                }
-              }
-            },
-            "name": "upgrader"
+            "label": "contract",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
           }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "add_new_contract",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 7
+        },
+        "selector": "0xbe772e22"
+      },
+      {
+        "args": [
+          {
+            "label": "price",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "set_price",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 7
+        },
+        "selector": "0x3df958af"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "get_price",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 10
+        },
+        "selector": "0xf23d4b6c"
+      },
+      {
+        "args": [
+          {
+            "label": "entry",
+            "type": {
+              "displayName": [
+                "u8"
+              ],
+              "type": 2
+            }
+          },
+          {
+            "label": "metadata",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 11
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "pink_mint",
+        "mutates": true,
+        "payable": true,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 7
+        },
+        "selector": "0xd4bd96e5"
+      },
+      {
+        "args": [
+          {
+            "label": "entry",
+            "type": {
+              "displayName": [
+                "u8"
+              ],
+              "type": 2
+            }
+          },
+          {
+            "label": "user",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "balance_of",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 12
+        },
+        "selector": "0x0f755a56"
+      },
+      {
+        "args": [
+          {
+            "label": "entry",
+            "type": {
+              "displayName": [
+                "u8"
+              ],
+              "type": 2
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Simply returns the current value of our `bool`."
+        ],
+        "label": "get_contract",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 15
+        },
+        "selector": "0x4be1ea76"
+      }
+    ]
+  },
+  "storage": {
+    "root": {
+      "layout": {
+        "struct": {
+          "fields": [
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 0
+                }
+              },
+              "name": "owner"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x6491d12e",
+                      "ty": 0
+                    }
+                  },
+                  "root_key": "0x6491d12e"
+                }
+              },
+              "name": "contracts_map"
+            },
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 3
+                }
+              },
+              "name": "price"
+            }
+          ],
+          "name": "Pinkrobot"
+        }
+      },
+      "root_key": "0x00000000"
+    }
+  },
+  "types": [
+    {
+      "id": 0,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 1,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "AccountId"
         ]
       }
     },
-    "types": [
-      {
-        "id": 0,
-        "type": {
-          "def": {
-            "composite": {
-              "fields": [
-                {
-                  "name": "offset_key",
-                  "type": 3,
-                  "typeName": "Key"
-                }
-              ]
-            }
-          },
-          "params": [
-            {
-              "name": "K",
-              "type": 1
-            },
-            {
-              "name": "V",
-              "type": 1
-            }
-          ],
-          "path": [
-            "ink_storage",
-            "lazy",
-            "mapping",
-            "Mapping"
-          ]
-        }
-      },
-      {
-        "id": 1,
-        "type": {
-          "def": {
-            "sequence": {
-              "type": 2
-            }
-          }
-        }
-      },
-      {
-        "id": 2,
-        "type": {
-          "def": {
-            "primitive": "u8"
-          }
-        }
-      },
-      {
-        "id": 3,
-        "type": {
-          "def": {
-            "composite": {
-              "fields": [
-                {
-                  "type": 4,
-                  "typeName": "[u8; 32]"
-                }
-              ]
-            }
-          },
-          "path": [
-            "ink_primitives",
-            "Key"
-          ]
-        }
-      },
-      {
-        "id": 4,
-        "type": {
-          "def": {
-            "array": {
-              "len": 32,
-              "type": 2
-            }
-          }
-        }
-      },
-      {
-        "id": 5,
-        "type": {
-          "def": {
-            "composite": {
-              "fields": [
-                {
-                  "type": 4,
-                  "typeName": "[u8; 32]"
-                }
-              ]
-            }
-          },
-          "path": [
-            "ink_env",
-            "types",
-            "AccountId"
-          ]
-        }
-      },
-      {
-        "id": 6,
-        "type": {
-          "def": {
-            "variant": {
-              "variants": [
-                {
-                  "fields": [
-                    {
-                      "type": 1,
-                      "typeName": "Slug"
-                    }
-                  ],
-                  "index": 0,
-                  "name": "New"
-                },
-                {
-                  "fields": [
-                    {
-                      "type": 1,
-                      "typeName": "Slug"
-                    }
-                  ],
-                  "index": 1,
-                  "name": "DeduplicateOrNew"
-                },
-                {
-                  "index": 2,
-                  "name": "Deduplicate"
-                }
-              ]
-            }
-          },
-          "path": [
-            "link",
-            "link",
-            "SlugCreationMode"
-          ]
-        }
-      },
-      {
-        "id": 7,
-        "type": {
-          "def": {
-            "variant": {
-              "variants": [
-                {
-                  "fields": [
-                    {
-                      "type": 8
-                    }
-                  ],
-                  "index": 0,
-                  "name": "Ok"
-                },
-                {
-                  "fields": [
-                    {
-                      "type": 9
-                    }
-                  ],
-                  "index": 1,
-                  "name": "Err"
-                }
-              ]
-            }
-          },
-          "params": [
-            {
-              "name": "T",
-              "type": 8
-            },
-            {
-              "name": "E",
-              "type": 9
-            }
-          ],
-          "path": [
-            "Result"
-          ]
-        }
-      },
-      {
-        "id": 8,
-        "type": {
-          "def": {
-            "variant": {
-              "variants": [
-                {
-                  "index": 0,
-                  "name": "Shortened"
-                },
-                {
-                  "fields": [
-                    {
-                      "name": "slug",
-                      "type": 1,
-                      "typeName": "Slug"
-                    }
-                  ],
-                  "index": 1,
-                  "name": "Deduplicated"
-                }
-              ]
-            }
-          },
-          "path": [
-            "link",
-            "link",
-            "ShorteningOutcome"
-          ]
-        }
-      },
-      {
-        "id": 9,
-        "type": {
-          "def": {
-            "variant": {
-              "variants": [
-                {
-                  "index": 0,
-                  "name": "SlugUnavailable"
-                },
-                {
-                  "index": 1,
-                  "name": "SlugTooShort"
-                },
-                {
-                  "index": 2,
-                  "name": "UrlNotFound"
-                },
-                {
-                  "index": 3,
-                  "name": "UpgradeDenied"
-                },
-                {
-                  "index": 4,
-                  "name": "UpgradeFailed"
-                }
-              ]
-            }
-          },
-          "path": [
-            "link",
-            "link",
-            "Error"
-          ]
-        }
-      },
-      {
-        "id": 10,
-        "type": {
-          "def": {
-            "variant": {
-              "variants": [
-                {
-                  "index": 0,
-                  "name": "None"
-                },
-                {
-                  "fields": [
-                    {
-                      "type": 1
-                    }
-                  ],
-                  "index": 1,
-                  "name": "Some"
-                }
-              ]
-            }
-          },
-          "params": [
-            {
-              "name": "T",
-              "type": 1
-            }
-          ],
-          "path": [
-            "Option"
-          ]
-        }
-      },
-      {
-        "id": 11,
-        "type": {
-          "def": {
-            "variant": {
-              "variants": [
-                {
-                  "fields": [
-                    {
-                      "type": 12
-                    }
-                  ],
-                  "index": 0,
-                  "name": "Ok"
-                },
-                {
-                  "fields": [
-                    {
-                      "type": 9
-                    }
-                  ],
-                  "index": 1,
-                  "name": "Err"
-                }
-              ]
-            }
-          },
-          "params": [
-            {
-              "name": "T",
-              "type": 12
-            },
-            {
-              "name": "E",
-              "type": 9
-            }
-          ],
-          "path": [
-            "Result"
-          ]
-        }
-      },
-      {
-        "id": 12,
-        "type": {
-          "def": {
-            "tuple": []
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "array": {
+            "len": 32,
+            "type": 2
           }
         }
       }
-    ]
-  }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "primitive": "u8"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "primitive": "u128"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 5
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 6
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 5
+          },
+          {
+            "name": "E",
+            "type": 6
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "type": {
+        "def": {
+          "tuple": []
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 1,
+                "name": "CouldNotReadInput"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "LangError"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 6
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 8
+          },
+          {
+            "name": "E",
+            "type": 6
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 5
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 5
+          },
+          {
+            "name": "E",
+            "type": 9
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "NotOwner"
+              },
+              {
+                "index": 1,
+                "name": "FailedToGetContract"
+              },
+              {
+                "index": 2,
+                "name": "FailedToCallContract"
+              },
+              {
+                "index": 3,
+                "name": "BadMintingFee"
+              }
+            ]
+          }
+        },
+        "path": [
+          "pinkrobot",
+          "pinkrobot",
+          "Error"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 3
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 6
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 3
+          },
+          {
+            "name": "E",
+            "type": 6
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 13
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 6
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 13
+          },
+          {
+            "name": "E",
+            "type": 6
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 14
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 14
+          },
+          {
+            "name": "E",
+            "type": 9
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "type": {
+        "def": {
+          "primitive": "u32"
+        }
+      }
+    },
+    {
+      "id": 15,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 16
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 6
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 16
+          },
+          {
+            "name": "E",
+            "type": 6
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 0
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 0
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 1,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "Hash"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "type": {
+        "def": {
+          "primitive": "u64"
+        }
+      }
+    },
+    {
+      "id": 19,
+      "type": {
+        "def": {
+          "variant": {}
+        },
+        "path": [
+          "ink_env",
+          "types",
+          "NoChainExtension"
+        ]
+      }
+    }
+  ],
+  "version": "4"
 }

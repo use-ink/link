@@ -1,30 +1,29 @@
-import { UIEvent } from "../types";
-import { Link } from "react-router-dom";
+import { PinkValues, UIEvent } from "../types";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
+import { useFormikContext } from "formik";
 
 interface Props {
-  slug: string;
   events: UIEvent[];
   errorMessage: string;
 }
 
-export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
+export const SubmitResult = ({ events, errorMessage }: Props) => {
   const [submitOutcome, setSubmitOutcome] = useState("");
+  const { values } = useFormikContext<PinkValues>();
+
   useEffect(() => {
     events.forEach((e) => {
-      if (e.name === "Shortened") {
-        setSubmitOutcome("Your link was shortened to the following url:");
-      }
-      if (e.name === "Deduplicated") {
-        setSubmitOutcome(
-          "We already have a mapping for your URL. The existing slug will be used."
-        );
-      }
+      console.log("SubmitResult event:", e);
       if (e.name === "system:ExtrinsicFailed") {
         setSubmitOutcome(
-          "The transaction was not successful. Try again with another slug."
+          "The transaction was not successful. Try again with another Pink Robot."
+        );
+      }
+      if (e.name === "system:ExtrinsicSuccess") {
+        setSubmitOutcome(
+          "Hurray! Your Pink Robot is now on the blockchain. Find it on marketplace."
         );
       }
     });
@@ -32,22 +31,15 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
 
   return (
     <>
-      <div className="submit-outcome">
-        <div className="mb-3">{submitOutcome}</div>
-        {slug && (
-          <Link to={`/${slug}`}>{`${window.location.host}/${slug}`}</Link>
-        )}
-      </div>
-
+      <div className="submit-outcome">{submitOutcome}</div>
       <Disclosure>
         {({ open }) => (
           <>
             <Disclosure.Button className="disclosure-button">
               <span>Events log</span>
               <ChevronUpIcon
-                className={`${
-                  open ? "rotate-180 transform" : ""
-                } h-5 w-5 text-purple-500`}
+                className={`${open ? "rotate-180 transform" : ""
+                  } h-5 w-5 text-purple-500`}
               />
             </Disclosure.Button>
             <Disclosure.Panel className="disclosure-panel">
@@ -71,9 +63,8 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
               <Disclosure.Button className="disclosure-button">
                 <span>Error log</span>
                 <ChevronUpIcon
-                  className={`${
-                    open ? "rotate-180 transform" : ""
-                  } h-5 w-5 text-purple-500`}
+                  className={`${open ? "rotate-180 transform" : ""
+                    } h-5 w-5 text-purple-500`}
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="disclosure-panel">
@@ -83,9 +74,10 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
           )}
         </Disclosure>
       )}
+      <img src={values.aiImage} className="pink-example" alt="minted nft" />{" "}
       <div>
         <button onClick={() => window.location.reload()}>
-          Shorten another
+          Try another
         </button>
       </div>
     </>

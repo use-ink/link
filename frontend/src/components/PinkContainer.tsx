@@ -19,7 +19,7 @@ export const PinkContainer = () => {
         }}
       >
         {({
-          status: { finalized, events, slug, errorMessage } = {},
+          status: { finalized, events, errorMessage } = {},
           isSubmitting,
         }) => {
           return (
@@ -27,12 +27,11 @@ export const PinkContainer = () => {
               <Header />
               <div className="content">
                 <div className="form-panel">
-                  <h2>Describe pink robot</h2>
+                  <h2>Pink Robot</h2>
                   <br />
                   {finalized ? (
                     <SubmitResult
                       events={events}
-                      slug={slug}
                       errorMessage={errorMessage}
                     />
                   ) : (

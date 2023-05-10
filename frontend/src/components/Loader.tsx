@@ -1,4 +1,4 @@
-import squid from "../squid.svg";
+// import squid from "../squid.svg";
 
 export const Loader = ({ message }: { message: string }) => {
   return (
@@ -21,7 +21,7 @@ export const Loader = ({ message }: { message: string }) => {
           <div className="tag-line">
             {/* <div>
               {" "}
-              The unstoppable link shortener build with the{" "}
+              Pink Robot{" "}
               <a
                 href="https://github.com/paritytech/ink"
                 target="_blank"
