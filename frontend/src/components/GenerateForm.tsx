@@ -27,10 +27,10 @@ export const GenerateForm = () => {
 
   const isOkToMint =
     !isEstimating
-  // &&
-  // estimation &&
-  // estimation.result &&
-  // "Ok" in estimation.result 
+    &&
+    estimation &&
+    estimation.result &&
+    "Ok" in estimation.result
 
 
   const fetchImage = async () => {
@@ -162,7 +162,7 @@ export const GenerateForm = () => {
             waitingHuggingFace || isSubmitting || !isValid || !accounts || !hasFunds
           }
         >
-          Genetate New
+          Generate New
         </button>
       </div>
 
@@ -215,6 +215,15 @@ export const GenerateForm = () => {
           <>
             <div className="mb-1">
               <p className="mb-1">Uploading image to IPFS storage</p>
+            </div>
+          </>
+        )}
+      </div>
+      <div className="group">
+        {isSubmitting && (
+          <>
+            <div className="mb-1">
+              <p className="mb-1">Minting NFT on Astar</p>
             </div>
           </>
         )}

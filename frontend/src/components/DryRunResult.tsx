@@ -68,12 +68,12 @@ export function DryRunResult({ values, isValid }: Props) {
   return estimation ? (
     <div className="estimations">
       <div>
-        {estimation.result && "Ok" in estimation.result &&
-          typeof estimation.result.Ok === "object" ? (
-          // <Deduplicated slug={estimation.result.Ok.Deduplicated.slug} />
+        {estimation.result && "Ok" in estimation.result 
+          // && typeof estimation.result.Ok === "object" 
+          ? (
           <Fees estimation={estimation} />
           ) : (
-          <p>minting...</p>
+          <p>Error in estimation</p>
         )}
       </div>
     </div>

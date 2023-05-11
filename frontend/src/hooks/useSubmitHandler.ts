@@ -33,15 +33,16 @@ export const useSubmitHandler = () => {
     const injector = await web3FromAddress(account.address);
     console.log("PinkValues", values);
     console.log("Estimations", estimation);
+    console.log("Estimations.storageDeposit", estimation.storageDeposit.asCharge.toNumber());
 
-    const newLimit = doubleGasLimit(api, estimation.gasRequired);
+    // const newLimit = doubleGasLimit(api, estimation.gasRequired);
 
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
         contract.tx["pinkMint"](
           {
-            gasLimit: newLimit,
-            storageDepositLimit: null,
+            gasLimit: estimation.gasRequired,
+            storageDepositLimit: estimation.storageDeposit.asCharge,
             value: estimation.price,
           },
           values.contractType,

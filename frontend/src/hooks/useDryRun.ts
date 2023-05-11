@@ -4,11 +4,11 @@ import type {
   ContractExecResult,
   Balance,
 } from "@polkadot/types/interfaces";
-import { dryRunCallerAddress } from "../const";
+import { dryRunCallerAddress, BN_ZERO } from "../const";
 import { Estimation } from "../types";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { getDecodedOutput, getDecodedPrice } from "../helpers";
+import { checkDecodedOk, getDecodedOutput, getDecodedPrice } from "../helpers";
 import { useApi, useExtension } from "useink";
 import { useLinkContract } from "../contexts";
 
@@ -41,9 +41,9 @@ function useDryRun() {
       const { freeBalance } = await api.derive.balances.account(
         account.address
       );
-      setBalance(freeBalance?.div(new BN(10).pow(new BN(18))));
+      setBalance(freeBalance);
       console.log("connected account", account.address);
-      console.log("balance", freeBalance.div(new BN(10).pow(new BN(18))));
+      console.log("balance", freeBalance);
     };
     getBalance().catch((e) => console.error(e));
   }, [api, account]);
@@ -71,21 +71,21 @@ function useDryRun() {
           contract.abi.registry
         );
         const price: Balance = contract.api.createType("Balance", decodedPrice);
-        // const price: Balance = contract.api.createType("Balance", "1000000000000000000");
+        // const price: Balance = contract.api.createType("Balance", "100000000000000");
         console.log("price", price);
 
         // dry run pink_mint to get gasRequired and storageDeposit
         const message = contract.abi.findMessage("pinkMint");
         console.log("minting params", params);
-        // console.log("message", message);
         const inputData = message.toU8a(params);
-        // console.log("inputData", inputData);
 
         const { storageDeposit, gasRequired, result, debugMessage } =
           await api.call.contractsApi.call<ContractExecResult>(
             account?.address,
             contract.address,
-            0,
+            message?.isPayable
+              ? api.registry.createType('Balance', price)
+              : api.registry.createType('Balance', BN_ZERO),
             null,
             null,
             inputData
@@ -101,6 +101,17 @@ function useDryRun() {
         );
         console.log("decodedOutput for pink_mint dry-run", decodedOutput);
 
+        if (decodedOutput && "Ok" in decodedOutput
+          //  && typeof decodedOutput.Ok === "object"
+        ) {
+          console.log("decodedOutput ok", decodedOutput.Ok);
+        }
+        if (decodedOutput && "Err" in decodedOutput
+          // && typeof decodedOutput.Err === "object"
+        ) {
+          console.log("decodedOutput Err", decodedOutput.Err);
+        }
+
         const tx = contract.tx["pinkMint"](
           {
             gasLimit: gasRequired,
@@ -111,7 +122,6 @@ function useDryRun() {
         );
 
         const { partialFee } = await tx.paymentInfo(dryRunCallerAddress);
-
         // calculate total cost for minting
         const cost = partialFee
           .add(price)
@@ -126,6 +136,26 @@ function useDryRun() {
             partialFee,
             result: decodedOutput!,
             error: { message: decodeError(result.asErr, api) },
+            price,
+            total,
+          };
+        }
+
+        const ErrFoundInDecodedOk = checkDecodedOk(
+          result,
+          message.returnType,
+          contract.abi.registry
+        );
+
+        if (result.isOk && ErrFoundInDecodedOk) {
+          return {
+            gasRequired,
+            storageDeposit,
+            partialFee,
+            result: decodedOutput!,
+            error: {
+              message: "Dry-run error (" + ErrFoundInDecodedOk + "). Cost estimation might be wrong"
+            },
             price,
             total,
           };
