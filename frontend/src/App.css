@@ -211,3 +211,7 @@ h1 {
 .show {
   display: block;
 }
+
+.loader-animation {
+  @apply mb-2;
+}

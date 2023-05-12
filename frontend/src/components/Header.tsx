@@ -22,8 +22,8 @@ export const Header = () => {
             )}
             <button
               onClick={disconnect}
-              className="py-1 px-2 mt-6 text-xs bg-gray-800 bg-opacity-0 text-gray-300 hover:bg-gray-800 hover:bg-opacity-0 relative left-[4px]"
-              title="disconnect extension"
+              className="py-1 px-2 mt-6 text-xs bg-gray-800 bg-opacity-0 text-gray-300 hover:bg-gray-800 hover:bg-opacity-0"
+              title="Disconnect extension"
             >
               <XCircleIcon
                 className="h-5 w-5 text-gray-400"

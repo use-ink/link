@@ -67,7 +67,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
       setImageData(response.data);
 
     } catch (error) {
-      // Todo - notify user
+      // Todo - notify user about error
       console.error(error);
     } finally {
       setWaitinghuggingFace(false);
@@ -133,7 +133,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
       </div>
 
       <div className="group">
-        <label htmlFor="email">
+        <label htmlFor="aimodel">
           A.I. Model
         </label>
         <select
