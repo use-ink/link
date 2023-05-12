@@ -172,11 +172,11 @@ h1 {
 }
 
 .error-message {
- @apply absolute bottom-4 text-red-500 text-xs
+ @apply text-red-500 text-xs text-left
 }
 
 .group {
-  @apply relative pb-7
+  @apply pb-7
 }
 .group:last-child {
   @apply relative pb-2
@@ -202,4 +202,12 @@ h1 {
 }
 .user-guide {
   @apply text-xs text-gray-300 text-left;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
 }

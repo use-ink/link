@@ -11,7 +11,7 @@ import { PINK_DESCRIPTION } from "../const";
 import { NFTStorage, File } from 'nft.storage'
 
 
-export const GenerateForm = () => {
+export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<PinkValues>();
   const { estimation, isEstimating } = useEstimationContext();
@@ -39,7 +39,9 @@ export const GenerateForm = () => {
     console.log("prompt:", "pink robot, " + values.prompt);
 
     try {
+      setIsBusy('Generating your pink robot. This might take a while...')
       setWaitinghuggingFace(true);
+      setIsGenerated(false);
       const response = await axios({
         url: model,
         method: 'POST',
@@ -61,14 +63,17 @@ export const GenerateForm = () => {
       const aiImage = `data:${contentType};base64,` + base64data;
       values.aiImage = aiImage;
       console.log("aiImage", aiImage ? "generated" : "empty");
-      setIsGenerated(true)
+      setIsGenerated(true);
       setImageData(response.data);
 
     } catch (error) {
+      // Todo - notify user
       console.error(error);
-
+    } finally {
+      setWaitinghuggingFace(false);
+      setIsBusy('');
     }
-    setWaitinghuggingFace(false);
+    
   };
 
   const uploadImage = async () => {
@@ -124,7 +129,7 @@ export const GenerateForm = () => {
             handleChange(e);
           }}
         />
-        <ErrorMessage name="url" component="div" className="error-message" />
+        <ErrorMessage name="prompt" component="div" className="error-message" />
       </div>
 
       <div className="group">
@@ -137,9 +142,6 @@ export const GenerateForm = () => {
           onChange={modelChanged}
           style={{ display: "block" }}
         >
-          <option value="" label="Select an AI model">
-            Select a model{" "}
-          </option>
           <option value="https://api-inference.huggingface.co/models/Joeythemonster/anything-midjourney-v-4-1" label="Joeythemonster anything-midjourney v4.1">
             Joeythemonster anything-midjourney v4.1
           </option>
