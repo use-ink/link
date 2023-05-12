@@ -1,0 +1,55 @@
+name: Contract check
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  contract-check:
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: contract
+    steps:
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@b2417cde72dcf67f306c0ae8e0828a81bf0b189f # v1.0.7
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Install Rust nightly toolchain
+        uses: actions-rs/toolchain@b2417cde72dcf67f306c0ae8e0828a81bf0b189f # v1.0.7
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+
+      - name: Cache Dependencies & Build Outputs
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install cargo-contract
+        uses: baptiste0928/cargo-install@bf6758885262d0e6f61089a9d8c8790d3ac3368f #v1.3.0
+        with:
+          crate: cargo-contract
+          version: "2.0.0-rc"
+
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
+      - name: Run contract check
+        shell: bash
+        run: |
+          cargo add ink_env --git https://github.com/paritytech/ink --tag v3.4.0
+          cargo +nightly add ink_env --git https://github.com/paritytech/ink --tag v3.4.0
+          cargo +nightly contract check
