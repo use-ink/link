@@ -7,7 +7,7 @@ export function AccountsDropdown() {
   const { accounts, account, setAccount } = useExtension();
 
   return (
-    <div className="fixed top-8 right-16 w-60">
+    <div className="w-60">
       <Listbox
         value={account}
         onChange={(a) => {

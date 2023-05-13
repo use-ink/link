@@ -7,13 +7,15 @@ import { useFormikContext } from "formik";
 interface Props {
   events: UIEvent[];
   errorMessage: string;
+  hideBusyMessage: Function;
 }
 
-export const SubmitResult = ({ events, errorMessage }: Props) => {
+export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) => {
   const [submitOutcome, setSubmitOutcome] = useState("");
   const { values } = useFormikContext<PinkValues>();
 
   useEffect(() => {
+    hideBusyMessage()
     events.forEach((e) => {
       console.log("SubmitResult event:", e);
       if (e.name === "system:ExtrinsicFailed") {

@@ -11,6 +11,8 @@ export const PinkContainer = () => {
   const submitFn = useSubmitHandler();
   const [busyMessage, setBusyMessage] = useState<string>("");
 
+  const notBusyAnymore = () => setBusyMessage("");
+
   return (
     <div className="App">
       <Formik
@@ -25,9 +27,7 @@ export const PinkContainer = () => {
             await submitFn(values, helpers);
           } catch (err) {
             // TODO do something
-          } finally {
             setBusyMessage("");
-            // TODO not ideal because the message will be lost during minting
           }
         }}
       >
@@ -49,6 +49,7 @@ export const PinkContainer = () => {
                       <SubmitResult
                         events={events}
                         errorMessage={errorMessage}
+                        hideBusyMessage={notBusyAnymore}
                       />
                     ) : (
                       <GenerateForm setIsBusy={setBusyMessage} />
