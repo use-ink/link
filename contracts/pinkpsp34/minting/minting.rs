@@ -34,16 +34,21 @@ where
     /// Mint one token to the specified account.
     #[modifiers(only_owner)]
     default fn mint(&mut self, to: AccountId, metadata: String) -> Result<Id, Error> {
-        ink::env::debug_println!("PinkMint::pink_mint {:?} {:?}", to, metadata);
         self._check_amount(1)?;
         let minted_id = self._mint(to)?;
-        ink::env::debug_println!("PSPMint minted_id {:?}", minted_id);
 
         self.data::<MintingData>()
             .nft_metadata
             .insert(minted_id.clone(), &metadata);
 
         Ok(minted_id)
+    }
+
+    /// Get max supply of tokens.
+    #[modifiers(only_owner)]
+    default fn set_max_supply(&mut self, max_supply: Option<u64>) -> Result<(), Error> {
+        self.data::<MintingData>().max_supply = max_supply;
+        Ok(())
     }
 
     /// Get max supply of tokens.
