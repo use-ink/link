@@ -1,18 +1,21 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![feature(min_specialization)]
 
-pub use self::pinkpsp34::{PinkPsp34, PinkPsp34Ref};
+pub use self::pinkpsp34::PinkPsp34Ref;
 
 #[openbrush::contract]
 pub mod pinkpsp34 {
     use ink::codegen::{EmitEvent, Env};
+    use ink::storage::Mapping;
+    use ink::prelude::vec::Vec;
 
-    use openbrush::contracts::ownable::*;
-    use openbrush::contracts::psp34::extensions::burnable::*;
-    use openbrush::contracts::psp34::extensions::enumerable::*;
-    use openbrush::contracts::psp34::extensions::metadata::*;
-    use openbrush::traits::Storage;
-    use openbrush::traits::String;
+    use openbrush::contracts::psp34;
+    use openbrush::contracts::{
+        ownable::*,
+        psp34::extensions::{burnable::*, enumerable::*, metadata::*},
+    };
+
+    use openbrush::traits::{Storage, String};
 
     use psp34_minting::minting::*;
     use psp34_minting::traits::*;
@@ -28,6 +31,7 @@ pub mod pinkpsp34 {
         metadata: metadata::Data,
         #[storage_field]
         pinkmint: MintingData,
+        holders: Mapping<AccountId, Vec<Id>>,
     }
 
     /// Event emitted when a token transfer occurs.
@@ -77,6 +81,26 @@ pub mod pinkpsp34 {
             instance.pinkmint.last_token_id = 0;
             instance
         }
+
+        #[ink(message)]
+        pub fn total_balance(&self, holder: AccountId) -> Vec<Id> {
+            self.holders.get(&holder).unwrap_or(Vec::new())
+        }
+
+        /// Modifies the code which is used to execute calls to this contract address (`AccountId`).
+        ///
+        /// We use this to upgrade the contract logic. We don't do any authorization here, any caller
+        /// can execute this method. In a production contract you would do some authorization here.
+        #[ink(message)]
+        pub fn set_code(&mut self, code_hash: [u8; 32]) {
+            ink::env::set_code_hash(&code_hash).unwrap_or_else(|err| {
+                panic!(
+                    "Failed to `set_code_hash` to {:?} due to {:?}",
+                    code_hash, err
+                )
+            });
+            ink::env::debug_println!("Switched code hash to {:?}.", code_hash);
+        }
     }
 
     // Override event emission methods
@@ -100,12 +124,48 @@ pub mod pinkpsp34 {
             });
         }
     }
+
+    // Override transfer
+    impl psp34::Transfer for PinkPsp34 {
+        fn _before_token_transfer(
+            &mut self,
+            from: Option<&AccountId>,
+            to: Option<&AccountId>,
+            id: &Id,
+        ) -> Result<(), PSP34Error> {
+            if from.is_some() {
+                // Transfer or burning. Remove from `from`
+                let current_owner =
+                    from.ok_or(PSP34Error::Custom(String::from("ErrorUnwrappingFrom")))?;
+                let mut holder_vec = self.holders.get(current_owner).unwrap_or(Vec::new());
+                let index = holder_vec
+                    .iter()
+                    .position(|a| *a == *id)
+                    .ok_or(PSP34Error::Custom(String::from("ErrorUnwrappingHolderVec")))?;
+                holder_vec.remove(index);
+                self.holders.insert(current_owner, &holder_vec);
+            }
+
+            if to.is_some() {
+                // Mint or Transfer. Add to `to`
+                let destination =
+                    to.ok_or(PSP34Error::Custom(String::from("ErrorUnwrappingTo")))?;
+                let mut holder_vec = self.holders.get(destination).unwrap_or(Vec::new());
+                holder_vec.push(id.clone());
+                self.holders.insert(destination, &holder_vec);
+            }
+
+            Ok(())
+        }
+    }
+
     // ------------------- T E S T -----------------------------------------------------
     #[cfg(test)]
     mod tests {
         use super::*;
         use ink::{env::test, prelude::string::String as PreludeString};
         use psp34_minting::internal::*;
+        use psp34_minting::traits::PinkMint;
 
         const MAX_SUPPLY: u64 = 10;
         const NAME: &str = "PinkPsp34";
@@ -200,6 +260,37 @@ pub mod pinkpsp34 {
         }
 
         #[ink::test]
+        fn total_balance_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+
+            // Owner mints two for Bob
+            set_sender(accounts.alice);
+            assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
+            assert_eq!(pink34.total_balance(accounts.bob), vec![Id::U64(1)]);
+            assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(2)));
+            assert_eq!(
+                pink34.total_balance(accounts.bob),
+                vec![Id::U64(1), Id::U64(2)]
+            );
+
+            // Bob transfers one to Charlie
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.transfer(accounts.charlie, Id::U64(1), vec![]),
+                Ok(())
+            );
+            assert_eq!(pink34.total_balance(accounts.bob), vec![Id::U64(2)]);
+            assert_eq!(pink34.total_balance(accounts.charlie), vec![Id::U64(1)]);
+
+            // Bob burns last one
+            assert_eq!(pink34.burn(accounts.bob, Id::U64(2)), Ok(()));
+            assert_eq!(pink34.total_balance(accounts.bob), vec![]);
+            assert_eq!(pink34.balance_of(accounts.bob), 0);
+        }
+
+        #[ink::test]
         fn change_owner_works() {
             let mut pink34 = init();
             let accounts = default_accounts();
@@ -221,6 +312,24 @@ pub mod pinkpsp34 {
                 pink34.mint(accounts.alice, token_uri),
                 Err(Error::Ownable(OwnableError::CallerIsNotOwner))
             );
+        }
+
+        #[ink::test]
+        fn set_max_supply_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+
+            // Bob fails to change max supply
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.set_max_supply(Some(320)),
+                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
+            );
+
+            // Alice changes max supply
+            set_sender(accounts.alice);
+            assert_eq!(pink34.set_max_supply(Some(321)), Ok(()));
+            assert_eq!(pink34.max_supply(), Some(321));
         }
 
         #[ink::test]

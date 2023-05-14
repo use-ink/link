@@ -2597,6 +2597,7 @@ version = "0.1.0"
 dependencies = [
  "ink",
  "ink_e2e",
+ "openbrush",
  "parity-scale-codec",
  "pinkpsp34",
  "scale-info",

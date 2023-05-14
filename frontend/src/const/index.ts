@@ -16,7 +16,7 @@ export const endpoint = "wss://rpc.shibuya.astar.network";
 export const BN_ZERO = new BN(0);
 
 export const contractAddress =
-  "X7oW2aZHThoXG9GyurDgfgieXfquDJ6znWnMDxfUsNrodba";
+  "ZCtoYmcJ2wwkZoFyejydTLrZj12roZzXHh5St7BTuJ78fRa";
 
 export const dryRunCallerAddress =
   "5DPDFJi6rcooALEpR5gSbR8jgUU6YerEHRkAv3Sk8MDoRTke";
