@@ -21,6 +21,7 @@ export interface PinkValues {
   contractType: number;
   ipfs: string;
   aimodel: string;
+  imageData: Uint8Array;
   aiImage: any;
 }
 

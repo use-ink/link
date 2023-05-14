@@ -83,9 +83,10 @@ function useDryRun() {
           await api.call.contractsApi.call<ContractExecResult>(
             account?.address,
             contract.address,
-            message?.isPayable
-              ? api.registry.createType('Balance', price)
-              : api.registry.createType('Balance', BN_ZERO),
+            price,
+            // message?.isPayable
+            //   ? price
+            //   : api.registry.createType('Balance', BN_ZERO),
             null,
             null,
             inputData
@@ -128,7 +129,7 @@ function useDryRun() {
           .add(storageDeposit.asCharge);
         const total: Balance = contract.api.createType("Balance", cost.toString());
 
-
+        console.log("return pass 1")
         if (result.isErr) {
           return {
             gasRequired,
@@ -140,27 +141,29 @@ function useDryRun() {
             total,
           };
         }
-
+        
         const ErrFoundInDecodedOk = checkDecodedOk(
           result,
           message.returnType,
           contract.abi.registry
-        );
-
-        if (result.isOk && ErrFoundInDecodedOk) {
-          return {
-            gasRequired,
-            storageDeposit,
-            partialFee,
-            result: decodedOutput!,
-            error: {
-              message: "Dry-run error (" + ErrFoundInDecodedOk + "). Cost estimation might be wrong"
-            },
-            price,
-            total,
-          };
-        }
-
+          );
+          
+          console.log("return pass 2")
+          if (result.isOk && ErrFoundInDecodedOk) {
+            return {
+              gasRequired,
+              storageDeposit,
+              partialFee,
+              result: decodedOutput!,
+              error: {
+                message: "Dry-run error (" + ErrFoundInDecodedOk + "). Cost estimation might be wrong"
+              },
+              price,
+              total,
+            };
+          }
+          
+          console.log("return pass 3")
         return {
           gasRequired,
           storageDeposit,

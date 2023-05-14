@@ -7,8 +7,7 @@ import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
 import axios from 'axios';
 import { Buffer } from 'buffer';
-import { PINK_DESCRIPTION } from "../const";
-import { NFTStorage, File } from 'nft.storage'
+
 
 
 export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
@@ -18,9 +17,6 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
   const { account, accounts } = useExtension();
   const [waitingHuggingFace, setWaitinghuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
-  const [imageData, setImageData] = useState(new Uint8Array());
-  const [isUploading, setIsUploading] = useState(false);
-  const [model, setModel] = useState(values.aimodel);
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
@@ -34,7 +30,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
 
 
   const fetchImage = async () => {
-    console.log("Create image using model:", model);
+    console.log("Create image using model:", values.aimodel);
     console.log("ENV", process.env.REACT_APP_HUGGING_FACE_API_KEY ? "ok" : "not found");
     console.log("prompt:", "pink robot, " + values.prompt);
 
@@ -43,7 +39,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
       setWaitinghuggingFace(true);
       setIsGenerated(false);
       const response = await axios({
-        url: model,
+        url: values.aimodel,
         method: 'POST',
         headers: {
           Authorization: `Bearer ${process.env.REACT_APP_HUGGING_FACE_API_KEY}`,
@@ -63,8 +59,8 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
       const aiImage = `data:${contentType};base64,` + base64data;
       values.aiImage = aiImage;
       console.log("aiImage", aiImage ? "generated" : "empty");
-      setIsGenerated(true);
-      setImageData(response.data);
+      setIsGenerated(true)
+      values.imageData = response.data;
 
     } catch (error) {
       // Todo - notify user about error
@@ -76,44 +72,9 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
     
   };
 
-  const uploadImage = async () => {
-    setIsUploading(true);
-
-    // Create instance to NFT.Storage
-    const nftstorage = new NFTStorage({ token: process.env.REACT_APP_NFT_STORAGE_API_KEY! })
-
-    // Send request to store image
-    const { ipnft } = await nftstorage.store({
-      name: "PinkRobot#",
-      description: PINK_DESCRIPTION,
-      external_url: "https://pinkrobot.me",
-      image: new File([imageData], "image.jpeg", { type: "image/jpeg" }),
-      attributes:
-        [
-          {
-            "trait_type": "Prompt",
-            "value": values.prompt
-          },
-          {
-            "trait_type": "AI Model",
-            "value": model
-          },
-        ]
-    })
-    console.log("------- nftstorage response", ipnft);
-
-    // Save the URL
-    const url = `ipfs://${ipnft}/metadata.json`
-    console.log("IPFS url:", url);
-    values.ipfs = url;
-    setIsUploading(false);
-
-    return url
-  }
-
   const modelChanged = (e: { target: { value: SetStateAction<string>; }; }) => {
     console.log("modelChanged", e.target.value);
-    setModel(e.target.value);
+    values.aimodel = e.target.value.toString();
   }
 
   return (
@@ -138,7 +99,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
         </label>
         <select
           name="aimodel"
-          value={model}
+          value={values.aimodel}
           onChange={modelChanged}
           style={{ display: "block" }}
         >
@@ -169,19 +130,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
       </div>
 
       <div className="group">
-        <button
-          type="button"
-          onClick={uploadImage}
-          disabled={
-            waitingHuggingFace || isSubmitting || !isValid || !accounts || !hasFunds || isUploading
-          }
-        >
-          Upload to IPFS
-        </button>
-      </div>
-
-      <div className="group">
-        {isGenerated && isValid && values.prompt && (
+        {isGenerated && isValid && values.prompt && !isSubmitting && (
           <DryRunResult values={values} isValid={isValid} />
         )}
       </div>
@@ -190,7 +139,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
         <button
           type="submit"
           disabled={
-            !isGenerated || waitingHuggingFace || isSubmitting || !isOkToMint || !isValid || !accounts || !hasFunds || isUploading
+            !isGenerated || waitingHuggingFace || isSubmitting || !isOkToMint || !isValid || !accounts || !hasFunds
           }
           name="submit"
         >Mint
@@ -212,15 +161,7 @@ export const GenerateForm = ({setIsBusy}: {setIsBusy: Function }) => {
           </>
         )}
       </div>
-      <div className="group">
-        {isUploading && (
-          <>
-            <div className="mb-1">
-              <p className="mb-1">Uploading image to IPFS storage</p>
-            </div>
-          </>
-        )}
-      </div>
+      
       <div className="group">
         {isSubmitting && (
           <>
