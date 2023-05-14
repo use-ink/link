@@ -12,6 +12,11 @@ import { NFTStorage, File } from "nft.storage";
 import { IconButton, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { CameraIcon } from "@heroicons/react/solid";
 
+enum ContractType {
+  PinkRobot = 0,
+  Upload = 1,
+}
+
 export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<PinkValues>();
@@ -22,7 +27,7 @@ export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
   const [imageData, setImageData] = useState(new Uint8Array());
   const [isUploading, setIsUploading] = useState(false);
   const [model, setModel] = useState(values.aimodel);
-  const [tab, setTab] = useState<string>("robot");
+  const [tab, setTab] = useState<ContractType>(ContractType.PinkRobot);
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
@@ -130,6 +135,7 @@ export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
     reader.readAsDataURL(file);
     reader.onload = () => {
       values.aiImage = reader.result?.toString() || "";
+      values.contractType = ContractType.PinkRobot;
       setIsGenerated(true);
     };
     // TODO - handle error
@@ -138,7 +144,7 @@ export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
 
   const handleTabChange = (
     event: React.MouseEvent<HTMLElement>,
-    newTab: string
+    newTab: ContractType
   ) => {
     if (newTab) {
       setTab(newTab);
@@ -159,11 +165,11 @@ export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
           exclusive={true}
           onChange={handleTabChange}
         >
-          <ToggleButton value="robot">Pink Robot</ToggleButton>
-          <ToggleButton value="custom">Custom Image</ToggleButton>
+          <ToggleButton value={ContractType.PinkRobot}>Pink Robot</ToggleButton>
+          <ToggleButton value={ContractType.Upload}>Custom Image</ToggleButton>
         </ToggleButtonGroup>
       </div>
-      {tab === "robot" && (
+      {tab === ContractType.PinkRobot && (
         <>
           <div className="group">
             <Field
@@ -245,7 +251,7 @@ export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
         </>
       )}
 
-      {tab === "custom" && (
+      {tab === ContractType.Upload && (
         <div className="group">
           <IconButton
             color="primary"
