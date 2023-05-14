@@ -28,6 +28,7 @@ body {
 .pink-example {
   width: 512px;
   margin-bottom: 32px;
+  border-radius: 0.5rem;
 }
 .pink-logo {
   width: 64px;
@@ -54,12 +55,12 @@ select {
 }
 
 button[type='submit'], button {
-  @apply bg-purple-transparent hover:bg-purple-transparent2 text-white font-medium px-6 py-3 border-none disabled:opacity-50 disabled:hover:bg-purple-transparent;
+  @apply bg-pink-transparent hover:bg-pink-transparent2 text-white font-medium px-6 py-3 border-none disabled:opacity-50 disabled:hover:bg-pink-transparent;
   border-radius: 50px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
 }
 button[type='button'], button {
-  @apply bg-purple-transparent hover:bg-purple-transparent2 text-white font-medium px-6 py-3 border-none disabled:opacity-50 disabled:hover:bg-purple-transparent;
+  @apply bg-pink-transparent hover:bg-pink-transparent2 text-white font-medium px-6 py-3 border-none disabled:opacity-50 disabled:hover:bg-pink-transparent;
   border-radius: 50px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
 }
@@ -73,66 +74,10 @@ button[type='button'], button {
 }
 
 a {
-  @apply text-purple-400 hover:text-purple-300;
+  @apply text-pink-400 hover:text-pink-300;
 }
 
-/* Squid Animation */
 
-.squids{
-  @apply absolute w-full h-screen z-0;
-  overflow: hidden;
-  top:0;
-  left:0;
-}
-.squid{
-  position: absolute;
-  bottom: 0px;
-  animation: rise 20s infinite ease-in;
-}
-.squid:nth-child(1){
-  @apply w-12 opacity-40;
-  left:10%;
-  animation-duration:16s;
-}
-.squid:nth-child(2){
-  @apply w-6 h-6 opacity-20;
-  left:20%;
-  animation-duration:15s;
-}
-.squid:nth-child(3){
-  @apply w-12 h-12 opacity-40;
-  left:35%;
-  animation-duration:17s;
-}
-.squid:nth-child(4){
-  @apply w-20 h-20 opacity-40;
-  left: 50%;
-  animation-duration:11s;
-}
-.squid:nth-child(5){
-  @apply w-10 h-10 opacity-30;
-  left:55%;
-  animation-duration:16s;
-}
-.squid:nth-child(6){
-  @apply w-12 opacity-40;
-  left:80%;
-  animation-duration:15s;
-}
-.squid:nth-child(7){
-  @apply w-6 h-6 opacity-20;
-  left:90%;
-  animation-duration:16s;
-}
-
-.big-squid{
-  position: absolute;
-  width: 200px;
-  height:600px;
-  left:60%;
-  opacity: 0.5;
-  animation: hovering 4s infinite alternate;
-}
 
 @keyframes rise{
   0%{
@@ -192,7 +137,7 @@ h1 {
   @apply mb-6 text-sm w-full
 }
 .form-panel button.disclosure-button {
-  @apply flex w-full justify-between rounded-lg bg-purple-900 opacity-100 px-4 py-2 text-left text-sm font-medium text-purple-400 hover:bg-purple-800 focus:outline-none focus-visible:ring
+  @apply flex w-full justify-between rounded-lg bg-pink-900 opacity-100 px-4 py-2 text-left text-sm font-medium text-pink-400 hover:bg-pink-800 focus:outline-none focus-visible:ring
 }
 .disclosure-panel {
   @apply px-4 pt-4 pb-2 text-sm text-gray-500 w-full mb-6;

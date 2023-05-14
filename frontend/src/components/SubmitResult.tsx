@@ -41,7 +41,7 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
               <span>Events log</span>
               <ChevronUpIcon
                 className={`${open ? "rotate-180 transform" : ""
-                  } h-5 w-5 text-purple-500`}
+                  } h-5 w-5 text-pink-500`}
               />
             </Disclosure.Button>
             <Disclosure.Panel className="disclosure-panel">
@@ -66,7 +66,7 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
                 <span>Error log</span>
                 <ChevronUpIcon
                   className={`${open ? "rotate-180 transform" : ""
-                    } h-5 w-5 text-purple-500`}
+                    } h-5 w-5 text-pink-500`}
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="disclosure-panel">
