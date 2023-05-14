@@ -23,7 +23,6 @@ body {
   @apply flex flex-col items-center justify-center bg-gray-900 p-6 shadow-md shadow-xl;
   width: 420px;
   border-radius: 20px;
-  margin-top: 60px;
 }
 .pink-example {
   width: 512px;
@@ -214,4 +213,8 @@ h1 {
 
 .loader-animation {
   @apply mb-2;
+}
+
+.upload-container {
+  @apply w-full h-48 flex flex-col items-center justify-center bg-purple-transparent rounded-lg;
 }

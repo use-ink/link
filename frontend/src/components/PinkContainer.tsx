@@ -26,8 +26,8 @@ export const PinkContainer = () => {
             setBusyMessage("Minting your NFT...");
             await submitFn(values, helpers);
           } catch (err) {
-            // TODO do something
-            setBusyMessage("");
+            // TODO do something - show error message
+            notBusyAnymore();
           }
         }}
       >
@@ -43,8 +43,6 @@ export const PinkContainer = () => {
                 <Header />
                 <div className="content">
                   <div className="form-panel">
-                    <h2>Pink Robot</h2>
-                    <br />
                     {finalized ? (
                       <SubmitResult
                         events={events}
