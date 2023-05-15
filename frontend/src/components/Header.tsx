@@ -7,7 +7,6 @@ import { AccountsDropdown } from "./AccountsDropdown";
 export const Header = () => {
   const { account, accounts, connect, disconnect, isConnected } = useWallet();
   const wallets = useInstalledWallets();
-  console.log({ account, accounts });
   const extensionToUse = useMemo(() => wallets[0], [wallets]);
 
   console.log({ extensionToUse, account, isConnected });
@@ -44,7 +43,10 @@ export const Header = () => {
         ) : (
           <button
             disabled={!extensionToUse}
-            onClick={() => connect(extensionToUse!.extensionName)}
+            onClick={() => {
+              console.log(`Using Wallet: ${extensionToUse!.extensionName}`);
+              connect(extensionToUse!.extensionName);
+            }}
           >
             Connect
           </button>

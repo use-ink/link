@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 import { InkConfig, UseInkProvider } from "useink";
-import { RococoContractsTestnet } from "useink/src/chains/mod"; // TODO odd import
+import { RococoContractsTestnet } from "useink/chains"; // TODO import not resolved by vscode
 import App from "./App";
 import { LinkContractProvider } from "./contexts";
 import "./index.css";
