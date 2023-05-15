@@ -4,11 +4,11 @@ import { FormikHelpers } from "formik";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
 import { useEstimationContext, useLinkContract } from "../contexts";
-import { useApi, useExtension } from "useink";
+import { useApi, useWallet } from "useink";
 
 export const useSubmitHandler = () => {
-  const { api } = useApi();
-  const { account } = useExtension();
+  const { api } = useApi("rococo-contracts-testnet");
+  const { account } = useWallet();
   const { contract } = useLinkContract();
   const { estimation } = useEstimationContext();
 
@@ -17,7 +17,7 @@ export const useSubmitHandler = () => {
     { setSubmitting, setStatus }: FormikHelpers<Values>
   ) => {
     if (!api || !contract || !estimation || !account) return;
-    await web3Enable('link!');
+    await web3Enable("link!");
     const injector = await web3FromAddress(account.address);
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =

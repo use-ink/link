@@ -1,16 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
-import { LinkContractProvider } from "./contexts";
 import { InkConfig, UseInkProvider } from "useink";
-import { endpoint as providerUrl } from "./const";
+import { RococoContractsTestnet } from "useink/src/chains/mod"; // TODO odd import
+import App from "./App";
+import { LinkContractProvider } from "./contexts";
+import "./index.css";
 
 const config: Pick<InkConfig, "config"> = {
   config: {
     dappName: "link! - URL shortener",
-    providerUrl,
+    chains: [RococoContractsTestnet],
+    wallet: {
+      skipAutoConnect: true,
+    },
   },
 };
 

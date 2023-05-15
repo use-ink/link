@@ -14,7 +14,7 @@ const Resolver = () => {
   const navigate = useNavigate();
   const { slug } = params;
   const [resolvedUrl, setResolvedUrl] = useState<string>("");
-  const { api } = useApi();
+  const { api } = useApi("rococo-contracts-testnet");
   const { contract } = useLinkContract();
 
   useEffect(() => {

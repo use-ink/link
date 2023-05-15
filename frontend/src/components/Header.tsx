@@ -1,10 +1,20 @@
+import { XCircleIcon } from "@heroicons/react/solid";
+import { useEffect, useMemo } from "react";
+import { useInstalledWallets, useWallet } from "useink";
 import logo from "../logo.svg";
 import { AccountsDropdown } from "./AccountsDropdown";
-import { XCircleIcon } from "@heroicons/react/solid";
-import { useExtension } from "useink";
 
 export const Header = () => {
-  const { account, accounts, connect, disconnect } = useExtension();
+  const { account, accounts, connect, disconnect, isConnected } = useWallet();
+  const wallets = useInstalledWallets();
+  console.log({ account, accounts });
+  const extensionToUse = useMemo(() => wallets[0], [wallets]);
+
+  console.log({ extensionToUse, account, isConnected });
+
+  useEffect(() => {
+    disconnect();
+  }, [disconnect]);
 
   return (
     <div className="flex justify-between w-full px-8 py-4">
@@ -18,7 +28,7 @@ export const Header = () => {
             {accounts && accounts.length > 0 ? (
               <AccountsDropdown />
             ) : (
-              <div className="py-1 px-2 mt-6 text-xs">No accounts found. </div>
+              <div className="py-1 px-2 mt-6 text-xs">No accounts found.</div>
             )}
             <button
               onClick={disconnect}
@@ -32,7 +42,12 @@ export const Header = () => {
             </button>
           </>
         ) : (
-          <button onClick={() => connect()}>Connect</button>
+          <button
+            disabled={!extensionToUse}
+            onClick={() => connect(extensionToUse!.extensionName)}
+          >
+            Connect
+          </button>
         )}
       </div>
     </div>

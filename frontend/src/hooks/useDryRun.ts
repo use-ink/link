@@ -8,7 +8,7 @@ import { Estimation } from "../types";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { getDecodedOutput } from "../helpers";
-import { useApi, useExtension } from "useink";
+import { useApi, useWallet } from "useink";
 import { useLinkContract } from "../contexts";
 
 function decodeError(error: DispatchError, api: ApiPromise) {
@@ -30,8 +30,8 @@ function decodeError(error: DispatchError, api: ApiPromise) {
 }
 
 function useDryRun() {
-  const { account } = useExtension();
-  const { api } = useApi();
+  const { account } = useWallet();
+  const { api } = useApi("rococo-contracts-testnet");
   const { contract } = useLinkContract();
   const [balance, setBalance] = useState<BN>();
 

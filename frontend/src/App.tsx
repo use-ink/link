@@ -6,7 +6,7 @@ import { useApi } from "useink";
 import { EstimationProvider } from "./contexts";
 
 function App() {
-  const { api } = useApi();
+  const { api } = useApi("rococo-contracts-testnet") || {}; // TODO does not work without `{}` as useAPI can return undefined and not `{ api:undefined }`
 
   return api ? (
     <Routes>

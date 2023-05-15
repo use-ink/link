@@ -4,13 +4,13 @@ import { Values } from "../types";
 import { useEstimationContext } from "../contexts";
 import { ChangeEvent } from "react";
 import { NewUserGuide } from "./NewUserGuide";
-import { useBalance, useExtension } from "useink";
+import { useBalance, useWallet } from "useink";
 
 export const UrlShortenerForm = () => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<Values>();
   const { estimation, isEstimating } = useEstimationContext();
-  const { account, accounts } = useExtension();
+  const { account, accounts } = useWallet();
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
