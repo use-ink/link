@@ -1,4 +1,4 @@
-import logo from "../pink-logo.jpeg";
+import logo from "../assets/pink-logo.png";
 import { AccountsDropdown } from "./AccountsDropdown";
 import { XCircleIcon } from "@heroicons/react/solid";
 import { useExtension } from "useink";
@@ -10,6 +10,7 @@ export const Header = () => {
     <div className="flex justify-between w-full px-8 py-4">
       <div className="flex items-center w-32">
         <img src={logo} className="pink-logo" alt="logo" />
+        <h2 className="text-2xl font-bold">PinkRobot</h2>
       </div>
 
       <div className="flex items-center justify-end w-60">

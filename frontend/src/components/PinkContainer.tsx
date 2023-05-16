@@ -40,7 +40,7 @@ export const PinkContainer = () => {
           if (!helpers) return;
 
           try {
-            setBusyMessage("Minting your NFT...");
+            setBusyMessage("Minting your NFT on...");
             await submitFn(values, helpers);
           } catch (err) {
             // TODO do something - show error message
