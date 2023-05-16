@@ -29,25 +29,27 @@ export const useSubmitHandler = () => {
   const uploadImage = async (values: PinkValues) => {
     console.log("uploading Image to nft.storage, byteLength=", values!.imageData.byteLength);
     // Create instance to NFT.Storage
-    const nftstorage = new NFTStorage({ token: process.env.REACT_APP_NFT_STORAGE_API_KEY! })
+    const client = new NFTStorage({ token: process.env.REACT_APP_NFT_STORAGE_API_KEY! })
 
     // Send request to store image
-    const { ipnft } = await nftstorage.store({
+    const { ipnft } = await client.store({
       name: "PinkRobot#",
       description: PINK_DESCRIPTION,
-      external_url: "https://pinkrobot.xwz",
-      image: new File([values!.imageData], "image.jpeg", { type: "image/jpeg" }),
-      attributes:
-        [
-          {
-            "trait_type": "Prompt",
-            "value": "pink robot, " + values!.prompt
-          },
-          {
-            "trait_type": "AI Model",
-            "value": values!.aimodel
-          },
-        ]
+      image: new File([values!.imageData], "pinkrobot.jpeg", { type: "image/jpeg" })
+      // properties: {
+      //   external_url: "https://pinkrobot.me",
+      //   attributes:
+      //     [
+      //       {
+      //         trait_type: "Prompt",
+      //         value: "pink robot, " + values!.prompt
+      //       },
+      //       {
+      //         trait_type: "AI Model",
+      //         value: values!.aimodel
+      //       },
+      //     ]
+      // }
     })
 
     // Save the URL
@@ -88,7 +90,7 @@ export const useSubmitHandler = () => {
           values.contractType,
           values.ipfs
         );
-        console.log("Sign the message");
+      console.log("Sign the message");
       const unsub = await tx.signAndSend(
         account.address,
         { signer: injector.signer },
