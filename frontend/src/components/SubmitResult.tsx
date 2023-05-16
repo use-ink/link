@@ -1,4 +1,4 @@
-import { PinkValues, UIEvent } from "../types";
+import { ContractType, PinkValues, UIEvent } from "../types";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
@@ -10,7 +10,11 @@ interface Props {
   hideBusyMessage: Function;
 }
 
-export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) => {
+export const SubmitResult = ({
+  events,
+  errorMessage,
+  hideBusyMessage,
+}: Props) => {
   const [submitOutcome, setSubmitOutcome] = useState("");
   const { values } = useFormikContext<PinkValues>();
 
@@ -40,8 +44,9 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
             <Disclosure.Button className="disclosure-button">
               <span>Events log</span>
               <ChevronUpIcon
-                className={`${open ? "rotate-180 transform" : ""
-                  } h-5 w-5 text-pink-500`}
+                className={`${
+                  open ? "rotate-180 transform" : ""
+                } h-5 w-5 text-pink-500`}
               />
             </Disclosure.Button>
             <Disclosure.Panel className="disclosure-panel">
@@ -57,7 +62,6 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
           </>
         )}
       </Disclosure>
-
       {errorMessage && (
         <Disclosure>
           {({ open }) => (
@@ -65,8 +69,9 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
               <Disclosure.Button className="disclosure-button">
                 <span>Error log</span>
                 <ChevronUpIcon
-                  className={`${open ? "rotate-180 transform" : ""
-                    } h-5 w-5 text-pink-500`}
+                  className={`${
+                    open ? "rotate-180 transform" : ""
+                  } h-5 w-5 text-pink-500`}
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="disclosure-panel">
@@ -76,11 +81,17 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
           )}
         </Disclosure>
       )}
-      <img src={values.aiImage} className="pink-example" alt="minted nft" />{" "}
+      <img
+        src={
+          values.contractType === ContractType.PinkRobot
+            ? values.aiImage
+            : values.customImage
+        }
+        className="pink-example"
+        alt="minted nft"
+      />{" "}
       <div>
-        <button onClick={() => window.location.reload()}>
-          Try another
-        </button>
+        <button onClick={() => window.location.reload()}>Try another</button>
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues } from "../types";
+import { ContractType, PinkValues } from "../types";
 import { useEstimationContext } from "../contexts";
 import { ChangeEvent, SetStateAction, useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
@@ -19,6 +19,7 @@ export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
+  values.contractType = ContractType.PinkRobot;
 
   const isOkToMint =
     !isEstimating &&

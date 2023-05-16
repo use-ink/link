@@ -7,7 +7,7 @@ import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
 import { IconButton } from "@mui/material";
 import { CameraIcon } from "@heroicons/react/solid";
-import { ContractType } from "./PinkContainer";
+import { ContractType } from "../types";
 
 export const GenerateCustomUploadForm = ({
   setIsBusy,
@@ -22,6 +22,7 @@ export const GenerateCustomUploadForm = ({
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
+  values.contractType = ContractType.Upload;
 
   const isOkToMint =
     !isEstimating &&
@@ -39,8 +40,7 @@ export const GenerateCustomUploadForm = ({
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      values.aiImage = reader.result?.toString() || "";
-      values.contractType = ContractType.PinkRobot;
+      values.customImage = reader.result?.toString() || "";
       setIsGenerated(true);
     };
     // TODO - handle error

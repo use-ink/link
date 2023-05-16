@@ -31,6 +31,11 @@ export interface UIEvent {
   message: string;
 }
 
+export enum ContractType {
+  PinkRobot = 0,
+  Upload = 1,
+}
+
 export type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
 export type InjectedAccount = Flatten<Awaited<ReturnType<typeof web3Accounts>>>;

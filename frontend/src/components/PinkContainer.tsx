@@ -8,11 +8,7 @@ import { useState } from "react";
 import { Loader } from "./Loader";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { GenerateCustomUploadForm } from "./GenerateCustomUploadForm";
-
-export enum ContractType {
-  PinkRobot = 0,
-  Upload = 1,
-}
+import { ContractType } from "../types";
 
 export const PinkContainer = () => {
   const submitFn = useSubmitHandler();
