@@ -22,6 +22,7 @@ export interface PinkValues {
   ipfs: string;
   aimodel: string;
   aiImage: any;
+  customImage: any;
 }
 
 export interface UIEvent {

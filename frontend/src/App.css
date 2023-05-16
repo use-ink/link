@@ -63,7 +63,7 @@ button[type='button'], button {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
 }
 .estimations {
-@apply text-xs text-left absolute bottom-5 text-gray-300
+@apply text-xs text-left bottom-5 text-gray-300
 
 }
 .estimations.has-error {
@@ -175,7 +175,7 @@ h1 {
 }
 
 .group {
-  @apply pb-7
+  @apply pb-5
 }
 .group:last-child {
   @apply relative pb-2
@@ -217,4 +217,8 @@ h1 {
 
 .upload-container {
   @apply w-full h-48 flex flex-col items-center justify-center bg-purple-transparent rounded-lg;
+}
+
+.buttons-container {
+  @apply flex justify-around
 }
