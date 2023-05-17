@@ -1,8 +1,9 @@
-import { ContractType, PinkValues, UIEvent } from "../types";
+import { PinkValues, UIEvent } from "../types";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
+import { ContractType } from "../const";
 
 interface Props {
   events: UIEvent[];
@@ -83,7 +84,7 @@ export const SubmitResult = ({
       )}
       <img
         src={
-          values.contractType === ContractType.PinkRobot
+          values.contractType === ContractType.PinkPsp34
             ? values.aiImage
             : values.customImage
         }

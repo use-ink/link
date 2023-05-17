@@ -6,19 +6,19 @@ import { SubmitResult } from "./SubmitResult";
 import { GenerateForm } from "./GenerateForm";
 import { useState } from "react";
 import { Loader } from "./Loader";
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 import { GenerateCustomUploadForm } from "./GenerateCustomUploadForm";
-import { ContractType } from "../types";
+import { ContractType } from "../const";
 
 export const PinkContainer = () => {
   const submitFn = useSubmitHandler();
   const [busyMessage, setBusyMessage] = useState<string>("");
-  const [tab, setTab] = useState<ContractType>(ContractType.PinkRobot);
+  const [tab, setTab] = useState<ContractType>(ContractType.PinkPsp34);
 
   const notBusyAnymore = () => setBusyMessage("");
 
   const handleTabChange = (
-    event: React.MouseEvent<HTMLElement>,
+    event: React.SyntheticEvent,
     newTab: ContractType
   ) => {
     if (newTab !== null) {
@@ -55,6 +55,20 @@ export const PinkContainer = () => {
               >
                 <Header />
                 <div className="content">
+                  <div className="group">
+                    <Tabs value={tab} onChange={handleTabChange} centered>
+                      <Tab
+                        label="Pink robot"
+                        value={ContractType.PinkPsp34}
+                        style={{ backgroundColor: "transparent" }}
+                      />
+                      <Tab
+                        label="Custom image"
+                        value={ContractType.CustomUpload34}
+                        style={{ backgroundColor: "transparent" }}
+                      />
+                    </Tabs>
+                  </div>
                   <div className="form-panel">
                     {finalized ? (
                       <SubmitResult
@@ -64,23 +78,14 @@ export const PinkContainer = () => {
                       />
                     ) : (
                       <>
-                        <div className="group">
-                          <ToggleButtonGroup
-                            color="primary"
-                            value={tab}
-                            exclusive={true}
-                            onChange={handleTabChange}
-                          >
-                            <ToggleButton value={ContractType.PinkRobot}>
-                              Pink Robot
-                            </ToggleButton>
-                            <ToggleButton value={ContractType.Upload}>
-                              Custom Image
-                            </ToggleButton>
-                          </ToggleButtonGroup>
-                        </div>
-                        { tab === ContractType.PinkRobot && <GenerateForm setIsBusy={setBusyMessage} />}
-                        { tab === ContractType.Upload && <GenerateCustomUploadForm setIsBusy={setBusyMessage} />}
+                        {tab === ContractType.PinkPsp34 && (
+                          <GenerateForm setIsBusy={setBusyMessage} />
+                        )}
+                        {tab === ContractType.CustomUpload34 && (
+                          <GenerateCustomUploadForm
+                            setIsBusy={setBusyMessage}
+                          />
+                        )}
                       </>
                     )}
                   </div>

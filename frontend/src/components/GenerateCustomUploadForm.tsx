@@ -7,7 +7,7 @@ import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
 import { IconButton } from "@mui/material";
 import { CameraIcon } from "@heroicons/react/solid";
-import { ContractType } from "../types";
+import { ContractType } from "../const";
 
 export const GenerateCustomUploadForm = ({
   setIsBusy,
@@ -22,7 +22,7 @@ export const GenerateCustomUploadForm = ({
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
-  values.contractType = ContractType.Upload;
+  values.contractType = ContractType.CustomUpload34;
 
   const isOkToMint =
     !isEstimating &&

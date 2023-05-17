@@ -28,7 +28,7 @@ enum Endpoints {
   Astar = "wss://rpc.astar.network",
 }
 
-enum ContractType{
+export enum ContractType{
   PinkPsp34 = 0,
   CustomUpload34 = 1,
   PinkRmrk = 2,

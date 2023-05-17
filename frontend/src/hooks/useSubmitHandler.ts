@@ -1,13 +1,13 @@
 import { web3FromAddress } from "@polkadot/extension-dapp";
-import { ContractType, PinkValues, UIEvent } from "../types";
-import { FormikHelpers, useFormikContext } from "formik";
+import { PinkValues, UIEvent } from "../types";
+import { FormikHelpers } from "formik";
 import { ApiBase, SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
 import { useEstimationContext, useLinkContract } from "../contexts";
 import { useApi, useExtension } from "useink";
 import { ApiPromise } from "@polkadot/api";
 import { WeightV2 } from "@polkadot/types/interfaces";
-import { PINK_DESCRIPTION } from "../const";
+import { ContractType, PINK_DESCRIPTION } from "../const";
 import { NFTStorage, File } from "nft.storage";
 
 const doubleGasLimit = (
@@ -45,7 +45,7 @@ export const useSubmitHandler = () => {
         type: "image/jpeg",
       }),
       attributes:
-        values.contractType === ContractType.PinkRobot
+        values.contractType === ContractType.PinkPsp34
           ? [
               {
                 trait_type: "Prompt",
