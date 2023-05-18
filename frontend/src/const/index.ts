@@ -3,11 +3,15 @@ import { PinkValues } from "../types";
 import robot_bestia from "../assets/robot-bestia.jpeg";
 import BN from "bn.js";
 
-
 export const PinkFormSchema = Yup.object().shape({
-  prompt: Yup.string()
-    .min(3, "Description is too short")
-    .required(),
+  prompt: Yup.string().min(3, "Description is too short").required(),
+  // fileUpload: Yup.mixed()
+  //   .required("A file is required")
+  //   .test(
+  //     "fileSize",
+  //     "File too large",
+  //     (value) => value && value.size <= 100
+  //   ),
 });
 
 export const endpoint = "wss://rpc.shibuya.astar.network";
@@ -24,7 +28,7 @@ enum Endpoints {
   Astar = "wss://rpc.astar.network",
 }
 
-enum ContractType{
+export enum ContractType{
   PinkPsp34 = 0,
   CustomUpload34 = 1,
   PinkRmrk = 2,
@@ -45,6 +49,7 @@ export const initialPinkValues: PinkValues = {
   ipfs: "ipfs://dummyeidmni6viczb4w6c5knhfoqd26wkuvgn7fz6i4eurz7vo4svhb5lze/metadata.json", 
   aimodel: DEFAULT_MODEL, 
   imageData: new Uint8Array(),
-  aiImage: robot_bestia
+  aiImage: robot_bestia,
+  customImage: robot_bestia,
   // network: Networks.Shibuya,
 };

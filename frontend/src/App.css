@@ -23,7 +23,6 @@ body {
   @apply flex flex-col items-center justify-center bg-gray-900 p-6 shadow-md shadow-xl;
   width: 420px;
   border-radius: 20px;
-  margin-top: 60px;
 }
 .pink-example {
   width: 512px;
@@ -32,7 +31,7 @@ body {
 }
 .pink-logo {
   width: 64px;
-  margin-bottom: 32px;
+  margin-right: 16px;
 }
 form {
   width: 100%;
@@ -65,7 +64,7 @@ button[type='button'], button {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
 }
 .estimations {
-@apply text-xs text-left absolute bottom-5 text-gray-300
+@apply text-xs text-left bottom-5 text-gray-300
 
 }
 .estimations.has-error {
@@ -121,7 +120,7 @@ h1 {
 }
 
 .group {
-  @apply pb-7
+  @apply pb-5
 }
 .group:last-child {
   @apply relative pb-2
@@ -159,4 +158,12 @@ h1 {
 
 .loader-animation {
   @apply mb-2;
+}
+
+.upload-container {
+  @apply w-full h-48 flex flex-col items-center justify-center bg-purple-transparent rounded-lg;
+}
+
+.buttons-container {
+  @apply flex justify-around
 }

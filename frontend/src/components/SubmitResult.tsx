@@ -3,6 +3,7 @@ import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
+import { ContractType } from "../const";
 
 interface Props {
   events: UIEvent[];
@@ -10,12 +11,16 @@ interface Props {
   hideBusyMessage: Function;
 }
 
-export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) => {
+export const SubmitResult = ({
+  events,
+  errorMessage,
+  hideBusyMessage,
+}: Props) => {
   const [submitOutcome, setSubmitOutcome] = useState("");
   const { values } = useFormikContext<PinkValues>();
 
   useEffect(() => {
-    hideBusyMessage()
+    hideBusyMessage();
     events.forEach((e) => {
       console.log("SubmitResult event:", e);
       if (e.name === "system:ExtrinsicFailed") {
@@ -40,8 +45,9 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
             <Disclosure.Button className="disclosure-button">
               <span>Events log</span>
               <ChevronUpIcon
-                className={`${open ? "rotate-180 transform" : ""
-                  } h-5 w-5 text-pink-500`}
+                className={`${
+                  open ? "rotate-180 transform" : ""
+                } h-5 w-5 text-pink-500`}
               />
             </Disclosure.Button>
             <Disclosure.Panel className="disclosure-panel">
@@ -57,7 +63,6 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
           </>
         )}
       </Disclosure>
-
       {errorMessage && (
         <Disclosure>
           {({ open }) => (
@@ -65,8 +70,9 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
               <Disclosure.Button className="disclosure-button">
                 <span>Error log</span>
                 <ChevronUpIcon
-                  className={`${open ? "rotate-180 transform" : ""
-                    } h-5 w-5 text-pink-500`}
+                  className={`${
+                    open ? "rotate-180 transform" : ""
+                  } h-5 w-5 text-pink-500`}
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="disclosure-panel">
@@ -76,11 +82,17 @@ export const SubmitResult = ({ events, errorMessage, hideBusyMessage }: Props) =
           )}
         </Disclosure>
       )}
-      <img src={values.aiImage} className="pink-example" alt="minted nft" />{" "}
+      <img
+        src={
+          values.contractType === ContractType.PinkPsp34
+            ? values.aiImage
+            : values.customImage
+        }
+        className="pink-example"
+        alt="minted nft"
+      />{" "}
       <div>
-        <button onClick={() => window.location.reload()}>
-          Try another
-        </button>
+        <button onClick={() => window.location.reload()}>Try another</button>
       </div>
     </>
   );

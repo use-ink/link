@@ -23,6 +23,7 @@ export interface PinkValues {
   aimodel: string;
   imageData: Uint8Array;
   aiImage: any;
+  customImage: any;
 }
 
 export interface UIEvent {

@@ -1,20 +1,20 @@
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import { PinkValues, UIEvent } from "../types";
-import { FormikHelpers, useFormikContext } from "formik";
+import { FormikHelpers } from "formik";
 import { ApiBase, SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
 import { useEstimationContext, useLinkContract } from "../contexts";
 import { useApi, useExtension } from "useink";
 import { ApiPromise } from "@polkadot/api";
 import { WeightV2 } from "@polkadot/types/interfaces";
-import { PINK_DESCRIPTION } from "../const";
-import { NFTStorage, File } from 'nft.storage'
+import { ContractType, PINK_DESCRIPTION } from "../const";
+import { NFTStorage, File } from "nft.storage";
 
 const doubleGasLimit = (
-  api: ApiPromise | ApiBase<'promise'>,
+  api: ApiPromise | ApiBase<"promise">,
   weight: WeightV2
 ): WeightV2 => {
-  return api.registry.createType('WeightV2', {
+  return api.registry.createType("WeightV2", {
     refTime: weight.refTime.toBn().muln(2),
     proofSize: weight.proofSize.toBn().muln(2),
   }) as WeightV2;
@@ -27,7 +27,10 @@ export const useSubmitHandler = () => {
   const { estimation } = useEstimationContext();
 
   const uploadImage = async (values: PinkValues) => {
-    console.log("uploading Image to nft.storage, byteLength=", values!.imageData.byteLength);
+    console.log(
+      "uploading Image to nft.storage, byteLength=",
+      values!.imageData.byteLength
+    );
     // Create instance to NFT.Storage
     const client = new NFTStorage({ token: process.env.REACT_APP_NFT_STORAGE_API_KEY! })
 
@@ -53,12 +56,12 @@ export const useSubmitHandler = () => {
     })
 
     // Save the URL
-    const url = `ipfs://${ipnft}/metadata.json`
+    const url = `ipfs://${ipnft}/metadata.json`;
     console.log("Generated IPFS url:", url);
     values!.ipfs = url;
 
-    return url
-  }
+    return url;
+  };
 
   return async (
     values: PinkValues,
@@ -70,7 +73,10 @@ export const useSubmitHandler = () => {
     console.log("Minting Image... ");
     console.log("PinkValues", values);
     console.log("Estimations", estimation);
-    console.log("Estimations.storageDeposit", estimation.storageDeposit.asCharge.toNumber());
+    console.log(
+      "Estimations.storageDeposit",
+      estimation.storageDeposit.asCharge.toNumber()
+    );
     console.log("Estimations.price", estimation.price);
     console.log("Estimation.gasRequired", estimation.gasRequired);
 
@@ -132,8 +138,9 @@ export const useSubmitHandler = () => {
                 const decoded = api.registry.findMetaError(
                   result.dispatchError.asModule
                 );
-                message = `${decoded.section.toUpperCase()}.${decoded.method
-                  }: ${decoded.docs}`;
+                message = `${decoded.section.toUpperCase()}.${
+                  decoded.method
+                }: ${decoded.docs}`;
               }
               console.log("Minting error", message);
 
@@ -154,5 +161,4 @@ export const useSubmitHandler = () => {
       throw error;
     }
   };
-
 };
