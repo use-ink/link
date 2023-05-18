@@ -19,9 +19,8 @@ export const Loader = ({ message }: { message: string }) => {
         <div className="text-info">
           <h1>Shortened with link!</h1>
           <div className="tag-line">
-            <div>
-              {" "}
-              The unstoppable link shortener build with the{" "}
+            <span>
+              The unstoppable link shortener built with the{" "}
               <a
                 href="https://github.com/paritytech/ink"
                 target="_blank"
@@ -29,9 +28,10 @@ export const Loader = ({ message }: { message: string }) => {
               >
                 ink! smart contract language
               </a>
-            </div>
-            .<div className="animate-pulse">{message}</div>
+            </span>
+            .
           </div>
+          <h3 className="animate-pulse text-lg font-semibold mt-6">{message}</h3>
         </div>
       </div>
     </div>

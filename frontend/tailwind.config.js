@@ -18,10 +18,23 @@ module.exports = {
         purple: {
           300: "#D7B5FD",
           800: "#3D2B52",
+          850: "#2A2442",
           900: "#201F37",
           transparent: "rgba(191, 139, 250, 0.4)",
           transparent2: "rgba(191, 139, 250, 0.3)",
         },
+        success: {
+          500: '#00c900'
+        },
+        warning: {
+          500: '#ffbe54'
+        },
+        error: {
+          500: '#d6502b'
+        },
+        info: {
+          500: '#bc83fb'
+        }
       },
     },
   },

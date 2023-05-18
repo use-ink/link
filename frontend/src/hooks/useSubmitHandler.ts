@@ -1,91 +1,69 @@
-import { web3Enable, web3FromAddress } from "@polkadot/extension-dapp";
-import { Values, UIEvent } from "../types";
+import { Values, UIEvent, TransferredBalanceEvent } from "../types";
 import { FormikHelpers } from "formik";
-import { SubmittableExtrinsic } from "@polkadot/api/types";
-import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
-import { useEstimationContext, useLinkContract } from "../contexts";
-import { useApi, useExtension } from "useink";
+import { pickDecoded } from "useink/utils";
+import { decodeError } from "useink/core";
+import { useLinkContract } from "./useLinkContract";
 
 export const useSubmitHandler = () => {
-  const { api } = useApi();
-  const { account } = useExtension();
-  const { contract } = useLinkContract();
-  const { estimation } = useEstimationContext();
-
+  const { shorten, shortenDryRun, link } = useLinkContract();
+  
   return async (
     values: Values,
     { setSubmitting, setStatus }: FormikHelpers<Values>
   ) => {
-    if (!api || !contract || !estimation || !account) return;
-    await web3Enable('link!');
-    const injector = await web3FromAddress(account.address);
-    try {
-      const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
-        contract.tx["shorten"](
-          {
-            gasLimit: estimation.gasRequired,
-            storageDepositLimit: estimation.storageDeposit.asCharge,
-          },
-          { DeduplicateOrNew: values.alias },
-          values.url
-        );
-      const unsub = await tx.signAndSend(
-        account.address,
-        { signer: injector.signer },
-        (result) => {
-          const events: UIEvent[] = [];
-          let slug = "";
-          setSubmitting(true);
+    const isDryRunSuccess = 'Shortened' === pickDecoded(shortenDryRun?.result);
+    if (!isDryRunSuccess) return;
 
-          if (result.isInBlock) {
-            result.contractEvents?.forEach(({ event, args }) => {
-              slug = args[0].toHuman()?.toString() || "";
-              events.push({
-                name: event.identifier,
-                message: `${event.docs.join()}`,
-              });
-            });
-            result.events.forEach(({ event }) => {
-              let message = "";
-              if (event.section === "balances") {
-                const data = event.data.toHuman() as {
-                  who: string;
-                  amount: string;
-                };
+    const shortenArgs = [{ DeduplicateOrNew: values.alias }, values.url];
+    const options = undefined;
 
-                message = `Amount: ${data.amount}`;
-              }
-              event.method !== "ContractEmitted" &&
-                events.push({
-                  name: `${event.section}:${event.method}`,
-                  message,
-                });
-            });
-            if (!result.dispatchError) {
-              setStatus({ finalized: true, events, errorMessage: "", slug });
-            } else {
-              let message = "Unknown Error";
-              if (result.dispatchError.isModule) {
-                const decoded = api.registry.findMetaError(
-                  result.dispatchError.asModule
-                );
-                message = `${decoded.section.toUpperCase()}.${
-                  decoded.method
-                }: ${decoded.docs}`;
-              }
-              setStatus({
-                finalized: true,
-                events,
-                errorMessage: message,
-              });
-            }
-            setSubmitting(false);
-            unsub && unsub();
+    shorten?.signAndSend(shortenArgs, options, (result, _api, error) => {
+      if (error) {
+        console.error(JSON.stringify(error));
+        setSubmitting(false);
+      }
+
+      if (!result?.status.isInBlock) return;
+
+      const events: UIEvent[] = [];
+      let slug = "";
+
+      // Collect Contract emitted events
+      result?.contractEvents?.forEach(({ event, args }) => {
+        slug = args[0].toHuman()?.toString() || "";
+        events.push({
+          name: event.identifier,
+          message: `${event.docs.join()}`,
+        });
+      });
+
+      // Collect pallet emitted events
+      result?.events.forEach(({ event }) => {
+        if ('ContractEmitted' !== event.method) {
+          let message = '';
+
+          if ('balances' === event.section) {
+            const data = typeof event.data.toHuman() as any as TransferredBalanceEvent;
+            message = `Amount: ${data.amount}`;
           }
+
+          events.push({
+            name: `${event.section}:${event.method}`,
+            message,
+          });
         }
-      );
-    } catch (error) {
-      console.error(error);
-    }
+      });
+
+      const dispatchError = shorten.result?.dispatchError;
+
+      if (dispatchError && link?.contract) {
+        const errorMessage = decodeError(dispatchError, link, undefined, 'Something went wrong') ;
+        setStatus({ finalized: true, events, errorMessage })
+      }
+
+      if (slug) setStatus({ finalized: true, events, errorMessage: "", slug })
+
+      setSubmitting(false);
+    });
   };
 };

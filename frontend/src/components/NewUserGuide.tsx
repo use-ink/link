@@ -1,55 +1,23 @@
-export const NewUserGuide = ({
-  hasAccounts,
-  hasFunds,
-  walletConnected,
-}: {
-  hasAccounts: boolean;
-  hasFunds: boolean;
-  walletConnected: boolean;
-}) => {
+import { useBalance, useWallet } from "useink";
+
+export const NewUserGuide = () => {
+  const { account } = useWallet();
+  const balance = useBalance(account);
+  const hasFunds = !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
+
   return (
-    <div className="user-guide">
-      {!walletConnected && (
-        <div className="mb-2">
-          <p>Wallet not connected.</p>
-          <p>
-            Make sure you have a{" "}
+    <div className="text-xs text-gray-300 text-left">
+      {account && !hasFunds && (
+        <p className="max-w-lg mx-auto">
+          Your account balance is zero. To obtain Rococo testnet tokens (ROC) use the{" "}
             <a
-              href="https://polkadot.js.org/extension/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              signer extension
-            </a>{" "}
-            installed.
-          </p>
-        </div>
-      )}
-      {walletConnected && !hasAccounts && (
-        <div className="mb-2">
-          <p>No Substrate accounts found.</p>
-          <p>You can import or create one in the extension.</p>
-        </div>
-      )}
-      {hasAccounts && !hasFunds && (
-        <>
-          <div className="mb-1">
-            <p className="mb-1">Account balance is zero.</p>
-            To obtain Rococo testnet tokens (ROC) join our Matrix chat room{" "}
-            <a
-              href="https://matrix.to/#/#rococo-faucet:matrix.org"
+              href="https://use.ink/faucet"
               rel="noopener noreferrer"
               target="_blank"
             >
-              #rococo-faucet:matrix.org
-            </a>{" "}
-            and post the following command
-          </div>
-          <div>
-            {" "}
-            <code>!drip YOUR_SS_58_ADDRESS:1002</code>
-          </div>
-        </>
+            Rococo Contracts Faucet
+            </a>.
+        </p>
       )}
     </div>
   );

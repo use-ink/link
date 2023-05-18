@@ -1,77 +1,63 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useEstimationContext } from "../contexts";
-import { useDryRun } from "../hooks";
-import { Estimation, Values } from "../types";
+import { Values } from "../types";
+import { useLinkContract } from "../hooks";
+import { pickDecoded, pickTxInfo } from "useink/utils";
 
 interface Props {
   values: Values;
-  isValid: boolean;
 }
 
-function Fees({ estimation }: { estimation: Estimation }) {
-  return (
-    <>
-      <p>storage deposit: {estimation.storageDeposit.asCharge.toHuman()}</p>
-      <p>gas fee: {estimation.partialFee.toHuman()}</p>
-    </>
-  );
-}
-
-function Deduplicated({ slug }: { slug: string }) {
-  return (
-    <>
-      <div>This url has already been shortened. </div>
-      <div>
-        <Link to={`/${slug}`}>{`${window.location.host}/${slug}`}</Link>
-      </div>
-    </>
-  );
-}
-
-export function DryRunResult({ values, isValid }: Props) {
-  const estimate = useDryRun();
-  const { estimation, setEstimation, setIsEstimating } = useEstimationContext();
+export function DryRunResult({ values }: Props) {
+  const { shortenDryRun, hasDuplicateSlug } = useLinkContract();
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    setIsEstimating(true);
-
     async function getOutcome() {
-      if (!isValid) return;
-      const params = [{ deduplicateornew: values.alias }, values.url];
-      const e = await estimate(params);
-      setEstimation(e);
-      setIsEstimating(false);
+      shortenDryRun?.send([{ DeduplicateOrNew: values.alias }, values.url], { defaultCaller: true });
     }
+
     function debouncedDryRun() {
       if (timeoutId.current) clearTimeout(timeoutId.current);
+
       timeoutId.current = setTimeout(() => {
-        getOutcome().catch((err) => console.error(err));
+        getOutcome().catch(console.error);
         timeoutId.current = null;
       }, 300);
     }
 
     debouncedDryRun();
-  }, [
-    estimate,
-    isValid,
-    setEstimation,
-    setIsEstimating,
-    values.alias,
-    values.url,
-  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shortenDryRun?.send, values.alias, values.url]);
 
-  return estimation ? (
+  if (!shortenDryRun?.result) return null;
+
+  const decoded = pickDecoded(shortenDryRun?.result);
+  const txInfo = pickTxInfo(shortenDryRun?.result);
+
+  return (
     <div className="estimations">
       <div>
-        {estimation.result && "Ok" in estimation.result &&
-          typeof estimation.result.Ok === "object" ? (
-          <Deduplicated slug={estimation.result.Ok.Deduplicated.slug} />
+        {decoded && typeof decoded === "object" ? (
+          <>
+            <p>This url has already been shortened.</p>
+            <Link to={`/${decoded.Deduplicated.slug}`}>
+              {`${window.location.host}/${decoded.Deduplicated.slug}`}
+            </Link>
+          </>
         ) : (
-          <Fees estimation={estimation} />
+          hasDuplicateSlug ? (
+            <p className="text-red-500 text-xs mt-0">
+              Please choose another alias. <span className="bg-white/5 rounded-md px-2 py-1 font-semibold">{values.alias}</span> is already taken.
+            </p>
+          ): (
+            <>
+              <p>storage deposit: {txInfo ? txInfo.storageDeposit.asCharge.toHuman() : '--'}</p>
+              <p>gas fee: {txInfo ? txInfo.partialFee.toHuman() : '--'}</p>
+            </>
+          )
         )}
       </div>
     </div>
-  ) : null;
+  );
 }
