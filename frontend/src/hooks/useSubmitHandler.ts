@@ -156,7 +156,6 @@ export const useSubmitHandler = () => {
         }
       );
     } catch (error) {
-      // TODO: show error message
       console.error(error);
       throw error;
     }

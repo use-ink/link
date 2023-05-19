@@ -7,17 +7,15 @@ import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
 import axios from "axios";
 import { Buffer } from "buffer";
-import { Error } from "./Error";
 import { ContractType } from "../const";
 
-export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
+export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<PinkValues>();
   const { estimation, isEstimating } = useEstimationContext();
   const { account, accounts } = useExtension();
   const [waitingHuggingFace, setWaitinghuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [currentModel, setCurrentModel] = useState(values.aimodel);
   const balance = useBalance(account);
   const hasFunds =
@@ -67,7 +65,7 @@ export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
       setIsGenerated(true);
       values.imageData = response.data;
     } catch (error: any) {
-      setErrorMessage(error.toString());
+      handleError(error.toString());
       console.error(error);
     } finally {
       setWaitinghuggingFace(false);
@@ -79,10 +77,6 @@ export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
     console.log("modelChanged", e.target.value);
     values.aimodel = e.target.value.toString();
     setCurrentModel(values.aimodel);
-  };
-
-  const handleCloseError = () => {
-    setErrorMessage("");
   };
 
   return (
@@ -176,40 +170,13 @@ export const GenerateForm = ({ setIsBusy }: { setIsBusy: Function }) => {
         </div>
       )}
 
-      {/* <div className="group">
-        {waitingHuggingFace && (
-          <>
-            <div className="mb-1">
-              <p className="mb-1">
-                Generating on AI server... Can take a minute
-              </p>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="group">
-        {isSubmitting && (
-          <>
-            <div className="mb-1">
-              <p className="mb-1">Minting NFT on Astar</p>
-            </div>
-          </>
-        )}
-      </div>
-
       <div className="group">
         <NewUserGuide
           hasAccounts={!!accounts && accounts.length > 0}
           hasFunds={hasFunds}
           walletConnected={!!account}
         />
-      </div> */}
-      <Error
-        open={!!errorMessage}
-        onClose={handleCloseError}
-        message={errorMessage}
-      />
+      </div>
     </Form>
   );
 };

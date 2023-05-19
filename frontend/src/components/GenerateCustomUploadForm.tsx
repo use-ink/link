@@ -11,8 +11,10 @@ import { ContractType } from "../const";
 
 export const GenerateCustomUploadForm = ({
   setIsBusy,
+  handleError
 }: {
   setIsBusy: Function;
+  handleError: Function;
 }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<PinkValues>();
@@ -43,8 +45,10 @@ export const GenerateCustomUploadForm = ({
       values.customImage = reader.result?.toString() || "";
       setIsGenerated(true);
     };
-    // TODO - handle error
-    reader.onerror = (error) => console.error(error);
+    reader.onerror = (error) => {
+      console.error(error);
+      handleError(error.toString());
+    }
   };
 
   return (

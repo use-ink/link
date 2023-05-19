@@ -9,13 +9,17 @@ import { Loader } from "./Loader";
 import { Tab, Tabs } from "@mui/material";
 import { GenerateCustomUploadForm } from "./GenerateCustomUploadForm";
 import { ContractType } from "../const";
+import { Error } from "./Error";
 
 export const PinkContainer = () => {
   const submitFn = useSubmitHandler();
   const [busyMessage, setBusyMessage] = useState<string>("");
   const [tab, setTab] = useState<ContractType>(ContractType.PinkPsp34);
+  const [error, setError] = useState<string>("");
 
   const notBusyAnymore = () => setBusyMessage("");
+  const handleError = (error: string) => setError(error);
+  const handleCloseError = () => setError("");
 
   const handleTabChange = (
     event: React.SyntheticEvent,
@@ -38,8 +42,8 @@ export const PinkContainer = () => {
           try {
             setBusyMessage("Minting your NFT on...");
             await submitFn(values, helpers);
-          } catch (err) {
-            // TODO do something - show error message
+          } catch (err: any) {
+            setError(err.toString());
             notBusyAnymore();
           }
         }}
@@ -79,16 +83,25 @@ export const PinkContainer = () => {
                     ) : (
                       <>
                         {tab === ContractType.PinkPsp34 && (
-                          <GenerateForm setIsBusy={setBusyMessage} />
+                          <GenerateForm
+                            setIsBusy={setBusyMessage}
+                            handleError={handleError}
+                          />
                         )}
                         {tab === ContractType.CustomUpload34 && (
                           <GenerateCustomUploadForm
                             setIsBusy={setBusyMessage}
+                            handleError={handleError}
                           />
                         )}
                       </>
                     )}
                   </div>
+                  <Error
+                    open={!!error}
+                    onClose={handleCloseError}
+                    message={error}
+                  />
                 </div>
               </div>
               <div
