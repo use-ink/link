@@ -1,9 +1,8 @@
-import { PinkValues, UIEvent } from "../types";
+import { ContractType, PinkValues, UIEvent } from "../types";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
-import { ContractType } from "../const";
 
 interface Props {
   events: UIEvent[];
@@ -29,25 +28,26 @@ export const SubmitResult = ({
         );
       }
       if (e.name === "system:ExtrinsicSuccess") {
-        setSubmitOutcome(
-          "Hurray! Your Pink Robot is now on the blockchain. Find it on marketplace."
-        );
+        values.contractType === ContractType.PinkPsp34 ?
+          setSubmitOutcome("Your Pink Robot is now on Astar! Keep it or flip it.") :
+          setSubmitOutcome("Your NFT is now on Astar! Keep it or flip it.");
       }
     });
-  }, [events]);
+  }, [events, hideBusyMessage, values.contractType]);
 
   return (
     <>
       <div className="submit-outcome">{submitOutcome}</div>
+      {errorMessage && (
+
       <Disclosure>
         {({ open }) => (
           <>
             <Disclosure.Button className="disclosure-button">
               <span>Events log</span>
               <ChevronUpIcon
-                className={`${
-                  open ? "rotate-180 transform" : ""
-                } h-5 w-5 text-pink-500`}
+                className={`${open ? "rotate-180 transform" : ""
+                  } h-5 w-5 text-pink-500`}
               />
             </Disclosure.Button>
             <Disclosure.Panel className="disclosure-panel">
@@ -63,6 +63,7 @@ export const SubmitResult = ({
           </>
         )}
       </Disclosure>
+      )}
       {errorMessage && (
         <Disclosure>
           {({ open }) => (
@@ -70,9 +71,8 @@ export const SubmitResult = ({
               <Disclosure.Button className="disclosure-button">
                 <span>Error log</span>
                 <ChevronUpIcon
-                  className={`${
-                    open ? "rotate-180 transform" : ""
-                  } h-5 w-5 text-pink-500`}
+                  className={`${open ? "rotate-180 transform" : ""
+                    } h-5 w-5 text-pink-500`}
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="disclosure-panel">
@@ -84,9 +84,7 @@ export const SubmitResult = ({
       )}
       <img
         src={
-          values.contractType === ContractType.PinkPsp34
-            ? values.aiImage
-            : values.customImage
+          values.displayImage[values.contractType]
         }
         className="pink-example"
         alt="minted nft"

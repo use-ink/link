@@ -1,22 +1,21 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues } from "../types";
+import { PinkValues, ContractType } from "../types";
 import { useEstimationContext } from "../contexts";
 import { ChangeEvent, SetStateAction, useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
 import axios from "axios";
 import { Buffer } from "buffer";
-import { ContractType } from "../const";
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<PinkValues>();
   const { estimation, isEstimating } = useEstimationContext();
   const { account, accounts } = useExtension();
-  const [waitingHuggingFace, setWaitinghuggingFace] = useState(false);
+  const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
-  const [currentModel, setCurrentModel] = useState(values.aimodel);
+  const [currentModel, setCurrentModel] = useState(values.aiModel);
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
@@ -29,7 +28,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     "Ok" in estimation.result;
 
   const fetchImage = async () => {
-    console.log("Create image using model:", values.aimodel);
+    console.log("Create image using model:", values.aiModel);
     console.log(
       "ENV",
       process.env.REACT_APP_HUGGING_FACE_API_KEY ? "ok" : "not found"
@@ -38,10 +37,10 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
 
     try {
       setIsBusy("Imagining your pink robot. This might take a while...");
-      setWaitinghuggingFace(true);
+      setWaitingHuggingFace(true);
       setIsGenerated(false);
       const response = await axios({
-        url: values.aimodel,
+        url: values.aiModel,
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.REACT_APP_HUGGING_FACE_API_KEY}`,
@@ -60,29 +59,29 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
       // const base64ImageData = Buffer.from(response.data, 'binary').toString('base64');
       const base64data = Buffer.from(response.data).toString("base64");
       const aiImage = `data:${contentType};base64,` + base64data;
-      values.aiImage = aiImage;
+      values.displayImage[values.contractType] = aiImage;
       console.log("aiImage", aiImage ? "generated" : "empty");
       setIsGenerated(true);
-      values.imageData = response.data;
+      values.imageData[values.contractType] = response.data;
     } catch (error: any) {
       handleError(error.toString());
       console.error(error);
     } finally {
-      setWaitinghuggingFace(false);
+      setWaitingHuggingFace(false);
       setIsBusy("");
     }
   };
 
   const modelChanged = (e: { target: { value: SetStateAction<string> } }) => {
     console.log("modelChanged", e.target.value);
-    values.aimodel = e.target.value.toString();
-    setCurrentModel(values.aimodel);
+    values.aiModel = e.target.value.toString();
+    setCurrentModel(values.aiModel);
   };
 
   return (
     <Form>
       <img
-        src={values.aiImage}
+        src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
         alt="example"
       />

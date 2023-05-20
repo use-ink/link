@@ -1,13 +1,12 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues } from "../types";
+import { PinkValues, ContractType } from "../types";
 import { useEstimationContext } from "../contexts";
 import React, { useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
 import { IconButton } from "@mui/material";
 import { CameraIcon } from "@heroicons/react/solid";
-import { ContractType } from "../const";
 
 export const GenerateCustomUploadForm = ({
   setIsBusy,
@@ -16,11 +15,11 @@ export const GenerateCustomUploadForm = ({
   setIsBusy: Function;
   handleError: Function;
 }) => {
-  const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
+  const { isSubmitting, isValid, values } =
     useFormikContext<PinkValues>();
   const { estimation, isEstimating } = useEstimationContext();
   const { account, accounts } = useExtension();
-  const [isGenerated, setIsGenerated] = useState(false);
+  const [isUploaded, setIsUploaded] = useState(false);
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
@@ -35,15 +34,15 @@ export const GenerateCustomUploadForm = ({
   const handleCustomImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setIsGenerated(false);
+    setIsUploaded(false);
     const file = event.target.files ? event.target.files[0] : null;
     if (!file) return;
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      values.customImage = reader.result?.toString() || "";
-      setIsGenerated(true);
+      values.displayImage[values.contractType] = reader.result?.toString() || "";
+      setIsUploaded(true);
     };
     reader.onerror = (error) => {
       console.error(error);
@@ -54,7 +53,7 @@ export const GenerateCustomUploadForm = ({
   return (
     <Form>
       <img
-        src={values.customImage}
+        src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
         alt="example"
       />
@@ -81,25 +80,25 @@ export const GenerateCustomUploadForm = ({
           className="error-message"
         />
       </div>
-      <div className="buttons-container">
-        <div className="group">
-          <button
-            type="submit"
-            disabled={
-              !isGenerated ||
-              isSubmitting ||
-              !isOkToMint ||
-              !accounts ||
-              !hasFunds
-            }
-            name="submit"
-          >
-            Mint
-          </button>
-        </div>
-      </div>
+      {/* <div className="buttons-container"> */}
       <div className="group">
-        <DryRunResult values={values} isValid={isGenerated} />
+        <button
+          type="submit"
+          disabled={
+            !isUploaded ||
+            isSubmitting ||
+            !isOkToMint ||
+            !accounts ||
+            !hasFunds
+          }
+          name="submit"
+        >
+          Mint
+        </button>
+      </div>
+      {/* </div> */}
+      <div className="group">
+        <DryRunResult values={values} isValid={isUploaded} />
       </div>
       {isValid && estimation?.error && !isEstimating && (
         <div className="text-xs text-left mb-2 text-red-500">

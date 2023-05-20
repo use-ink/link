@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Loader } from "./Loader";
 import { Tab, Tabs } from "@mui/material";
 import { GenerateCustomUploadForm } from "./GenerateCustomUploadForm";
-import { ContractType } from "../const";
+import { ContractType } from "../types";
 import { Error } from "./Error";
 
 export const PinkContainer = () => {

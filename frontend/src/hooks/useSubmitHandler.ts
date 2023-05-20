@@ -1,24 +1,14 @@
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import { PinkValues, UIEvent } from "../types";
 import { FormikHelpers } from "formik";
-import { ApiBase, SubmittableExtrinsic } from "@polkadot/api/types";
+import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { ContractSubmittableResult } from "@polkadot/api-contract/base/Contract";
 import { useEstimationContext, useLinkContract } from "../contexts";
 import { useApi, useExtension } from "useink";
-import { ApiPromise } from "@polkadot/api";
-import { WeightV2 } from "@polkadot/types/interfaces";
-import { ContractType, PINK_DESCRIPTION } from "../const";
+import { pinkMeta } from "../const";
 import { NFTStorage, File } from "nft.storage";
-
-const doubleGasLimit = (
-  api: ApiPromise | ApiBase<"promise">,
-  weight: WeightV2
-): WeightV2 => {
-  return api.registry.createType("WeightV2", {
-    refTime: weight.refTime.toBn().muln(2),
-    proofSize: weight.proofSize.toBn().muln(2),
-  }) as WeightV2;
-};
+import { getDecodedTokenId } from "../helpers";
+import type { ContractExecResult } from "@polkadot/types/interfaces";
 
 export const useSubmitHandler = () => {
   const { api } = useApi();
@@ -26,19 +16,50 @@ export const useSubmitHandler = () => {
   const { contract } = useLinkContract();
   const { estimation } = useEstimationContext();
 
-  const uploadImage = async (values: PinkValues) => {
-    console.log(
-      "uploading Image to nft.storage, byteLength=",
-      values!.imageData.byteLength
+  const getTokenId = async (values: PinkValues) => {
+    if (!api || !contract) return;
+
+    // get tokenId from the contract's total_supply
+    const tokenMessage = contract?.abi.findMessage("getSupply");
+    const { result: tokenResult } = await api.call.contractsApi.call<ContractExecResult>(
+      account?.address,
+      contract?.address,
+      0,
+      null,
+      null,
+      tokenMessage?.toU8a([values.contractType]),
     );
+    let decodedToken = getDecodedTokenId(tokenResult, tokenMessage?.returnType, contract?.abi.registry);
+    console.log("set tokenId to ", decodedToken + 1);
+    values.tokenId[values.contractType] = decodedToken + 1;
+  };
+
+  const uploadImage = async (values: PinkValues) => {
+    if (!values!.imageData[values!.contractType]){
+      console.log("ImageData not set values.contractType,",values!.contractType);
+      return;
+    }
+    console.log(
+      "uploading Image to nft.storage,", values.contractType, "byteLength=",
+      values!.imageData[values!.contractType].byteLength
+    );
+    const tokenIdString: string = String(values.tokenId[values!.contractType]);
+    const name: string = pinkMeta[values!.contractType].name + tokenIdString;
+    console.log("storing token name", name);
+    const description: string = pinkMeta[values!.contractType].description;
+    console.log("storing token description", description);
+    const fileName: string = tokenIdString + ".jpeg";
+    console.log("storing file name", fileName);
+    const imageFile: Uint8Array = values!.imageData[values!.contractType];
+
     // Create instance to NFT.Storage
     const client = new NFTStorage({ token: process.env.REACT_APP_NFT_STORAGE_API_KEY! })
 
     // Send request to store image
-    const { ipnft } = await client.store({
-      name: "PinkRobot#",
-      description: PINK_DESCRIPTION,
-      image: new File([values!.imageData], "pinkrobot.jpeg", { type: "image/jpeg" })
+    const metadata = await client.store({
+      name,
+      description,
+      image: new File([imageFile], fileName, { type: "image/jpeg" }),
       // properties: {
       //   external_url: "https://pinkrobot.me",
       //   attributes:
@@ -56,17 +77,16 @@ export const useSubmitHandler = () => {
     })
 
     // Save the URL
-    const url = `ipfs://${ipnft}/metadata.json`;
-    console.log("Generated IPFS url:", url);
-    values!.ipfs = url;
-
-    return url;
+    console.log("Generated IPFS url:", metadata.url);
+    values!.ipfs = metadata.url;
   };
 
   return async (
     values: PinkValues,
     { setSubmitting, setStatus }: FormikHelpers<PinkValues>
   ) => {
+    console.log("Submit", api, contract, estimation, account);
+
     if (!api || !contract || !estimation || !account) return;
 
     const injector = await web3FromAddress(account.address);
@@ -80,10 +100,11 @@ export const useSubmitHandler = () => {
     console.log("Estimations.price", estimation.price);
     console.log("Estimation.gasRequired", estimation.gasRequired);
 
+    // get tokenId from the contract's total_supply
+    await getTokenId(values);
+
     // upload image to nft.storage
     await uploadImage(values);
-
-    // const newLimit = doubleGasLimit(api, estimation.gasRequired);
 
     try {
       const tx: SubmittableExtrinsic<"promise", ContractSubmittableResult> =
@@ -138,9 +159,8 @@ export const useSubmitHandler = () => {
                 const decoded = api.registry.findMetaError(
                   result.dispatchError.asModule
                 );
-                message = `${decoded.section.toUpperCase()}.${
-                  decoded.method
-                }: ${decoded.docs}`;
+                message = `${decoded.section.toUpperCase()}.${decoded.method
+                  }: ${decoded.docs}`;
               }
               console.log("Minting error", message);
 

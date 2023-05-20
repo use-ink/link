@@ -1,5 +1,4 @@
 import "./App.css";
-// import Resolver from "./Resolver";
 import { Routes, Route } from "react-router-dom";
 import { Loader } from "./components";
 import { useApi } from "useink";
@@ -19,7 +18,6 @@ function App() {
           </EstimationProvider>
         }
       />
-      {/* <Route path=":slug" element={<Resolver />} /> */}
     </Routes>
   ) : (
     <Loader message="Loading app..." />
