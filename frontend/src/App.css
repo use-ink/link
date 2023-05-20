@@ -53,6 +53,10 @@ select {
   @apply w-full bg-gray-800 text-white px-4 py-3 mb-2 border rounded-lg border-gray-700 hover:border-gray-500 focus:outline-none  disabled:opacity-50;
 }
 
+input.PrivateSwitchBase-input-4.MuiRadio-colorSecondary.Mui-checked {
+  color: #E65EA2;
+}
+
 button[type='submit'], button {
   @apply bg-pink-transparent hover:bg-pink-transparent2 text-white font-medium px-6 py-3 border-none disabled:opacity-50 disabled:hover:bg-pink-transparent;
   border-radius: 50px;

@@ -12,24 +12,13 @@ interface Props {
 function Fees({ estimation }: { estimation: Estimation }) {
   return (
     <>
-      <p>storage: {estimation.storageDeposit.asCharge.toHuman()}</p>
+      {/* <p>storage: {estimation.storageDeposit.asCharge.toHuman()}</p>
       <p>gas: {estimation.partialFee.toHuman()}</p>
-      <p>price: {estimation.price.toHuman()}</p>
-      <p>total: {estimation.total.toHuman()}</p>
+      <p>price: {estimation.price.toHuman()}</p> */}
+      <p>price + gas: {estimation.total.toHuman()}</p>
     </>
   );
 }
-
-// function Deduplicated({ slug }: { slug: string }) {
-//   return (
-//     <>
-//       <div>This url has already been shortened. </div>
-//       <div>
-//         <Link to={`/${slug}`}>{`${window.location.host}/${slug}`}</Link>
-//       </div>
-//     </>
-//   );
-// }
 
 export function DryRunResult({ values, isValid }: Props) {
   const estimate = useDryRun();

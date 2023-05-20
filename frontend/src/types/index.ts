@@ -21,6 +21,7 @@ export interface PinkValues {
   contractType: number;
   ipfs: string;
   aiModel: string;
+  aiStyle: string;
   imageData: Array<Uint8Array>;
   displayImage: Array<any>;
   tokenId: Array<number>;
@@ -61,4 +62,22 @@ export interface Meta {
 export enum NetworkId {
   Shibuya = 0,
   Astar = 1,
+}
+
+export enum AiStyles {
+  None = "",
+  Anime = "in anime style, ",
+  Cartoon = "in cartoon style, ",
+  Oil = "in oil painting style, ",
+  Pixel = "in pixel art style, ",
+  Pop = "in pop art style, ",
+  Nouveau = "in Art Nouveau style, ",
+  Illustration = "in Illustration style, ",
+  Deviant = "in Deviant website style, ",
+  Artstation = "in Artstation website style, ",
+  Pixiv = "in Pixiv website style, ",
+  Pixabay = "in Pixabay website style, ",
+  Concept = "in Concept style, ",
+  Ghibli = "in Ghibli studio style, ",
+  Pixar = "in Pixar studio style, ",
 }

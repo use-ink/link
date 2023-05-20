@@ -1,12 +1,14 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues, ContractType } from "../types";
+import { PinkValues, ContractType, AiStyles } from "../types";
 import { useEstimationContext } from "../contexts";
-import { ChangeEvent, SetStateAction, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useExtension } from "useink";
 import axios from "axios";
 import { Buffer } from "buffer";
+import { ModelSelector } from "./ModelSelector";
+import { StyleSelector } from "./StyleSelector";
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
@@ -15,7 +17,6 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const { account, accounts } = useExtension();
   const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
-  const [currentModel, setCurrentModel] = useState(values.aiModel);
   const balance = useBalance(account);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
@@ -27,13 +28,23 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     estimation.result &&
     "Ok" in estimation.result;
 
+  const composePrompt = () => {
+    const prompt = 
+      "pink robot, " + 
+      values.aiStyle +
+      values.prompt
+      ;
+    return prompt
+  }
+
   const fetchImage = async () => {
     console.log("Create image using model:", values.aiModel);
     console.log(
       "ENV",
       process.env.REACT_APP_HUGGING_FACE_API_KEY ? "ok" : "not found"
     );
-    console.log("prompt:", "pink robot, " + values.prompt);
+    const prompt = composePrompt();
+    console.log("prompt:", prompt);
 
     try {
       setIsBusy("Imagining your pink robot. This might take a while...");
@@ -48,7 +59,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
           "Content-Type": "application/json",
         },
         data: JSON.stringify({
-          inputs: "pink robot, " + values.prompt,
+          inputs: prompt,
           options: { wait_for_model: true },
         }),
         responseType: "arraybuffer",
@@ -72,12 +83,6 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     }
   };
 
-  const modelChanged = (e: { target: { value: SetStateAction<string> } }) => {
-    console.log("modelChanged", e.target.value);
-    values.aiModel = e.target.value.toString();
-    setCurrentModel(values.aiModel);
-  };
-
   return (
     <Form>
       <img
@@ -91,7 +96,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
           type="text"
           name="prompt"
           disabled={isSubmitting}
-          placeholder="Short description of your robot"
+          placeholder="Pink robot as a..."
           onChange={(e: ChangeEvent) => {
             setFieldTouched("prompt");
             handleChange(e);
@@ -100,28 +105,11 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
         <ErrorMessage name="prompt" component="div" className="error-message" />
       </div>
       <div className="group">
-        <label htmlFor="aimodel">A.I. Model</label>
-        <select
-          name="aimodel"
-          value={currentModel}
-          onChange={modelChanged}
-          style={{ display: "block" }}
-        >
-          <option
-            value="https://api-inference.huggingface.co/models/Joeythemonster/anything-midjourney-v-4-1"
-            label="Joeythemonster anything-midjourney v4.1"
-          ></option>
-          <option
-            value="https://api-inference.huggingface.co/models/CompVis/stable-diffusion-v1-4"
-            label="CompVis stable-diffusion v1.4"
-          ></option>
-          <option
-            value="https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2"
-            label="stabilityai stable-diffusion v2.0"
-          ></option>
-        </select>
+        <StyleSelector values={values} />
       </div>
-
+      <div className="group">
+        <ModelSelector values={values} />
+      </div>
       <div className="buttons-container">
         <div className="group">
           <button
