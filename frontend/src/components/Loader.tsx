@@ -1,13 +1,13 @@
-
 export const Loader = ({ message }: { message: string }) => {
   return (
     <div className="overflow-hidden">
       <div className="container">
         <div className="text-info">
-          <h1>Pink Robot</h1>
+          <div><img src="./assets/pink-logo-300.png" alt="pink-robot" /></div>
           <div className="tag-line">
-            <div><img src="./assets/pinkrobot200.gif" /></div>
-            <div className="animate-pulse loader-animation">{message}</div>
+            <div><img src="./assets/pinkrobot200.gif" alt="pink-robot" /></div>
+            <br/>
+            <div className="text-xl font-bold animate-pulse loader-animation">{message}</div>
           </div>
         </div>
       </div>
