@@ -1,20 +1,19 @@
-<img src="./frontend/src/pink-logo.jpeg" alt="pink-robot" align="center" height="120" />
+<img src="./frontend/src/assets/pink-logo.png" alt="pink-robot" align="center" height="120" />
 
 <br clear="both"/>
 
+This is a fun project Where AI model of your choice generates a pink robot image. You make a short/long description of your robot, AI generates it and if you like your robot, you can mint it as NFT on Astar Network. The NFT contract is minted as Native (WASM) contract and it uses PSP34 standard. 
 
+The NFTs are visible at the Paras marketplace. The cost of minting is 1 ASTR pet NFT plus gas and storage fee.
+## The project website
+[PinkRobot.me](https://www.pinkrobot.me/)
 
-This is a fun project which generates a pink robot with your description of it. If you like your robot, you can mint it as NFT on Astar Network. The NFT contract is minted as Native (WASM) contract and it uses PSP34 standard. It is also compatible with RMRK-ink and can be used as a RMRK_child.
-
-The NFTs are visible at the marketplaces: ArtZero and Paras.
-## Astar Deployment
-
-The pink-robot contract is deployed to Astar at the following address:
+## Contract Deployment
+The pink-robot contracts are deployed on [Astar Networks](https://astar.network/) at the following addresses:
 ```
-5GdHQQkRHvEEE4sDkcLkxCCumSkw2SFBJSLKzbMTNARLTXz3
+---
 ```
-Its metadata can be [found here](./frontend/src/metadata.json). It is upgradeable by the
-chain's sudo account.
+Its metadata can be [found here](./frontend/src/metadata.json).
 
 ## 🤔 Why?
 
