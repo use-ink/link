@@ -17,7 +17,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.1",
     "typescript": "^5.0.4",
-    "useink": "^0.1.0-beta.4",
+    "useink": "^1.3.2",
     "web-vitals": "^3.3.1",
     "yup": "^1.1.1"
   },
