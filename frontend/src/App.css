@@ -30,7 +30,8 @@ body {
   border-radius: 0.5rem;
 }
 .pink-logo {
-  width: 300px;
+  /* width: 300px; */
+  height: 45px;
   margin-right: 16px;
 }
 form {

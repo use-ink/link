@@ -1,6 +1,6 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues, ContractType, AiStyles } from "../types";
+import { PinkValues, ContractType } from "../types";
 import { useEstimationContext } from "../contexts";
 import { ChangeEvent, useState } from "react";
 import { NewUserGuide } from "./NewUserGuide";

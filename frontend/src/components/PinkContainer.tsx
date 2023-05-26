@@ -81,6 +81,7 @@ export const PinkContainer = () => {
                         label="Pink robot"
                         value={ContractType.PinkPsp34}
                         style={{ backgroundColor: "transparent" }}
+                        className="mytab" 
                       />
                       <CustomTab
                         label="Custom image"
