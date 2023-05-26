@@ -63,6 +63,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
           options: { wait_for_model: true },
         }),
         responseType: "arraybuffer",
+        timeout: 30000
       });
 
       const contentType = response.headers["content-type"];

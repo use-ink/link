@@ -10,13 +10,12 @@ import { CameraIcon } from "@heroicons/react/solid";
 
 export const GenerateCustomUploadForm = ({
   setIsBusy,
-  handleError
+  handleError,
 }: {
   setIsBusy: Function;
   handleError: Function;
 }) => {
-  const { isSubmitting, isValid, values } =
-    useFormikContext<PinkValues>();
+  const { isSubmitting, isValid, values } = useFormikContext<PinkValues>();
   const { estimation, isEstimating } = useEstimationContext();
   const { account, accounts } = useExtension();
   const [isUploaded, setIsUploaded] = useState(false);
@@ -41,13 +40,14 @@ export const GenerateCustomUploadForm = ({
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      values.displayImage[values.contractType] = reader.result?.toString() || "";
+      values.displayImage[values.contractType] =
+        reader.result?.toString() || "";
       setIsUploaded(true);
     };
     reader.onerror = (error) => {
       console.error(error);
       handleError(error.toString());
-    }
+    };
   };
 
   return (
@@ -59,7 +59,7 @@ export const GenerateCustomUploadForm = ({
       />
       <div className="group">
         <IconButton
-          color="primary"
+          style={{ color: "rgba(209, 209, 219)" }}
           aria-label="upload picture"
           component="label"
           size="small"
@@ -72,7 +72,7 @@ export const GenerateCustomUploadForm = ({
             onChange={handleCustomImageUpload}
           />
           <CameraIcon className="h-8 w-8" />
-          <span>Select an image</span>
+          <span style={{ marginLeft: '8px' }}>Select an image</span>
         </IconButton>
         <ErrorMessage
           name="fileUpload"
@@ -85,11 +85,7 @@ export const GenerateCustomUploadForm = ({
         <button
           type="submit"
           disabled={
-            !isUploaded ||
-            isSubmitting ||
-            !isOkToMint ||
-            !accounts ||
-            !hasFunds
+            !isUploaded || isSubmitting || !isOkToMint || !accounts || !hasFunds
           }
           name="submit"
         >

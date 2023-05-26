@@ -6,10 +6,17 @@ import { SubmitResult } from "./SubmitResult";
 import { GenerateForm } from "./GenerateForm";
 import { useState } from "react";
 import { Loader } from "./Loader";
-import { Tab, Tabs } from "@mui/material";
+import { styled, Tab, TabProps, Tabs } from "@mui/material";
 import { GenerateCustomUploadForm } from "./GenerateCustomUploadForm";
 import { ContractType } from "../types";
 import { Error } from "./Error";
+
+const CustomTab = styled(Tab)<TabProps>(({ theme }) => ({
+  color: theme.palette.success.main,
+  '&.Mui-selected': {
+    color: 'rgba(255, 105, 180, 0.9)',
+  },
+}));
 
 export const PinkContainer = () => {
   const submitFn = useSubmitHandler();
@@ -60,13 +67,22 @@ export const PinkContainer = () => {
                 <Header />
                 <div className="content">
                   <div className="group">
-                    <Tabs value={tab} onChange={handleTabChange} centered>
-                      <Tab
+                    <Tabs
+                      value={tab}
+                      onChange={handleTabChange}
+                      centered
+                      TabIndicatorProps={{
+                        style: {
+                          backgroundColor: "rgba(255, 105, 180, 0.9)",
+                        },
+                      }}
+                    >
+                      <CustomTab
                         label="Pink robot"
                         value={ContractType.PinkPsp34}
                         style={{ backgroundColor: "transparent" }}
                       />
-                      <Tab
+                      <CustomTab
                         label="Custom image"
                         value={ContractType.CustomUpload34}
                         style={{ backgroundColor: "transparent" }}
