@@ -1,4 +1,4 @@
-import { SetStateAction } from "react";
+import { SetStateAction, useState } from "react";
 import { PinkValues, AiStyles } from "../types";
 import {
   FormControl,
@@ -17,8 +17,11 @@ const CustomRadio = styled(Radio)<RadioProps>(({ theme }) => ({
 }));
 
 export const StyleSelector = ({ values }: { values: PinkValues }) => {
+  const [style, setStyle] = useState<string>(values.aiStyle);
+
   const styleChanged = (e: { target: { value: SetStateAction<string> } }) => {
     values.aiStyle = e.target.value.toString();
+    setStyle(values.aiStyle);
     console.log("modelChanged", values.aiStyle);
   };
 
@@ -27,7 +30,7 @@ export const StyleSelector = ({ values }: { values: PinkValues }) => {
       <FormControl component="fieldset">
         <RadioGroup
           name={"Style"}
-          value={values.aiStyle}
+          value={style}
           onChange={styleChanged}
           style={{ display: "block" }}
         >
