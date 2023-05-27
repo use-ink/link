@@ -1,34 +1,37 @@
-import { ContractPromise } from "@polkadot/api-contract";
-import * as React from "react";
-import { PropsWithChildren } from "react";
-import { useContract } from "useink";
-import { contractAddress } from "../const";
+import { PropsWithChildren, createContext } from "react";
+import { useContract, DryRun, useDryRun, useTx, Tx, useCall, Call, ChainContract } from "useink";
+import { CONTRACT_ADDRESS } from "../const";
 import metadata from "../metadata.json";
+import { ResolvedUrl, ShorteningResult } from "../types";
+import { useTxNotifications } from "useink/notifications";
 
-const LinkContractContext = React.createContext<
-  { contract?: ContractPromise } | undefined
->(undefined);
+interface LinkContractState {
+  link?: ChainContract; 
+  shortenDryRun?: DryRun<ShorteningResult>;
+  shorten?: Tx<ShorteningResult>;
+  resolve?: Call<ResolvedUrl>;
+  hasDuplicateSlug?: boolean;
+}
 
-function LinkContractProvider({ children }: PropsWithChildren) {
-  const contract = useContract(contractAddress, metadata);
+export const LinkContractContext = createContext<LinkContractState>({});
+
+export function LinkContractProvider({ children }: PropsWithChildren) {
+  const link = useContract(CONTRACT_ADDRESS, metadata);
+  const shortenDryRun = useDryRun<ShorteningResult>(link, 'shorten');
+  const shorten = useTx(link, 'shorten');
+  useTxNotifications(shorten);
+  const resolve = useCall<ResolvedUrl>(link, 'resolve');
+
+  // The current contract does not return an Result<_, Err> so we need to hack the
+  // duplicate Slug error check. ink! v4 handles this better. Using ink! v4 we can simply
+  // use `pickError(shortenDryRun?.result)` and check for the error type or undefined.
+  const hasDuplicateSlug = shortenDryRun?.result?.ok && 
+    shortenDryRun.result.value.storageDeposit.asCharge.eq(0) && 
+    shortenDryRun.result.value.partialFee.gtn(0)
 
   return (
-    <LinkContractContext.Provider value={{ contract }}>
+    <LinkContractContext.Provider value={{ link, shortenDryRun, shorten, resolve, hasDuplicateSlug }}>
       {children}
     </LinkContractContext.Provider>
   );
 }
-
-function useLinkContract() {
-  const context = React.useContext(LinkContractContext);
-
-  if (context === undefined) {
-    throw new Error(
-      "useLinkContract must be used within a LinkContractProvider"
-    );
-  }
-
-  return context;
-}
-
-export { LinkContractProvider, useLinkContract };

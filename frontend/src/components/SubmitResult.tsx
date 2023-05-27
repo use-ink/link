@@ -1,8 +1,9 @@
 import { UIEvent } from "../types";
 import { Link } from "react-router-dom";
-import { Disclosure } from "@headlessui/react";
-import { ChevronUpIcon } from "@heroicons/react/solid";
+import * as react from "@headlessui/react";
+import { ChevronUpIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
+import { Button } from "./Button";
 
 interface Props {
   slug: string;
@@ -39,18 +40,18 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
         )}
       </div>
 
-      <Disclosure>
+      <react.Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="disclosure-button">
+            <react.Disclosure.Button className="disclosure-button">
               <span>Events log</span>
               <ChevronUpIcon
                 className={`${
                   open ? "rotate-180 transform" : ""
                 } h-5 w-5 text-purple-500`}
               />
-            </Disclosure.Button>
-            <Disclosure.Panel className="disclosure-panel">
+            </react.Disclosure.Button>
+            <react.Disclosure.Panel className="disclosure-panel">
               {events.map((ev: UIEvent, index: number) => {
                 return (
                   <div key={`${ev.name}-${index}`} className="ui-event">
@@ -59,34 +60,34 @@ export const SubmitResult = ({ slug, events, errorMessage }: Props) => {
                   </div>
                 );
               })}
-            </Disclosure.Panel>
+            </react.Disclosure.Panel>
           </>
         )}
-      </Disclosure>
+      </react.Disclosure>
 
       {errorMessage && (
-        <Disclosure>
+        <react.Disclosure>
           {({ open }) => (
             <>
-              <Disclosure.Button className="disclosure-button">
+              <react.Disclosure.Button className="disclosure-button">
                 <span>Error log</span>
                 <ChevronUpIcon
                   className={`${
                     open ? "rotate-180 transform" : ""
                   } h-5 w-5 text-purple-500`}
                 />
-              </Disclosure.Button>
-              <Disclosure.Panel className="disclosure-panel">
+              </react.Disclosure.Button>
+              <react.Disclosure.Panel className="disclosure-panel">
                 {errorMessage}
-              </Disclosure.Panel>
+              </react.Disclosure.Panel>
             </>
           )}
-        </Disclosure>
+        </react.Disclosure>
       )}
       <div>
-        <button onClick={() => window.location.reload()}>
+        <Button onClick={() => window.location.reload()}>
           Shorten another
-        </button>
+        </Button>
       </div>
     </>
   );

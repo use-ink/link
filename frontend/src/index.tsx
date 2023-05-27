@@ -3,14 +3,19 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
-import { LinkContractProvider } from "./contexts";
+import { LinkContractProvider, UIProvider } from "./contexts";
 import { InkConfig, UseInkProvider } from "useink";
-import { endpoint as providerUrl } from "./const";
+import { RococoContractsTestnet } from 'useink/chains';
+import { NotificationsProvider } from "useink/notifications";
+import { Notifications } from "./components/Notifications";
 
-const config: Pick<InkConfig, "config"> = {
+const config: InkConfig = {
   config: {
-    dappName: "link! - URL shortener",
-    providerUrl,
+    dappName: "link!",
+    chains: [RococoContractsTestnet],
+    caller: {
+      default: "5EyR7vEk7DtvEWeefGcXXMV6hKwB8Ex5uvjHufm466mbjJkR",
+    }
   },
 };
 
@@ -22,9 +27,14 @@ root.render(
   <React.StrictMode>
     <Router>
       <UseInkProvider {...config}>
-        <LinkContractProvider>
-          <App />
-        </LinkContractProvider>
+        <NotificationsProvider>
+          <UIProvider>
+            <LinkContractProvider>
+              <App />
+              <Notifications />
+            </LinkContractProvider>
+          </UIProvider>
+        </NotificationsProvider>
       </UseInkProvider>
     </Router>
   </React.StrictMode>

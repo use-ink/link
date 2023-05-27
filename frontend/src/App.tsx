@@ -2,26 +2,18 @@ import "./App.css";
 import Resolver from "./Resolver";
 import { Routes, Route } from "react-router-dom";
 import { FormContainer, Loader } from "./components";
-import { useApi } from "useink";
-import { EstimationProvider } from "./contexts";
+import { useLinkContract } from "./hooks";
 
 function App() {
-  const { api } = useApi();
+  const { link } = useLinkContract();
 
-  return api ? (
+  if (!link) return <Loader message="Loading app..." />
+
+  return (
     <Routes>
-      <Route
-        index
-        element={
-          <EstimationProvider>
-            <FormContainer />
-          </EstimationProvider>
-        }
-      />
+      <Route index element={<FormContainer />} />
       <Route path=":slug" element={<Resolver />} />
     </Routes>
-  ) : (
-    <Loader message="Loading app..." />
   );
 }
 

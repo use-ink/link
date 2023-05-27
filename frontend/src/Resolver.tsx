@@ -1,67 +1,61 @@
-import { useEffect, useState } from "react";
-import type { ContractExecResult } from "@polkadot/types/interfaces";
-import { hexToString } from "@polkadot/util";
 import "./App.css";
-import { useParams, useNavigate } from "react-router-dom";
-import { dryRunCallerAddress } from "./const";
+import { useEffect, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import { Loader } from "./components";
-import { useLinkContract } from "./contexts";
-import { getReturnTypeName } from "./helpers";
-import { useApi } from "useink";
+import { hexToString } from 'useink/utils';
+import { useLinkContract } from "./hooks";
+import { AbiMessage, ContractExecResult, Registry } from "useink/core";
+import { useAbiMessage } from "useink";
 
-const Resolver = () => {
+// useink will decode results for ink! v4 +, but this dApp was built with ink! v3 and
+// requires this custom decoding function.
+export function decodeURL(
+  result: ContractExecResult['result'],
+  message: AbiMessage,
+  registry: Registry,
+): string | undefined {
+  if (result.isErr || !message.returnType) return
+
+  const returnTypeName = message.returnType.lookupName || message.returnType.type
+  const raw = registry.createTypeUnsafe(returnTypeName, [result.asOk.data]);
+  const url = hexToString(raw.toHuman() as any);
+
+  return url.substring(url.indexOf('http'));
+}
+
+const Resolver: React.FC = () => {
   const params = useParams();
-  const navigate = useNavigate();
   const { slug } = params;
-  const [resolvedUrl, setResolvedUrl] = useState<string>("");
-  const { api } = useApi();
-  const { contract } = useLinkContract();
+  const { resolve, link } = useLinkContract();
+  const abi = useAbiMessage(link?.contract, 'resolve');
+
+  const resolvedUrl = useMemo(() => {
+    if (resolve?.result?.ok && resolve.result.value.raw && abi && link?.contract) {
+      return decodeURL(resolve.result.value.raw.result, abi, link.contract.api.registry);
+    }
+
+    return undefined;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolve?.result]);
 
   useEffect(() => {
     resolvedUrl && window.location.replace(resolvedUrl);
-  }, [navigate, resolvedUrl]);
+  }, [resolvedUrl]);
 
   useEffect(() => {
-    if (!api || !contract || !slug) return;
-    const message = contract.abi.findMessage("resolve");
-    const inputData = message.toU8a([slug]);
-    api.call.contractsApi
-      .call<ContractExecResult>(
-        dryRunCallerAddress,
-        contract.address,
-        0,
-        null,
-        null,
-        inputData
-      )
-      .then(({ result }) => {
-        if (result.isErr && result.asErr.isModule) {
-          const decoded = api.registry.findMetaError(result.asErr.asModule);
-          console.error(
-            `${decoded.section.toUpperCase()}.${decoded.method}: ${
-              decoded.docs
-            }`
-          );
-        }
-        if (result.isOk) {
-          const returnTypeName = getReturnTypeName(message.returnType);
-          const r = (
-            message.returnType
-              ? contract.registry
-                  .createTypeUnsafe(returnTypeName, [result.asOk.data])
-                  .toHuman()
-              : "()"
-          ) as string;
-          const url = hexToString(r);
-          const sanitized = url.substring(url.indexOf("http"));
-          setResolvedUrl(sanitized);
-        }
-      });
-  }, [api, contract, slug]);
+    slug && resolve?.send([slug], { defaultCaller: true });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug]);
 
   return (
-    <div className="App">
-      <Loader message={resolvedUrl ? `Redirecting to ${resolvedUrl}` : ""} />
+    <div className="App h-screen flex flex-col justify-center">
+      {resolve?.isSubmitting && <Loader message={resolvedUrl ? `Redirecting to ${resolvedUrl}` : ""} />}
+      {!resolve?.isSubmitting && resolve?.result?.ok && !resolve.result.value.decoded && (
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-center">URL not found for <span className="bg-white/5 rounded-md p-2">{slug}</span></h1>
+          <p className="mt-6">Go back to <a href="/">shortener</a>.</p>
+        </div>
+      )}
     </div>
   );
 };

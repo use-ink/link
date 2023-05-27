@@ -1,8 +1,8 @@
 import * as Yup from "yup";
-import { nanoid } from "nanoid";
 import { Values } from "../types";
+import { pseudoRandomId } from "useink/utils";
 
-export const initialValues: Values = { url: "", alias: nanoid(5) };
+export const initialValues: Values = { url: "", alias: pseudoRandomId(5) };
 
 export const UrlShortenerSchema = Yup.object().shape({
   url: Yup.string().url().required("URL is a required field"),
@@ -12,8 +12,5 @@ export const UrlShortenerSchema = Yup.object().shape({
     .required("Alias is a required field"),
 });
 
-export const endpoint = "wss://rococo-contracts-rpc.polkadot.io";
-export const contractAddress =
+export const CONTRACT_ADDRESS =
   "5GdHQQkRHvEEE4sDkcLkxCCumSkw2SFBJSLKzbMTNARLTXz3";
-export const dryRunCallerAddress =
-  "5EyR7vEk7DtvEWeefGcXXMV6hKwB8Ex5uvjHufm466mbjJkR";
