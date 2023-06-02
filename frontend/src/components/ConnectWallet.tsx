@@ -21,10 +21,10 @@ export const ConnectWallet: React.FC<Props> = ({ show, onClose }) => {
 
         {!account && installed.length > 0 && (
           <ul>
-              {installed.map((w => ( 
+              {installed.map((w => (
                 <li key={w.title} className="mt-3">
                   <Button className="flex items-center gap-2 w-full" onClick={() => connect(w.extensionName)}>
-                    <img className="w-10 mr-2" src={w.logo.src} alt={w.logo.alt} /> 
+                    <img className="w-10 mr-2" src={w.logo.src} alt={w.logo.alt} />
                     Connect to {w.extensionName}
                   </Button>
                 </li>
@@ -39,14 +39,14 @@ export const ConnectWallet: React.FC<Props> = ({ show, onClose }) => {
             </p>
 
             <ul>
-              {uninstalled.map((w => ( 
+              {uninstalled.map((w => (
                 <li key={w.title} className="mt-3">
 
-                  <Button className="flex items-center gap-2 w-full" 
+                  <Button className="flex items-center gap-2 w-full"
                     onClick={() => window.open(w.installUrl, '_blank')}
                     rel="noopener noreferrer"
                   >
-                    <img className="w-10 mr-2" src={w.logo.src} alt={w.logo.alt} /> 
+                    <img className="w-10 mr-2" src={w.logo.src} alt={w.logo.alt} />
                     Install {w.extensionName}
                   </Button>
                 </li>
