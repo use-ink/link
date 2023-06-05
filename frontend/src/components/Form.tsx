@@ -66,7 +66,7 @@ export const UrlShortenerForm = () => {
             Shorten
           </Button>
         ) : (
-          <Button onClick={() => setShowConnectWallet(true)}>
+          <Button type="button" onClick={() => setShowConnectWallet(true)}>
             Connect Wallet
           </Button>
         )}
