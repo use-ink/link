@@ -12,7 +12,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.1",
     "typescript": "^5.0.4",
-    "useink": "^1.4.1",
+    "useink": "^1.4.2",
     "web-vitals": "^3.3.1",
     "yup": "^1.1.1"
   },
