@@ -24,6 +24,12 @@ export const UrlShortenerForm = () => {
   const decoded = pickDecoded(shortenDryRun?.result);
   const runtimeError = pickError(shortenDryRun?.result);
 
+  const handleInputChange = (e: ChangeEvent, name: string) => {
+    shortenDryRun?.resetState();
+    setFieldTouched(name);
+    handleChange(e);
+  };
+
   return (
     <Form>
       <div className="group">
@@ -32,10 +38,7 @@ export const UrlShortenerForm = () => {
           name="url"
           disabled={isSubmitting}
           placeholder="Paste a URL to get cost estimations"
-          onChange={(e: ChangeEvent) => {
-            setFieldTouched("url");
-            handleChange(e);
-          }}
+          onChange={(e: ChangeEvent) => handleInputChange(e, 'url')}
         />
         <ErrorMessage name="url" component="div" className="error-message" />
       </div>
@@ -45,10 +48,7 @@ export const UrlShortenerForm = () => {
           type="text"
           name="alias"
           disabled={isSubmitting}
-          onChange={(e: ChangeEvent) => {
-            setFieldTouched("alias");
-            handleChange(e);
-          }}
+          onChange={(e: ChangeEvent) => handleInputChange(e, 'alias')}
         />
         <ErrorMessage name="alias" component="div" className="error-message" />
       </div>
