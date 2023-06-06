@@ -13,7 +13,7 @@ export function AccountsDropdown() {
         value={account}
         onChange={(a) => { setAccount(a) }}
       >
-        <div className="relative">
+        <div className="relative z-10">
           <Listbox.Button 
             className={classNames(
               "relative w-full cursor-default rounded-lg bg-violet-900 py-2 pl-3 pr-10 text-left shadow-md",
