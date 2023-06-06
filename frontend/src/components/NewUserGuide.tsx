@@ -9,13 +9,13 @@ export const NewUserGuide = () => {
     <div className="text-xs text-gray-300 text-left">
       {account && !hasFunds && (
         <p className="max-w-lg mx-auto">
-          Your account balance is zero. To obtain Rococo testnet tokens (ROC) use the{" "}
+          Your account balance is zero. Get ROC tokens{" "}
             <a
-              href="https://use.ink/faucet"
+              href={`https://use.ink/faucet?acc=${account.address}`}
               rel="noopener noreferrer"
               target="_blank"
             >
-            Rococo Contracts Faucet
+              here
             </a>.
         </p>
       )}
