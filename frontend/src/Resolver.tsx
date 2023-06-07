@@ -50,7 +50,7 @@ const Resolver: React.FC = () => {
   return (
     <div className="App h-screen flex flex-col justify-center">
       {resolve?.isSubmitting && <Loader message={resolvedUrl ? `Redirecting to ${resolvedUrl}` : ""} />}
-      {!resolve?.isSubmitting && resolve?.result?.ok && !resolve.result.value.decoded && (
+      {!resolve?.isSubmitting && resolve?.result?.ok && !resolvedUrl && (
         <div className="text-center">
           <h1 className="text-2xl font-bold text-center">URL not found for <span className="bg-white/5 rounded-md p-2">{slug}</span></h1>
           <p className="mt-6">Go back to <a href="/">shortener</a>.</p>
