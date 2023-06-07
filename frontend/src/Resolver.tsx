@@ -18,6 +18,10 @@ export function decodeURL(
 
   const returnTypeName = message.returnType.lookupName || message.returnType.type
   const raw = registry.createTypeUnsafe(returnTypeName, [result.asOk.data]);
+
+  const OptionNoneResponse = '0x00';
+  if (raw.toHuman() === OptionNoneResponse) return
+
   const url = hexToString(raw.toHuman() as any);
 
   return url.substring(url.indexOf('http'));
@@ -45,7 +49,7 @@ const Resolver: React.FC = () => {
   useEffect(() => {
     slug && resolve?.send([slug], { defaultCaller: true });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug]);
+  }, []);
 
   return (
     <div className="App h-screen flex flex-col justify-center">
