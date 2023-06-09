@@ -1,27 +1,19 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import { Loader } from "./components";
-import { useApi } from "useink";
-import { EstimationProvider } from "./contexts";
-import { PinkContainer } from "./components/PinkContainer";
+import { PinkContainer, Loader} from "./components";
+import { usePinkContract } from "./hooks";
 
 function App() {
-  const { api } = useApi();
+  const { pinkRobotContract } = usePinkContract();
 
-  return api ? (
+  if (!pinkRobotContract) return <Loader message="Loading app..." />
+
+  return (
     <Routes>
-      <Route
-        index
-        element={
-          <EstimationProvider>
-            <PinkContainer />
-          </EstimationProvider>
-        }
-      />
+      <Route index element={<PinkContainer />}/>
+      <Route path="/pinkrobot" element={<PinkContainer />}/>
     </Routes>
-  ) : (
-    <Loader message="Loading app..." />
-  );
+  )
 }
 
 export default App;

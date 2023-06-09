@@ -108,7 +108,7 @@ a {
 
 .text-info {
   @apply flex flex-col relative pb-5 ml-32 self-center z-10;
-  max-width: 480px;
+  max-width: 600px;
 }
 
 h1 {

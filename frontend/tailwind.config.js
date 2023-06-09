@@ -19,6 +19,7 @@ module.exports = {
           300: "#D7B5FD",
           800: "#3D2B52",
           900: "#201F37",
+          700: "#2A2442",
           transparent: "rgba(191, 139, 250, 0.4)",
           transparent2: "rgba(191, 139, 250, 0.3)",
         },

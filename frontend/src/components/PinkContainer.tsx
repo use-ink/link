@@ -1,6 +1,6 @@
 import { Formik } from "formik";
-import { initialPinkValues, PinkFormSchema } from "../const";
-import { useSubmitHandler } from "../hooks";
+import { connectedNetwork, initialPinkValues, PinkFormSchema } from "../const";
+import { useSubmitHandler, useUI } from "../hooks";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
 import { GenerateForm } from "./GenerateForm";
@@ -10,6 +10,7 @@ import { styled, Tab, TabProps, Tabs } from "@mui/material";
 import { GenerateCustomUploadForm } from "./GenerateCustomUploadForm";
 import { ContractType } from "../types";
 import { Error } from "./Error";
+import { ConnectWallet } from "./ConnectWallet";
 
 const CustomTab = styled(Tab)<TabProps>(({ theme }) => ({
   color: theme.palette.success.main,
@@ -20,6 +21,7 @@ const CustomTab = styled(Tab)<TabProps>(({ theme }) => ({
 
 export const PinkContainer = () => {
   const submitFn = useSubmitHandler();
+  const { showConnectWallet, setShowConnectWallet } = useUI();
   const [busyMessage, setBusyMessage] = useState<string>("");
   const [tab, setTab] = useState<ContractType>(ContractType.PinkPsp34);
   const [error, setError] = useState<string>("");
@@ -39,6 +41,7 @@ export const PinkContainer = () => {
 
   return (
     <div className="App">
+      <ConnectWallet show={showConnectWallet} onClose={() => setShowConnectWallet(false)} />
       <Formik
         validateOnMount
         initialValues={initialPinkValues}
@@ -47,7 +50,7 @@ export const PinkContainer = () => {
           if (!helpers) return;
 
           try {
-            setBusyMessage("Minting your NFT on...");
+            setBusyMessage(`Minting your NFT on ${connectedNetwork}...`);
             await submitFn(values, helpers);
           } catch (err: any) {
             setError(err.toString());
@@ -107,7 +110,6 @@ export const PinkContainer = () => {
                         )}
                         {tab === ContractType.CustomUpload34 && (
                           <GenerateCustomUploadForm
-                            setIsBusy={setBusyMessage}
                             handleError={handleError}
                           />
                         )}

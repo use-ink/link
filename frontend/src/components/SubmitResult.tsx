@@ -3,6 +3,7 @@ import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
+import { CUSTOM_MINT_TEXT, PINK_MINT_TEXT } from "../const";
 
 interface Props {
   events: UIEvent[];
@@ -21,7 +22,6 @@ export const SubmitResult = ({
   useEffect(() => {
     hideBusyMessage();
     events.forEach((e) => {
-      console.log("SubmitResult event:", e);
       if (e.name === "system:ExtrinsicFailed") {
         setSubmitOutcome(
           "The transaction was not successful. Try again with another Pink Robot."
@@ -29,8 +29,8 @@ export const SubmitResult = ({
       }
       if (e.name === "system:ExtrinsicSuccess") {
         values.contractType === ContractType.PinkPsp34 ?
-          setSubmitOutcome("Your Pink Robot is now on Astar! Keep it or flip it.") :
-          setSubmitOutcome("Your NFT is now on Astar! Keep it or flip it.");
+          setSubmitOutcome(PINK_MINT_TEXT) :
+          setSubmitOutcome(CUSTOM_MINT_TEXT);
       }
     });
   }, [events, hideBusyMessage, values.contractType]);

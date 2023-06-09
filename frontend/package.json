@@ -1,19 +1,16 @@
 {
-  "name": "link",
-  "version": "0.1.0",
+  "name": "pinkrobot",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.8",
-    "@headlessui/react": "^1.7.8",
-    "@heroicons/react": "1.0.6",
+    "@headlessui/react": "^1.7.14",
+    "@heroicons/react": "^2.0.18",
     "@material-ui/core": "^4.12.4",
     "@mui/material": "^5.12.2",
-    "@polkadot/api": "^9.14.1",
-    "@polkadot/api-contract": "^9.14.1",
-    "@polkadot/extension-dapp": "^0.44.8",
-    "@polkadot/types": "^9.14.1",
-    "@polkadot/ui-keyring": "^2.11.1",
+    "classnames": "^2.3.2",
+
     "axios": "^1.4.0",
     "bn.js": "^5.2.1",
     "buffer": "^6.0.3",
@@ -22,18 +19,18 @@
     "nft.storage": "^7.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.0",
-    "typescript": "^4.9.5",
-    "useink": "^0.1.0-beta.4",
+    "react-router-dom": "^6.11.1",
+    "typescript": "^5.0.4",
+    "useink": "^1.4.4",
     "web-vitals": "^3.1.1",
-    "yup": "^0.32.11"
+    "yup": "^1.1.1"
   },
   "devDependencies": {
-    "@types/node": "^18.11.18",
-    "@types/react": "^18.0.27",
-    "@types/react-dom": "^18.0.10",
+    "@types/node": "^20.1.1",
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.4",
     "react-scripts": "5.0.1",
-    "tailwindcss": "^3.2.4"
+    "tailwindcss": "^3.3.2"
   },
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false react-scripts start",

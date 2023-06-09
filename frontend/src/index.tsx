@@ -3,14 +3,19 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
-import { LinkContractProvider } from "./contexts";
+import { PinkContractProvider, UIProvider } from "./contexts";
 import { InkConfig, UseInkProvider } from "useink";
-import { endpoint as providerUrl } from "./const";
+import { ShibuyaTestnet } from 'useink/chains';
+import { NotificationsProvider } from "useink/notifications";
+import { Notifications } from "./components/Notifications";
 
-const config: Pick<InkConfig, "config"> = {
+const config: InkConfig = {
   config: {
     dappName: "Pink Robot - AI generator and minter",
-    providerUrl,
+    chains: [ShibuyaTestnet],
+    caller: {
+      default: "5EyR7vEk7DtvEWeefGcXXMV6hKwB8Ex5uvjHufm466mbjJkR",
+    }
   },
 };
 
@@ -22,9 +27,14 @@ root.render(
   <React.StrictMode>
     <Router>
       <UseInkProvider {...config}>
-        <LinkContractProvider>
-          <App />
-        </LinkContractProvider>
+        <NotificationsProvider>
+          <UIProvider>
+            <PinkContractProvider>
+              <App />
+              <Notifications />
+            </PinkContractProvider>
+          </UIProvider>
+        </NotificationsProvider>
       </UseInkProvider>
     </Router>
   </React.StrictMode>

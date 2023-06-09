@@ -1,36 +1,61 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues, ContractType } from "../types";
-import { useEstimationContext } from "../contexts";
-import { ChangeEvent, useState } from "react";
+import { PinkValues, ContractType, SupplyResult } from "../types";
+import { ChangeEvent, useState, useEffect } from "react";
 import { NewUserGuide } from "./NewUserGuide";
-import { useBalance, useExtension } from "useink";
+import { useBalance, useWallet } from "useink";
 import axios from "axios";
 import { Buffer } from "buffer";
 import { ModelSelector } from "./ModelSelector";
 import { StyleSelector } from "./StyleSelector";
+import { usePinkContract } from "../hooks";
+import { pickResultOk } from "useink/utils";
+import { PINK_PREFIX } from "../const";
+
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
   const { isSubmitting, isValid, values, setFieldTouched, handleChange } =
     useFormikContext<PinkValues>();
-  const { estimation, isEstimating } = useEstimationContext();
-  const { account, accounts } = useExtension();
+  const { account, accounts } = useWallet();
   const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
+  const { getPrice, getSupply } = usePinkContract();
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
 
-  const isOkToMint =
-    !isEstimating &&
-    estimation &&
-    estimation.result &&
-    "Ok" in estimation.result;
+  const isOkToMint = true
+  // !isEstimating &&
+  // estimation &&
+  // estimation.result &&
+  // "Ok" in estimation.result;
+
+  useEffect(() => {
+    fetchPrice();
+    getTokenId(values);
+  }, [account, values.contractType]);
+
+  const getTokenId = async (values: PinkValues) => {
+    // get tokenId from the contract's total_supply
+    const s = await getSupply?.send([values.contractType], { defaultCaller: true });
+    let supply = pickResultOk<SupplyResult>(s);
+    console.log("Next tokenId probing", Number(supply) + 1);
+    values.tokenId[values!.contractType] = Number(supply) + 1;
+  };
+
+  const fetchPrice = async () => {
+    const price = await getPrice?.send([], { defaultCaller: true });
+    console.log('fetched price', price?.ok && price.value.decoded);
+    if (price?.ok && price.value.decoded) {
+      let priceNoQuotes = price.value.decoded.toString().replace(/,/g, '');
+      values.price = priceNoQuotes;
+    }
+  };
 
   const composePrompt = () => {
-    const prompt = 
-      "pink robot, " + 
+    const prompt =
+      PINK_PREFIX +
       values.aiStyle +
       values.prompt
       ;
@@ -47,7 +72,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     console.log("prompt:", prompt);
 
     try {
-      setIsBusy("Imagining your pink robot. This might take a while...");
+      setIsBusy("Imagining your pink robot. This might take a while (up to 30s)");
       setWaitingHuggingFace(true);
       setIsGenerated(false);
       const response = await axios({
@@ -152,11 +177,11 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
         )}
       </div>
 
-      {isValid && estimation?.error && !isEstimating && (
+      {/* {isValid && estimation?.error && !isEstimating && (
         <div className="text-xs text-left mb-2 text-red-500">
           {estimation.error.message}
         </div>
-      )}
+      )} */}
 
       <div className="group">
         <NewUserGuide
@@ -168,3 +193,5 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
     </Form>
   );
 };
+
+

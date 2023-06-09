@@ -1,69 +1,66 @@
 import { useEffect, useRef } from "react";
-import { useEstimationContext } from "../contexts";
-import { useDryRun } from "../hooks";
-import { Estimation, PinkValues } from "../types";
-
+import { PinkValues } from "../types";
+import { usePinkContract } from "../hooks";
+import { pickTxInfo, formatBalance } from "useink/utils";
+import { useWallet } from "useink";
+import BN from "bn.js";
 interface Props {
   values: PinkValues;
   isValid: boolean;
 }
 
-function Fees({ estimation }: { estimation: Estimation }) {
+interface FeesProps {
+  storage: any;
+  gas: any;
+  price: string;
+}
+
+function Fees({ storage, gas, price }: FeesProps) {
+  const priceBN = new BN(price);
+  const cost = gas
+    .add(priceBN)
+    .add(storage);
   return (
-    <>
-      {/* <p>storage: {estimation.storageDeposit.asCharge.toHuman()}</p>
-      <p>gas: {estimation.partialFee.toHuman()}</p>
-      <p>price: {estimation.price.toHuman()}</p> */}
-      <p>price + gas: {estimation.total.toHuman()}</p>
-    </>
+    <div className="text-xs text-right mb-2 text-gray-200">      
+    {/* <p>storage: {storage}</p>
+      <p>gas: {gas}</p>
+      <p>price: {price}</p> */}
+      <p>price + gas: {formatBalance(cost.toString(), { decimals: 18, withSi: true })}</p>
+    </div>
   );
 }
 
 export function DryRunResult({ values, isValid }: Props) {
-  const estimate = useDryRun();
-  const { estimation, setEstimation, setIsEstimating } = useEstimationContext();
+  const { pinkMintDryRun } = usePinkContract();
+  const { account } = useWallet();
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    setIsEstimating(true);
-
     async function getOutcome() {
-      if (!isValid) return;
-      const params = [values.contractType, values.ipfs];
-      const e = await estimate(params);
-      setEstimation(e);
-      setIsEstimating(false);
+      pinkMintDryRun?.send([values.contractType, values.ipfs], { value: values.price, defaultCaller: true });
     }
+
     function debouncedDryRun() {
       if (timeoutId.current) clearTimeout(timeoutId.current);
+
       timeoutId.current = setTimeout(() => {
-        getOutcome().catch((err) => console.error(err));
+        getOutcome().catch(console.error);
         timeoutId.current = null;
-      }, 300);
+      }, 1000);
     }
 
     debouncedDryRun();
-  }, [
-    estimate,
-    isValid,
-    setEstimation,
-    setIsEstimating,
-    values.prompt,
-    values.ipfs,
-    values.contractType,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pinkMintDryRun?.send, account?.address, values.ipfs]);
 
-  return estimation ? (
-    <div className="estimations">
-      <div>
-        {estimation.result && "Ok" in estimation.result 
-          // && typeof estimation.result.Ok === "object" 
-          ? (
-          <Fees estimation={estimation} />
-          ) : (
-          <p>Error in estimation</p>
-        )}
-      </div>
-    </div>
-  ) : null;
+  if (!pinkMintDryRun?.result) return null;
+  const txInfo = pickTxInfo(pinkMintDryRun?.result);
+
+  return (
+    <>
+      <Fees storage={txInfo ? txInfo.storageDeposit.asCharge : '--'}
+        gas={txInfo ? txInfo.partialFee : '--'}
+        price={values.price} />
+    </>
+  );
 }
