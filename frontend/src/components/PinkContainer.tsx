@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import { connectedNetwork, initialPinkValues, PinkFormSchema } from "../const";
-import { useSubmitHandler, useUI } from "../hooks";
+import { useMintHandler, useUI } from "../hooks";
 import { Header } from "./Header";
 import { SubmitResult } from "./SubmitResult";
 import { GenerateForm } from "./GenerateForm";
@@ -20,7 +20,7 @@ const CustomTab = styled(Tab)<TabProps>(({ theme }) => ({
 }));
 
 export const PinkContainer = () => {
-  const submitFn = useSubmitHandler();
+  const submitFn = useMintHandler();
   const { showConnectWallet, setShowConnectWallet } = useUI();
   const [busyMessage, setBusyMessage] = useState<string>("");
   const [tab, setTab] = useState<ContractType>(ContractType.PinkPsp34);

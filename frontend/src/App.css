@@ -36,6 +36,12 @@ body {
   display: none;
 }
 
+.pink-network-logo {
+  width: 90px;
+  margin-right: 16px;
+  display: none;
+}
+
 .pink-logo-mobile {
   height: 45px;
   margin-right: 16px;
@@ -55,6 +61,9 @@ body {
 
 @media only screen and (min-width: 600px ) {
   .pink-logo {
+    display: block;
+  }
+  .pink-network-logo {
     display: block;
   }
   .pink-logo-mobile {

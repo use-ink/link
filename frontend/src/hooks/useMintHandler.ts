@@ -1,6 +1,6 @@
 import { PinkValues, SupplyResult, TransferredBalanceEvent, UIEvent } from "../types";
-import { FormikHelpers, useFormikContext } from "formik";
-import { usePinkContract } from "../hooks";
+import { FormikHelpers } from "formik";
+import { usePinkContract } from ".";
 import { useWallet } from "useink";
 import { pinkMeta } from "../const";
 import { NFTStorage } from "nft.storage";
@@ -8,7 +8,7 @@ import { decodeError } from "useink/core";
 import { pickResultOk } from "useink/utils";
 
 
-export const useSubmitHandler = () => {
+export const useMintHandler = () => {
   const { getSupply, pinkMint, pinkRobotContract } = usePinkContract();
   const { account } = useWallet();
 

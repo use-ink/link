@@ -48,6 +48,7 @@ export const GenerateCustomUploadForm = ({
         src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
         alt="example"
+        title="After you upload an image, you will see a preview here. You can mint an NFT with this image. Please do not confuse this image with PinkRobots. The custom uploaded images will belong to different smart contract"
       />
       <div className="group">
         <IconButton

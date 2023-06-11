@@ -1,5 +1,6 @@
 import { SetStateAction, useState } from "react";
-import { PinkValues, AiStyles } from "../types";
+import { PinkValues } from "../types";
+import { AiStyles } from "../const";
 import {
   FormControl,
   FormControlLabel,
@@ -70,9 +71,14 @@ export const StyleSelector = ({ values }: { values: PinkValues }) => {
             label="Nouveau"
           />
           <FormControlLabel
-            value={AiStyles.Pixiv}
+            value={AiStyles.Ink}
             control={<CustomRadio />}
-            label="Pixiv"
+            label="Ink"
+          />
+          <FormControlLabel
+            value={AiStyles.Disney}
+            control={<CustomRadio />}
+            label="Disney"
           />
           <FormControlLabel
             value={AiStyles.Ghibli}
@@ -85,24 +91,24 @@ export const StyleSelector = ({ values }: { values: PinkValues }) => {
             label="Pixar"
           />
           <FormControlLabel
+            value={AiStyles.Best}
+            control={<CustomRadio />}
+            label="Best"
+          />
+          <FormControlLabel
             value={AiStyles.Deviant}
             control={<CustomRadio />}
             label="Deviant"
           />
           <FormControlLabel
-            value={AiStyles.Pixabay}
+            value={AiStyles.Watercolor}
             control={<CustomRadio />}
-            label="Pixabay"
+            label="Watercolor"
           />
           <FormControlLabel
-            value={AiStyles.Artstation}
+            value={AiStyles.Paper}
             control={<CustomRadio />}
-            label="Artstation"
-          />
-          <FormControlLabel
-            value={AiStyles.Illustration}
-            control={<CustomRadio />}
-            label="Illustration"
+            label="Paper"
           />
         </RadioGroup>
       </FormControl>

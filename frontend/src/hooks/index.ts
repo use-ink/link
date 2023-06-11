@@ -1,3 +1,3 @@
-export * from "./useSubmitHandler";
+export * from "./useMintHandler";
 export * from "./usePinkContract";
 export * from "./useUI";
