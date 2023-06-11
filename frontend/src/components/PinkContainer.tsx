@@ -6,18 +6,11 @@ import { SubmitResult } from "./SubmitResult";
 import { GenerateForm } from "./GenerateForm";
 import { useState } from "react";
 import { Loader } from "./Loader";
-import { styled, Tab, TabProps, Tabs } from "@mui/material";
 import { GenerateCustomUploadForm } from "./GenerateCustomUploadForm";
 import { ContractType } from "../types";
 import { Error } from "./Error";
 import { ConnectWallet } from "./ConnectWallet";
-
-const CustomTab = styled(Tab)<TabProps>(({ theme }) => ({
-  color: theme.palette.success.main,
-  '&.Mui-selected': {
-    color: 'rgba(255, 105, 180, 0.9)',
-  },
-}));
+// import { PinkTabs } from "./PinkTabs";
 
 export const PinkContainer = () => {
   const submitFn = useMintHandler();
@@ -29,15 +22,6 @@ export const PinkContainer = () => {
   const notBusyAnymore = () => setBusyMessage("");
   const handleError = (error: string) => setError(error);
   const handleCloseError = () => setError("");
-
-  const handleTabChange = (
-    event: React.SyntheticEvent,
-    newTab: ContractType
-  ) => {
-    if (newTab !== null) {
-      setTab(newTab);
-    }
-  };
 
   return (
     <div className="App">
@@ -69,30 +53,9 @@ export const PinkContainer = () => {
               >
                 <Header />
                 <div className="content">
-                  <div className="group">
-                    <Tabs
-                      value={tab}
-                      onChange={handleTabChange}
-                      centered
-                      TabIndicatorProps={{
-                        style: {
-                          backgroundColor: "rgba(255, 105, 180, 0.9)",
-                        },
-                      }}
-                    >
-                      <CustomTab
-                        label="Pink robot"
-                        value={ContractType.PinkPsp34}
-                        style={{ backgroundColor: "transparent" }}
-                        className="mytab" 
-                      />
-                      <CustomTab
-                        label="Custom image"
-                        value={ContractType.CustomUpload34}
-                        style={{ backgroundColor: "transparent" }}
-                      />
-                    </Tabs>
-                  </div>
+                  {/* <div className="group">
+                    <PinkTabs tab={tab} setTab={setTab} />
+                  </div> */}
                   <div className="form-panel">
                     {finalized ? (
                       <SubmitResult
