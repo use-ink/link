@@ -48,6 +48,7 @@ export const SubmitResult = ({
         {submitOutcome}
         <a href={marketplaceLink}>Paras</a>
       </div>
+      <div className="tweet"><Tweet /></div>
       {errorMessage && (
         <Disclosure>
           {({ open }) => (
@@ -101,9 +102,6 @@ export const SubmitResult = ({
       <div className="buttons-container">
         <div className="group">
           <button onClick={() => window.location.reload()}>Try another</button>
-        </div>
-        <div className="group ">
-          <Tweet />
         </div>
       </div>
     </>

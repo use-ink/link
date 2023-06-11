@@ -21,19 +21,59 @@ body {
 }
 .form-panel {
   @apply flex flex-col items-center justify-center bg-gray-900 p-6 shadow-md shadow-xl;
-  width: 420px;
   border-radius: 20px;
 }
+
 .pink-example {
-  width: 512px;
+  width: auto;
   margin-bottom: 32px;
   border-radius: 0.5rem;
 }
+
 .pink-logo {
-  /* width: 300px; */
+  height: 45px;
+  margin-right: 16px;
+  display: none;
+}
+
+.pink-logo-mobile {
   height: 45px;
   margin-right: 16px;
 }
+
+.header-container {
+  @apply flex justify-between w-full px-2 py-4;
+}
+
+.accounts-dropdown {
+  @apply w-48;
+}
+
+.tweet {
+  @apply mb-4;
+}
+
+@media only screen and (min-width: 600px ) {
+  .pink-logo {
+    display: block;
+  }
+  .pink-logo-mobile {
+    display: none;
+  }
+
+  .header-container {
+    @apply px-8;
+  }
+
+  .accounts-dropdown {
+    @apply w-64;
+  }
+
+  .form-panel {
+    width: 420px;
+  }
+}
+
 form {
   width: 100%;
   text-align: center;
@@ -104,11 +144,23 @@ a {
 .container {
   display: flex;
   height: 100vh;
+  max-width: 100%
 }
 
 .text-info {
-  @apply flex flex-col relative pb-5 ml-32 self-center z-10;
-  max-width: 600px;
+  @apply self-center text-center mx-auto px-4;
+}
+
+.loader-image {
+  @apply w-fit mx-auto mt-4;
+}
+
+.wallet-wrapper {
+  @apply flex items-center;
+}
+
+.network {
+  @apply mr-4
 }
 
 h1 {
@@ -125,7 +177,7 @@ h1 {
 }
 
 .group {
-  @apply pb-5
+  @apply pb-5 text-left
 }
 .group:last-child {
   @apply relative pb-2
