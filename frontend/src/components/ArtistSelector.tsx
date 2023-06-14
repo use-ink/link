@@ -1,14 +1,15 @@
-import { SetStateAction, useState } from "react";
-import { PinkValues } from "../types";
-import { ArtistStyles } from "../const";
+import { useState } from "react";
+import { PinkValues, NameText } from "../types";
+import { artistStyles } from "../const";
 
 export const ArtistSelector = ({ values }: { values: PinkValues }) => {
-  const [artist, setArtist] = useState<string>(values.artist);
+  const [artist, setArtist] = useState<string>(values.artist.name);
 
-  const artistChanged = (e: { target: { value: SetStateAction<string> } }) => {
-    console.log("artistChanged", e.target.value);
-    values.artist = e.target.value.toString();
-    setArtist(values.artist);
+  const artistChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newArtist: NameText = artistStyles[e.target.value.toLowerCase()];
+    console.log("artistChanged", newArtist);
+    setArtist(newArtist.name);
+    values.artist = newArtist;
   };
 
   return (
@@ -23,67 +24,67 @@ export const ArtistSelector = ({ values }: { values: PinkValues }) => {
       >
         <option value="" disabled >Select an Artist style</option>
         <option
-          value={ArtistStyles.None}
+          value={artistStyles.none.name}
           label="No Artist selected"
         ></option>
         <option
-          value={ArtistStyles.Kusama}
+          value={artistStyles.kusama.name}
           label="Yayoi Kusama"
         ></option>
         <option
-          value={ArtistStyles.Amano}
+          value={artistStyles.amano.name}
           label="Yoshitaka Amano"
         ></option>
         <option
-          value={ArtistStyles.Takashi}
+          value={artistStyles.takashi.name}
           label="Takashi Murakami"
         ></option>
         <option
-          value={ArtistStyles.Hokusai}
+          value={artistStyles.hokusai.name}
           label="Katsushika Hokusai"
         ></option>
         <option
-          value={ArtistStyles.Picasso}
+          value={artistStyles.picasso.name}
           label="Pablo Picasso"
         ></option>
         <option
-          value={ArtistStyles.Gogh}
+          value={artistStyles.gogh.name}
           label="Vincent van Gogh"
         ></option>
         <option
-          value={ArtistStyles.Dali}
+          value={artistStyles.dali.name}
           label="Salvador Dali"
         ></option>
         <option
-          value={ArtistStyles.Pollock}
+          value={artistStyles.pollock.name}
           label="Jackson Pollock"
         ></option>
         <option
-          value={ArtistStyles.Warhol}
+          value={artistStyles.warhol.name}
           label="Andy Warhol"
         ></option>
         <option
-          value={ArtistStyles.Matisse}
+          value={artistStyles.matisse.name}
           label="Henri Matisse"
         ></option>
         <option
-          value={ArtistStyles.Kandinsky}
+          value={artistStyles.kandinsky.name}
           label="Wassily Kandinsky"
         ></option>
         <option
-          value={ArtistStyles.Munch}
+          value={artistStyles.munch.name}
           label="Edvard Munch"
         ></option>
         <option
-          value={ArtistStyles.Banksy}
+          value={artistStyles.banksy.name}
           label="Banksy"
         ></option>
         <option
-          value={ArtistStyles.Haring}
+          value={artistStyles.haring.name}
           label="Keith Haring"
         ></option>
         <option
-          value={ArtistStyles.Basquiat}
+          value={artistStyles.basquiat.name}
           label="Jean-Michel Basquiat"
         ></option>
       </select>

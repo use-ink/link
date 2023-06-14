@@ -51,20 +51,12 @@ export const useMintHandler = () => {
         name,
         description,
         image: new File([imageFile], fileName, { type: "image/jpeg" }),
-        // properties: {
-        //   external_url: "https://pinkrobot.me",
-        //   attributes:
-        //     [
-        //       {
-        //         trait_type: "Prompt",
-        //         value: "pink robot, " + values!.prompt
-        //       },
-        //       {
-        //         trait_type: "AI Model",
-        //         value: values!.aimodel
-        //       },
-        //     ]
-        // }
+        attributes: [
+          { trait_type: "Prompt", value: values!.prompt },
+          { trait_type: "AI Model", value: values!.aiModel.name},
+          { trait_type: "Artist", value: values!.artist.name},
+          { trait_type: "Style", value: values!.aiStyle.name},
+        ],
       })
 
       // Save the URL

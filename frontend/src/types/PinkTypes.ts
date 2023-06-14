@@ -4,15 +4,24 @@ export interface PinkValues {
   prompt: string;
   contractType: number;
   ipfs: string;
-  aiModel: string;
-  artist: string;
-  aiStyle: string;
+  aiModel: NameText;
+  artist: NameText;
+  aiStyle: NameText;
   imageData: Array<Uint8Array>;
   displayImage: Array<any>;
   tokenId: Array<number>;
   networkId: NetworkId;
   price: any;
   total: any;
+}
+
+export interface NameText {
+  name: string;
+  text: string;
+}
+
+export interface NameTextMap {
+  [key: string]: NameText;
 }
 
 export enum ContractType {

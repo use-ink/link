@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { ContractType, PinkValues } from "../types";
-import { AiStyles } from "../const";
 import { styled, Tab, TabProps, Tabs } from "@mui/material";
 
 

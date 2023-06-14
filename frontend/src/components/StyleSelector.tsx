@@ -1,6 +1,6 @@
-import { SetStateAction, useState } from "react";
-import { PinkValues } from "../types";
-import { AiStyles } from "../const";
+import { useState } from "react";
+import { NameText, PinkValues } from "../types";
+import { aiStyles } from "../const";
 import {
   FormControl,
   FormControlLabel,
@@ -18,12 +18,13 @@ const CustomRadio = styled(Radio)<RadioProps>(({ theme }) => ({
 }));
 
 export const StyleSelector = ({ values }: { values: PinkValues }) => {
-  const [style, setStyle] = useState<string>(values.aiStyle);
+  const [style, setStyle] = useState<string>(values.aiStyle.name);
 
-  const styleChanged = (e: { target: { value: SetStateAction<string> } }) => {
-    values.aiStyle = e.target.value.toString();
-    setStyle(values.aiStyle);
-    console.log("modelChanged", values.aiStyle);
+  const styleChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newStyle: NameText = aiStyles[e.target.value.toLowerCase()];
+    setStyle(newStyle.name);
+    values.aiStyle = newStyle;
+    console.log("modelChanged", newStyle);
   };
 
   return (
@@ -36,79 +37,79 @@ export const StyleSelector = ({ values }: { values: PinkValues }) => {
           style={{ display: "block" }}
         >
           <FormControlLabel
-            value={AiStyles.None}
+            value={aiStyles.none.name}
             control={<CustomRadio />}
-            label="None"
+            label={aiStyles.none.name}
           />
           <FormControlLabel
-            value={AiStyles.Anime}
+            value={aiStyles.anime.name}
             control={<CustomRadio />}
-            label="Anime"
+            label={aiStyles.anime.name}
           />
           <FormControlLabel
-            value={AiStyles.Cartoon}
+            value={aiStyles.cartoon.name}
             control={<CustomRadio />}
-            label="Cartoon"
+            label={aiStyles.cartoon.name}
           />
           <FormControlLabel
-            value={AiStyles.Oil}
+            value={aiStyles.oil.name}
             control={<CustomRadio />}
-            label="Oil"
+            label={aiStyles.oil.name}
           />
           <FormControlLabel
-            value={AiStyles.Pixel}
+            value={aiStyles.pixel.name}
             control={<CustomRadio />}
-            label="Pixel"
+            label={aiStyles.pixel.name}
           />
           <FormControlLabel
-            value={AiStyles.Pop}
+            value={aiStyles.pop.name}
             control={<CustomRadio />}
-            label="Pop"
+            label={aiStyles.pop.name}
           />
           <FormControlLabel
-            value={AiStyles.Nouveau}
+            value={aiStyles.nouveau.name}
             control={<CustomRadio />}
-            label="Nouveau"
+            label={aiStyles.nouveau.name}
           />
           <FormControlLabel
-            value={AiStyles.Ink}
+            value={aiStyles.ink.name}
             control={<CustomRadio />}
-            label="Ink"
+            label={aiStyles.ink.name}
           />
           <FormControlLabel
-            value={AiStyles.Disney}
+            value={aiStyles.disney.name}
             control={<CustomRadio />}
-            label="Disney"
+            label={aiStyles.disney.name}
           />
           <FormControlLabel
-            value={AiStyles.Ghibli}
+            value={aiStyles.ghibli.name}
             control={<CustomRadio />}
-            label="Ghibli"
+            label={aiStyles.ghibli.name}
           />
           <FormControlLabel
-            value={AiStyles.Pixar}
+            value={aiStyles.pixar.name}
             control={<CustomRadio />}
-            label="Pixar"
+            label={aiStyles.pixar.name}
           />
           <FormControlLabel
-            value={AiStyles.Best}
+            value={aiStyles.best.name}
             control={<CustomRadio />}
-            label="Best"
+            label={aiStyles.best.name}
           />
           <FormControlLabel
-            value={AiStyles.Deviant}
+            value={aiStyles.deviant.name}
             control={<CustomRadio />}
-            label="Deviant"
+            label={aiStyles.deviant.name}
           />
           <FormControlLabel
-            value={AiStyles.Watercolor}
+            value={aiStyles.watercolor.name}
             control={<CustomRadio />}
-            label="Watercolor"
+            label={aiStyles.watercolor.name}
           />
           <FormControlLabel
-            value={AiStyles.Paper}
+            value={aiStyles.paper.name}
             control={<CustomRadio />}
-            label="Paper"
+            label={aiStyles.paper.name}
           />
         </RadioGroup>
       </FormControl>

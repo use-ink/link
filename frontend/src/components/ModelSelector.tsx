@@ -1,13 +1,15 @@
-import { SetStateAction, useState } from "react";
-import { PinkValues } from "../types";
+import { useState } from "react";
+import { NameText, PinkValues } from "../types";
+import { aiModels } from "../const";
 
 export const ModelSelector = ({ values }: { values: PinkValues }) => {
-  const [model, setModel] = useState<string>(values.aiModel);
+  const [model, setModel] = useState<string>(values.aiModel.name);
 
-  const modelChanged = (e: { target: { value: SetStateAction<string> } }) => {
-    console.log("modelChanged", e.target.value);
-    values.aiModel = e.target.value.toString();
-    setModel(values.aiModel);
+  const modelChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newModel: NameText = aiModels[e.target.value.toLowerCase()];
+    console.log("modelChanged", newModel);
+    setModel(newModel.name);
+    values.artist = newModel;
   };
 
   return (
@@ -22,39 +24,35 @@ export const ModelSelector = ({ values }: { values: PinkValues }) => {
       >
         <option value="" disabled selected>Select AI model</option>
         <option
-          value="https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1"
+          value={aiModels.stablediffusion.name}
           label="Stable Diffusion v2.1"
         ></option>
         <option
-          value="https://api-inference.huggingface.co/models/andite/anything-v4.0"
+          value={aiModels.anything.name}
           label="Anything"
         ></option>
         <option
-          value="https://api-inference.huggingface.co/models/prompthero/openjourney"
+          value={aiModels.openjourney.name}
           label="Open Journey"
         ></option>
         <option
-          value="https://api-inference.huggingface.co/models/Joeythemonster/anything-midjourney-v-4-1"
+          value={aiModels.anythingmidjourney.name}
           label="Anything MidJourney"
         ></option>
         <option
-          value="https://api-inference.huggingface.co/models/lambdalabs/sd-pokemon-diffusers"
+          value={aiModels.pokemondiffusers.name}
           label="Pokemon Diffusers"
         ></option>
         <option
-          value="https://api-inference.huggingface.co/models/nitrosocke/Arcane-Diffusion"
+          value={aiModels.arcanediffusion.name}
           label="Arcane Diffusion"
         ></option>
         <option
-          value="https://api-inference.huggingface.co/models/eimiss/EimisAnimeDiffusion_1.0v"
+          value={aiModels.eimisanime.name}
           label="Eimis Anime"
         ></option>
         <option
-          value="https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5"
-          label="Stable Diffusion v1.5"
-        ></option>
-        <option
-          value="https://api-inference.huggingface.co/models/hakurei/waifu-diffusion"
+          value={aiModels.waifu.name}
           label="Waifu"
         ></option>
       </select>
