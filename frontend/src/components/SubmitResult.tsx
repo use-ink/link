@@ -46,7 +46,7 @@ export const SubmitResult = ({
     <>
       <div className="submit-outcome">
         {submitOutcome}
-        <a href={marketplaceLink}>Paras</a>
+        <a href={marketplaceLink} target="_blank">Paras</a>
       </div>
       <div className="tweet"><Tweet /></div>
       {errorMessage && (

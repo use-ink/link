@@ -9,7 +9,7 @@ export const ModelSelector = ({ values }: { values: PinkValues }) => {
     const newModel: NameText = aiModels[e.target.value.toLowerCase()];
     console.log("modelChanged", newModel);
     setModel(newModel.name);
-    values.artist = newModel;
+    values.aiModel = newModel;
   };
 
   return (
