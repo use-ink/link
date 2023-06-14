@@ -211,7 +211,7 @@ dependencies = [
  "ink_allocator",
  "ink_engine",
  "ink_metadata",
- "ink_prelude",
+ "ink_prelude 3.4.0",
  "ink_primitives",
  "num-traits",
  "parity-scale-codec",
@@ -234,7 +234,7 @@ dependencies = [
  "derive_more",
  "ink_env",
  "ink_lang_macro",
- "ink_prelude",
+ "ink_prelude 3.4.0",
  "ink_primitives",
  "ink_storage",
  "parity-scale-codec",
@@ -295,7 +295,7 @@ checksum = "d442f4f5dcbf120aa84cae9e399065ad99d143d5a920b06d3da286e91c03ec70"
 dependencies = [
  "derive_more",
  "impl-serde",
- "ink_prelude",
+ "ink_prelude 3.4.0",
  "ink_primitives",
  "scale-info",
  "serde",
@@ -303,9 +303,18 @@ dependencies = [
 
 [[package]]
 name = "ink_prelude"
-version = "3.3.1"
+version = "3.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e38d71af62cfec3425727d28665a947d636c3be6ae71ac3a79868ef8a08633f3"
+checksum = "1f031e6b8495594a7288b089bf4122e76c26b994959d1b2b693bdfe846b14c0e"
+dependencies = [
+ "cfg-if",
+]
+
+[[package]]
+name = "ink_prelude"
+version = "4.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a6f174d742ff929abe66716ad8159f324441b4ff5161a3b0e282f416afbbac1"
 dependencies = [
  "cfg-if",
 ]
@@ -317,7 +326,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea7afd5330a9d3be1533222a48b8ab44b3a3356a5e6bb090bff0790aa562b418"
 dependencies = [
  "cfg-if",
- "ink_prelude",
+ "ink_prelude 3.4.0",
  "parity-scale-codec",
  "scale-info",
 ]
@@ -333,7 +342,7 @@ dependencies = [
  "derive_more",
  "ink_env",
  "ink_metadata",
- "ink_prelude",
+ "ink_prelude 3.4.0",
  "ink_primitives",
  "ink_storage_derive",
  "parity-scale-codec",
@@ -380,7 +389,7 @@ dependencies = [
  "ink_env",
  "ink_lang",
  "ink_metadata",
- "ink_prelude",
+ "ink_prelude 4.2.1",
  "ink_primitives",
  "ink_storage",
  "parity-scale-codec",
