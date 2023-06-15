@@ -3,9 +3,13 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
-import { PinkContractProvider, UIProvider } from "./contexts";
+import {
+  PinkContractProvider,
+  PinkPsp34ContractProvider,
+  UIProvider,
+} from "./contexts";
 import { InkConfig, UseInkProvider } from "useink";
-import { ShibuyaTestnet } from 'useink/chains';
+import { ShibuyaTestnet } from "useink/chains";
 import { NotificationsProvider } from "useink/notifications";
 import { Notifications } from "./components/Notifications";
 
@@ -15,7 +19,7 @@ const config: InkConfig = {
     chains: [ShibuyaTestnet],
     caller: {
       default: "5EyR7vEk7DtvEWeefGcXXMV6hKwB8Ex5uvjHufm466mbjJkR",
-    }
+    },
   },
 };
 
@@ -30,8 +34,10 @@ root.render(
         <NotificationsProvider>
           <UIProvider>
             <PinkContractProvider>
-              <App />
-              <Notifications />
+              <PinkPsp34ContractProvider>
+                <App />
+                <Notifications />
+              </PinkPsp34ContractProvider>
             </PinkContractProvider>
           </UIProvider>
         </NotificationsProvider>

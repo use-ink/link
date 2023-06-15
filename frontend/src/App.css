@@ -58,6 +58,35 @@ body {
   @apply mb-4;
 }
 
+.pink-gallery-container {
+  @apply flex flex-col;
+}
+
+.gallery-container {
+  @apply flex flex-wrap max-w-md mt-2;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+
+.gallery-image-wrapper {
+  @apply w-1/3 p-2;
+}
+
+.gallery-image {
+  @apply w-full rounded-lg;
+  cursor: pointer;
+  transition: transform 0.5s;
+  -webkit-transition: transform 0.5s;
+
+  &:hover {
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 6px #9ecaed;
+  }
+} 
+
 @media only screen and (min-width: 600px ) {
   .pink-logo {
     display: block;
@@ -79,6 +108,18 @@ body {
 
   .form-panel {
     width: 420px;
+  }
+
+  .pink-gallery-container {
+    @apply flex-row-reverse;
+  }
+
+  .gallery-container {
+    @apply mr-2 mt-0 w-28;
+  }
+
+  .gallery-image-wrapper {
+    @apply w-full pb-4 pt-0;
   }
 }
 

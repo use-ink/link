@@ -34,7 +34,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const getTokenId = async (values: PinkValues) => {
     // get tokenId from the contract's total_supply
     const s = await getSupply?.send([values.contractType], { defaultCaller: true });
-    let supply = pickResultOk<SupplyResult>(s);
+    let supply = pickResultOk(s);
     console.log("Next tokenId probing", Number(supply) + 1);
     values.tokenId[values!.contractType] = Number(supply) + 1;
   };
@@ -105,7 +105,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   };
 
   return (
-    <Form>
+    <Form style={{marginBottom: 'auto'}}>
       <img
         src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
