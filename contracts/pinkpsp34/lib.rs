@@ -1,17 +1,16 @@
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(feature = "std"), no_std, no_main)]
 #![feature(min_specialization)]
 
 pub use self::pinkpsp34::PinkPsp34Ref;
-
 #[openbrush::contract]
 pub mod pinkpsp34 {
     use ink::codegen::{EmitEvent, Env};
-    use ink::storage::Mapping;
     use ink::prelude::vec::Vec;
+    use ink::storage::Mapping;
 
     use openbrush::contracts::psp34;
     use openbrush::contracts::{
-        ownable::*,
+        access_control::*,
         psp34::extensions::{burnable::*, enumerable::*, metadata::*},
     };
 
@@ -26,7 +25,7 @@ pub mod pinkpsp34 {
         #[storage_field]
         psp34: psp34::Data<enumerable::Balances>,
         #[storage_field]
-        ownable: ownable::Data,
+        access: access_control::Data,
         #[storage_field]
         metadata: metadata::Data,
         #[storage_field]
@@ -60,25 +59,20 @@ pub mod pinkpsp34 {
     impl PSP34 for PinkPsp34 {}
     impl PSP34Burnable for PinkPsp34 {}
     impl PSP34Enumerable for PinkPsp34 {}
-    impl Ownable for PinkPsp34 {}
+    impl AccessControl for PinkPsp34 {}
     impl PSP34Metadata for PinkPsp34 {}
     impl PinkMint for PinkPsp34 {}
 
     impl PinkPsp34 {
         #[ink(constructor)]
-        pub fn new(
-            name: String,
-            symbol: String,
-            max_supply: u64,
-            owner: Option<AccountId>,
-        ) -> Self {
+        pub fn new(name: String, symbol: String, max_supply: u64) -> Self {
             let mut instance = Self::default();
-            let contract_owner = owner.unwrap_or(instance.env().caller());
-            instance._init_with_owner(contract_owner);
+            let contract_owner = instance.env().caller();
+            instance._init_with_admin(contract_owner);
             instance._set_attribute(Id::U64(0), String::from("name"), String::from(name));
             instance._set_attribute(Id::U64(0), String::from("symbol"), String::from(symbol));
             instance.pinkmint.max_supply = Some(max_supply);
-            instance.pinkmint.last_token_id = 0;
+            instance.pinkmint.limit_per_account = 2;
             instance
         }
 
@@ -171,19 +165,12 @@ pub mod pinkpsp34 {
         const NAME: &str = "PinkPsp34";
         const SYMBOL: &str = "PnkP";
         const TOKEN_URI: &str = "ipfs://myIpfsUri/";
-        const OWNER: [u8; 32] = [0x9; 32];
 
         fn init() -> PinkPsp34 {
-            PinkPsp34::new(String::from(NAME), String::from(SYMBOL), MAX_SUPPLY, None)
-        }
-
-        fn init_with_owner(owner: AccountId) -> PinkPsp34 {
-            PinkPsp34::new(
-                String::from(NAME),
-                String::from(SYMBOL),
-                MAX_SUPPLY,
-                Some(owner),
-            )
+            let accounts = default_accounts();
+            let mut pink34 = PinkPsp34::new(String::from(NAME), String::from(SYMBOL), MAX_SUPPLY);
+            _ = pink34.grant_role(MINTER, accounts.alice);
+            pink34
         }
 
         #[ink::test]
@@ -201,50 +188,22 @@ pub mod pinkpsp34 {
         }
 
         #[ink::test]
-        fn init_with_owner_works() {
-            let maybe_owner: AccountId = AccountId::from(OWNER);
-            let mut pink34 = init_with_owner(maybe_owner);
-            let accounts = default_accounts();
-            let token_uri = String::from(TOKEN_URI);
-
-            // New owner should be set during instantiation
-            assert_eq!(pink34.owner(), maybe_owner);
-
-            // Should fail. Only maybe_owner can mint
-            set_sender(accounts.alice);
-            assert_eq!(
-                pink34.mint(accounts.bob, token_uri.clone()),
-                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
-            );
-            assert_eq!(pink34.total_supply(), 0);
-
-            // New owner mints for Bob works
-            set_sender(maybe_owner);
-            assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
-            assert_eq!(
-                pink34.owners_token_by_index(accounts.bob, 0),
-                Ok(Id::U64(1))
-            );
-            assert_eq!(pink34.total_supply(), 1);
-        }
-
-        #[ink::test]
         fn pinkmint_works() {
             let mut pink34 = init();
             let accounts = default_accounts();
             let token_uri = String::from(TOKEN_URI);
-            assert_eq!(pink34.owner(), accounts.alice);
 
             // Should fail. Only owner can mint
             set_sender(accounts.bob);
             assert_eq!(
                 pink34.mint(accounts.bob, token_uri.clone()),
-                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
+                Err(AccessControlError::MissingRole.into())
             );
             assert_eq!(pink34.total_supply(), 0);
 
             // Owner mints for Bob works
             set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
             assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
 
             // Check all the minting events
@@ -260,6 +219,74 @@ pub mod pinkpsp34 {
         }
 
         #[ink::test]
+        fn change_metadata_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+            const TOKEN_NEW: &str = "new";
+            let token_new = String::from(TOKEN_NEW);
+
+            // Should fail. Only owner can change metadata
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.change_metadata(Id::U64(1), token_uri.clone()),
+                Err(AccessControlError::MissingRole.into())
+            );
+
+            // Owner changes metadata
+            set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
+            assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
+            assert_eq!(
+                pink34.change_metadata(Id::U64(1), token_new.clone()),
+                Ok(())
+            );
+            assert_eq!(
+                pink34.change_metadata(Id::U64(42), token_new.clone()),
+                Err(Error::Pink(PinkError::TokenNotFound))
+            );
+            assert_eq!(pink34.token_uri(1), Ok(PreludeString::from(TOKEN_NEW)));
+        }
+
+        #[ink::test]
+        fn access_control_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+
+            // Owner mints for Bob works
+            set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
+            assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
+
+            // Should fail. Only owner can mint
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.mint(accounts.bob, token_uri.clone()),
+                Err(AccessControlError::MissingRole.into())
+            );
+            assert_eq!(pink34.total_supply(), 1);
+
+            // Owner mints for Bob works
+            set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(2), Ok(()));
+            assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(2)));
+            assert_eq!(pink34.total_supply(), 2);
+
+            // Charlie is contributor and can mint
+            assert_eq!(pink34.set_limit_per_account(2), Ok(()));
+            set_sender(accounts.charlie);
+            assert_eq!(
+                pink34.mint(accounts.charlie, token_uri.clone()),
+                Err(AccessControlError::MissingRole.into())
+            );
+            // Alice gives Minter role to Charlie
+            set_sender(accounts.alice);
+            assert!(pink34.grant_role(MINTER, accounts.charlie).is_ok());
+            assert_eq!(pink34.mint(accounts.charlie, token_uri), Ok(Id::U64(3)));
+        }
+
+        #[ink::test]
         fn total_balance_works() {
             let mut pink34 = init();
             let accounts = default_accounts();
@@ -267,6 +294,7 @@ pub mod pinkpsp34 {
 
             // Owner mints two for Bob
             set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(2), Ok(()));
             assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
             assert_eq!(pink34.total_balance(accounts.bob), vec![Id::U64(1)]);
             assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(2)));
@@ -291,30 +319,6 @@ pub mod pinkpsp34 {
         }
 
         #[ink::test]
-        fn change_owner_works() {
-            let mut pink34 = init();
-            let accounts = default_accounts();
-            let token_uri = String::from(TOKEN_URI);
-            assert_eq!(pink34.owner(), accounts.alice);
-
-            // change owner to Bob
-            set_sender(accounts.alice);
-            assert_eq!(pink34.transfer_ownership(accounts.bob), Ok(()));
-            assert_eq!(pink34.owner(), accounts.bob);
-
-            // Bob is now the owner and can mint
-            set_sender(accounts.bob);
-            assert_eq!(pink34.mint(accounts.bob, token_uri.clone()), Ok(Id::U64(1)));
-
-            // Should fail. Only owner can mint
-            set_sender(accounts.alice);
-            assert_eq!(
-                pink34.mint(accounts.alice, token_uri),
-                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
-            );
-        }
-
-        #[ink::test]
         fn set_max_supply_works() {
             let mut pink34 = init();
             let accounts = default_accounts();
@@ -323,13 +327,108 @@ pub mod pinkpsp34 {
             set_sender(accounts.bob);
             assert_eq!(
                 pink34.set_max_supply(Some(320)),
-                Err(Error::Ownable(OwnableError::CallerIsNotOwner))
+                Err(AccessControlError::MissingRole.into())
             );
 
             // Alice changes max supply
             set_sender(accounts.alice);
             assert_eq!(pink34.set_max_supply(Some(321)), Ok(()));
             assert_eq!(pink34.max_supply(), Some(321));
+        }
+
+        #[ink::test]
+        fn set_limit_per_account_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+
+            // Bob fails to change limit
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.set_limit_per_account(42),
+                Err(AccessControlError::MissingRole.into())
+            );
+
+            // Alice changes max supply
+            set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(42), Ok(()));
+            assert_eq!(pink34.limit_per_account(), 42);
+
+            // Alice mints fails to mint over limit for Bob
+            assert_eq!(pink34.set_limit_per_account(2), Ok(()));
+            assert!(pink34.mint(accounts.bob, String::from(TOKEN_URI)).is_ok());
+            assert!(pink34.mint(accounts.bob, String::from(TOKEN_URI)).is_ok());
+            assert_eq!(
+                pink34.mint(accounts.bob, String::from(TOKEN_URI)),
+                Err(Error::Pink(PinkError::MintingLimit))
+            );
+        }
+
+        #[ink::test]
+        fn whitelisting_works() {
+            let mut pink34 = init();
+            let accounts = default_accounts();
+            let token_uri = String::from(TOKEN_URI);
+
+            // Bob fails to add to whitelist
+            set_sender(accounts.bob);
+            assert_eq!(
+                pink34.add_to_whitelist(accounts.bob, true),
+                Err(AccessControlError::MissingRole.into())
+            );
+
+            // Alice is ADMIN and she enables whitelist
+            set_sender(accounts.alice);
+            assert!(pink34.enable_whitelist(true).is_ok());
+            assert_eq!(pink34.is_whitelist_enabled(), true);
+
+            // Add Charlie to have WHITELIST role
+            assert!(pink34.grant_role(WHITELIST, accounts.charlie).is_ok());
+
+            // Charlie adds Bob to whitelist
+            set_sender(accounts.charlie);
+            assert_eq!(pink34.add_to_whitelist(accounts.bob, true), Ok(()));
+            assert_eq!(pink34.is_whitelisted(accounts.bob), true);
+            assert_eq!(pink34.whitelist_count(), 1);
+
+            // Alice mints for Bob works. Bob is on whitelist
+            set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
+            assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
+
+            // Alice mint for Django fails. Django is not on whitelist.
+            assert_eq!(
+                pink34.mint(accounts.django, String::from(TOKEN_URI)),
+                Err(Error::Pink(PinkError::NotWhitelisted))
+            );
+
+            // Charlie removes Bob from whitelist
+            set_sender(accounts.charlie);
+            assert_eq!(pink34.add_to_whitelist(accounts.bob, false), Ok(()));
+            assert_eq!(pink34.is_whitelisted(accounts.bob), false);
+            assert_eq!(pink34.whitelist_count(), 0);
+
+            // Charlie adds list of accounts to whitelist
+            set_sender(accounts.charlie);
+            assert_eq!(
+                pink34.add_to_whitelist_many(vec![accounts.eve, accounts.frank]),
+                Ok(())
+            );
+            assert_eq!(pink34.whitelist_count(), 2);
+
+            // Alice mints for Bob fails. Bob is removed from whitelist.
+            set_sender(accounts.alice);
+            assert_eq!(
+                pink34.mint(accounts.bob, String::from(TOKEN_URI)),
+                Err(Error::Pink(PinkError::NotWhitelisted))
+            );
+
+            // Disable whitelist and mint for Bob works
+            assert!(pink34.enable_whitelist(false).is_ok());
+            assert_eq!(pink34.set_limit_per_account(2), Ok(()));
+            assert_eq!(
+                pink34.mint(accounts.bob, String::from(TOKEN_URI)),
+                Ok(Id::U64(2))
+            );
         }
 
         #[ink::test]
@@ -340,6 +439,7 @@ pub mod pinkpsp34 {
 
             // Owner mints for Bob works
             set_sender(accounts.alice);
+            assert_eq!(pink34.set_limit_per_account(1), Ok(()));
             assert_eq!(pink34.mint(accounts.bob, token_uri), Ok(Id::U64(1)));
 
             // return error if request is for not yet minted token

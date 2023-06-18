@@ -1,9 +1,8 @@
 use crate::minting::MintingData;
 
 use ink::prelude::string::String as PreludeString;
-
 use openbrush::{
-    contracts::{ownable::*, psp34::extensions::enumerable::*},
+    contracts::{access_control::*, psp34::extensions::enumerable::*},
     traits::{AccountId, Storage},
 };
 
@@ -11,7 +10,7 @@ use openbrush::{
 #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
 pub enum Error {
     Pink(PinkError),
-    Ownable(OwnableError),
+    AccessControl(AccessControlError),
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -19,15 +18,11 @@ pub enum Error {
 pub enum PinkError {
     CannotMintZeroTokens,
     CollectionIsFull,
+    MintingLimit,
+    NotWhitelisted,
     UriNotFound,
     TokenExists,
     TokenNotFound,
-}
-
-impl From<OwnableError> for Error {
-    fn from(err: OwnableError) -> Self {
-        Self::Ownable(err)
-    }
 }
 
 impl From<PinkError> for Error {
@@ -35,6 +30,13 @@ impl From<PinkError> for Error {
         Self::Pink(err)
     }
 }
+
+impl From<AccessControlError> for Error {
+    fn from(err: AccessControlError) -> Self {
+        Self::AccessControl(err)
+    }
+}
+
 /// Trait definitions for Minting internal functions.
 pub trait Internal {
     /// Check amount of tokens to be minted.
@@ -45,6 +47,12 @@ pub trait Internal {
 
     /// Get URI for the token Id.
     fn _token_uri(&self, token_id: u64) -> Result<PreludeString, Error>;
+
+    /// Get URI for the token Id.
+    fn _check_limit(&self, to: AccountId) -> Result<(), Error>;
+
+    /// Check if an account is whitelisted.
+    fn _check_whitelisted(&self, user: AccountId) -> Result<(), Error>;
 }
 
 /// Helper trait for Minting
@@ -70,6 +78,31 @@ where
         }
 
         Err(PinkError::CollectionIsFull.into())
+    }
+
+    /// Check limit of tokens to be minted per account
+    /// if the limit is never set, it will be zero and minting one token will be ok
+    default fn _check_limit(&self, to: AccountId) -> Result<(), Error> {
+        let current_balance: u32 = self
+            .data::<psp34::Data<enumerable::Balances>>()
+            .balance_of(to);
+        if current_balance >= self.data::<MintingData>().limit_per_account {
+            return Err(PinkError::MintingLimit.into());
+        }
+        Ok(())
+    }
+
+    /// Check if an account is whitelisted.
+    default fn _check_whitelisted(&self, user: AccountId) -> Result<(), Error> {
+        if self.data::<MintingData>().whitelist_enabled {
+            if !self.data::<MintingData>().whitelist.contains(&user) {
+                return Err(PinkError::NotWhitelisted.into());
+            }
+            if !self.data::<MintingData>().whitelist.get(&user).unwrap() {
+                return Err(PinkError::NotWhitelisted.into());
+            }
+        }
+        Ok(())
     }
 
     /// Mint next token to specified account

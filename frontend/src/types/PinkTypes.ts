@@ -12,6 +12,7 @@ export interface PinkValues {
   tokenId: Array<number>;
   networkId: NetworkId;
   price: any;
+  limitMint: any;
   total: any;
 }
 

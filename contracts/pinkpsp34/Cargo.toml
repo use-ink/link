@@ -1,25 +1,25 @@
 [package]
 name = "pinkpsp34"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["[Mario] <[mario@arrakis.com]>"]
 edition = "2021"
 
 [dependencies]
-ink = { version = "4.1.0", default-features = false }
+ink = { version = "4.2.1", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
-openbrush = { tag = "3.1.0", git = "https://github.com/727-Ventures/openbrush-contracts", default-features = false, features = ["psp34", "ownable"] }
+openbrush = { tag = "3.1.0", git = "https://github.com/727-Ventures/openbrush-contracts", default-features = false, features = ["psp34", "access_control"] }
 psp34_minting = { path = "./minting/", default-features = false }
 
 [dev-dependencies]
-ink_e2e = "4.1.0"
+ink_e2e = "4.2.1"
 
 [lib]
 path = "lib.rs"
-crate-type = [
-    "rlib",
-]
+# crate-type = [
+#     "rlib",
+# ]
 
 [features]
 default = ["std"]

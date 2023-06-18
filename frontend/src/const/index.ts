@@ -23,8 +23,8 @@ export const networks: Array<NetworkInfo> = [
   {
     name: "Shibuya",
     endpoint: "wss://rpc.shibuya.astar.network",
-    pinkContractAddress: "ZQgRzVGamwEvpkU1LzkT4b7EdtHq6PtH7GmEfyTv1HzQJvv",
-    pinkPsp34ContractAddress: "Z9F7LFQSKAgJbfxeidKgttcPALiNzsSiG5iZEmohY36iGzY",
+    pinkContractAddress: "b8rxouhDFMy7qogMHjcAhBmEGtCJ8HgnWo8YnC3o33bPW94",
+    pinkPsp34ContractAddress: "aU8xXzMoNM6szsFcPVxtWK1JMgPy8euf1AuunpUsg4zZpJ5",
     marketplaceTokenUrl: 'https://marketplace-astar-testnet.paras.id/token/astar/Z9F7LFQSKAgJbfxeidKgttcPALiNzsSiG5iZEmohY36iGzY'
   },
   {
@@ -187,6 +187,7 @@ export const initialPinkValues: PinkValues = {
   imageData: [new Uint8Array(), new Uint8Array()],
   displayImage: [default_pink_robot, default_upload_image],
   tokenId: [0, 0],
+  limitMint: 0,
   networkId: NetworkId.Shibuya,
   price: BN_ZERO,
   total: BN_ZERO,

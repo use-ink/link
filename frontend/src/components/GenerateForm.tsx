@@ -1,6 +1,6 @@
 import { DryRunResult } from "./DryRunResult";
 import { Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { PinkValues, ContractType, SupplyResult } from "../types";
+import { PinkValues, ContractType } from "../types";
 import { ChangeEvent, useState, useEffect } from "react";
 import { NewUserGuide } from "./NewUserGuide";
 import { useBalance, useWallet } from "useink";
@@ -12,6 +12,7 @@ import { usePinkContract } from "../hooks";
 import { pickResultOk } from "useink/utils";
 import { PINK_PREFIX } from "../const";
 import { ArtistSelector } from "./ArtistSelector";
+import { usePinkPsp34Contract } from "../hooks/usePinkPsp34Contract";
 
 
 export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, handleError: Function }) => {
@@ -21,24 +22,72 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   const [waitingHuggingFace, setWaitingHuggingFace] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const balance = useBalance(account);
-  const { getPrice, getSupply } = usePinkContract();
+  const { getPrice, } = usePinkContract();
+  const { totalSupply, limitPerAccount, balanceOf, isWhitelistEnabled, isWhitelisted } = usePinkPsp34Contract();
+  const [limit, setLimit] = useState(false);
+  const [whitelistEnabled, setWhitelistEnabled] = useState<boolean>(false);
+  const [whitelisted, setWhitelisted] = useState<boolean>(false);
+  const [tokenBalance, setTokenBalance] = useState<number>(0);
   const hasFunds =
     !balance?.freeBalance.isEmpty && !balance?.freeBalance.isZero();
   values.contractType = ContractType.PinkPsp34;
-  
+
   useEffect(() => {
     fetchPrice();
     getTokenId(values);
+    getLimitPerAccount(values);
+    getHolderBalance();
+    getIsWhitelistEnabled();
+    getIsWhitelisted();
   }, [account, values.contractType, values]);
 
   const getTokenId = async (values: PinkValues) => {
     // get tokenId from the contract's total_supply
-    const s = await getSupply?.send([values.contractType], { defaultCaller: true });
-    let supply = pickResultOk(s);
-    console.log("Next tokenId probing", Number(supply) + 1);
-    values.tokenId[values!.contractType] = Number(supply) + 1;
+    const s = await totalSupply?.send([], { defaultCaller: true });
+    if (s?.ok && s.value.decoded) {
+      values.tokenId[values!.contractType] = Number(s.value.decoded) + 1;
+      console.log("Next tokenId probing", values.tokenId[values!.contractType]);
+    }
   };
-  
+
+  const getHolderBalance = async () => {
+    const s = await balanceOf?.send([account?.address], { defaultCaller: true });
+    if (s?.ok && s.value.decoded) {
+      setTokenBalance(Number(s.value.decoded));
+      console.log("User balance", Number(s.value.decoded));
+    }
+  };
+
+  const getLimitPerAccount = async (values: PinkValues) => {
+    const s = await limitPerAccount?.send([], { defaultCaller: true });
+    if (s?.ok && s.value.decoded) {
+      values.limitMint = Number(s.value.decoded);
+      if (tokenBalance >= values.limitMint) {
+        setLimit(true);
+      }
+      else {
+        setLimit(false);
+      }
+      console.log("mint limited to ", values.limitMint);
+    }
+  };
+
+  const getIsWhitelistEnabled = async () => {
+    const s = await isWhitelistEnabled?.send([], { defaultCaller: true });
+    if (s?.ok && s.value.decoded) {
+      setWhitelistEnabled(Boolean(s.value.decoded));
+      console.log("getIsWhitelistEnabled", s.value.decoded);
+    }
+  };
+
+  const getIsWhitelisted = async () => {
+    const s = await isWhitelisted?.send([account?.address], { defaultCaller: true });
+    if (s?.ok && s.value.decoded) {
+      setWhitelisted(Boolean(s.value.decoded));
+      console.log("is account whitelisted", s.value.decoded);
+    }
+  };
+
   const fetchPrice = async () => {
     const price = await getPrice?.send([], { defaultCaller: true });
     console.log('fetched price', price?.ok && price.value.decoded);
@@ -105,7 +154,7 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
   };
 
   return (
-    <Form style={{marginBottom: 'auto'}}>
+    <Form style={{ marginBottom: 'auto' }}>
       <img
         src={values.displayImage[values.contractType]}
         className="pink-example rounded-lg"
@@ -146,7 +195,8 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
               isSubmitting ||
               !isValid ||
               !accounts ||
-              !hasFunds
+              !hasFunds ||
+              limit
             }
           >
             Imagine New
@@ -161,7 +211,8 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
               isSubmitting ||
               !isValid ||
               !accounts ||
-              !hasFunds
+              !hasFunds ||
+              limit
             }
             name="submit"
           >
@@ -171,16 +222,20 @@ export const GenerateForm = ({ setIsBusy, handleError }: { setIsBusy: Function, 
       </div>
 
       <div className="group">
-        {isGenerated && isValid && values.prompt && !isSubmitting && (
+        {isGenerated && isValid && values.prompt && !isSubmitting && !limit && (
           <DryRunResult values={values} isValid={isValid} />
         )}
+        {limit && (
+          <div className="text-xs text-left mb-2 text-red-500">
+            You have reached the limit of {values.limitMint} pink robots per account.
+          </div>
+        )}
+        {whitelistEnabled && !whitelisted && !limit &&(
+          <div className="text-xs text-left mb-2 text-red-500">
+            Your account is not whitelisted.
+          </div>
+        )}
       </div>
-
-      {/* {isValid && estimation?.error && !isEstimating && (
-        <div className="text-xs text-left mb-2 text-red-500">
-          {estimation.error.message}
-        </div>
-      )} */}
 
       <div className="group">
         <NewUserGuide

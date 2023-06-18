@@ -1,11 +1,11 @@
 [package]
 name = "psp34_minting"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Astar builder"]
 edition = "2021"
 
 [dependencies]
-ink = { version = "4.1.0", default-features = false }
+ink = { version = "4.2.1", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }

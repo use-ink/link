@@ -1,11 +1,11 @@
 {
   "source": {
-    "hash": "0x217e4aa7f75e317ba32046ee0abf5cfc3791b0960165079c098b6c07cbb342cb",
-    "language": "ink! 4.2.0",
-    "compiler": "rustc 1.68.0-nightly",
+    "hash": "0x9304f477fd21c340245294a6d179446d0fb09a4931846262fb6ec6c7cfbf7ea0",
+    "language": "ink! 4.2.1",
+    "compiler": "rustc 1.69.0-nightly",
     "build_info": {
       "build_mode": "Release",
-      "cargo_contract_version": "2.0.1",
+      "cargo_contract_version": "3.0.1",
       "rust_toolchain": "nightly-aarch64-apple-darwin",
       "wasm_opt_settings": {
         "keep_debug_symbols": false,
@@ -15,7 +15,7 @@
   },
   "contract": {
     "name": "pinkpsp34",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "authors": [
       "[Mario] <[mario@arrakis.com]>"
     ]
@@ -49,15 +49,6 @@
                 "u64"
               ],
               "type": 6
-            }
-          },
-          {
-            "label": "owner",
-            "type": {
-              "displayName": [
-                "Option"
-              ],
-              "type": 11
             }
           }
         ],
@@ -126,7 +117,7 @@
               "displayName": [
                 "Option"
               ],
-              "type": 11
+              "type": 24
             }
           },
           {
@@ -137,7 +128,7 @@
               "displayName": [
                 "Option"
               ],
-              "type": 11
+              "type": 24
             }
           },
           {
@@ -148,7 +139,7 @@
               "displayName": [
                 "Id"
               ],
-              "type": 10
+              "type": 11
             }
           }
         ],
@@ -189,7 +180,7 @@
               "displayName": [
                 "Option"
               ],
-              "type": 18
+              "type": 16
             }
           },
           {
@@ -200,7 +191,7 @@
               "displayName": [
                 "bool"
               ],
-              "type": 20
+              "type": 9
             }
           }
         ],
@@ -277,55 +268,6 @@
         "args": [],
         "default": false,
         "docs": [
-          " Returns current NFT total supply."
-        ],
-        "label": "PSP34::total_supply",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 15
-        },
-        "selector": "0x628413fe"
-      },
-      {
-        "args": [
-          {
-            "label": "owner",
-            "type": {
-              "displayName": [
-                "psp34_external",
-                "BalanceOfInput1"
-              ],
-              "type": 0
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
-          " Returns the balance of the owner.",
-          "",
-          " This represents the amount of unique tokens the owner has."
-        ],
-        "label": "PSP34::balance_of",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 16
-        },
-        "selector": "0xcde7e55f"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
           " Returns the collection `Id` of the NFT token.",
           "",
           " This can represents the relationship between tokens/contracts/pallets."
@@ -338,88 +280,9 @@
             "ink",
             "MessageResult"
           ],
-          "type": 17
+          "type": 15
         },
         "selector": "0xffa27a5f"
-      },
-      {
-        "args": [
-          {
-            "label": "owner",
-            "type": {
-              "displayName": [
-                "psp34_external",
-                "AllowanceInput1"
-              ],
-              "type": 0
-            }
-          },
-          {
-            "label": "operator",
-            "type": {
-              "displayName": [
-                "psp34_external",
-                "AllowanceInput2"
-              ],
-              "type": 0
-            }
-          },
-          {
-            "label": "id",
-            "type": {
-              "displayName": [
-                "psp34_external",
-                "AllowanceInput3"
-              ],
-              "type": 18
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
-          " Returns `true` if the operator is approved by the owner to withdraw `id` token.",
-          " If `id` is `None`, returns `true` if the operator is approved to withdraw all owner's tokens."
-        ],
-        "label": "PSP34::allowance",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 19
-        },
-        "selector": "0x4790f55a"
-      },
-      {
-        "args": [
-          {
-            "label": "id",
-            "type": {
-              "displayName": [
-                "psp34_external",
-                "OwnerOfInput1"
-              ],
-              "type": 10
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
-          " Returns the owner of the token if any."
-        ],
-        "label": "PSP34::owner_of",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 21
-        },
-        "selector": "0x1168624d"
       },
       {
         "args": [
@@ -440,7 +303,7 @@
                 "psp34_external",
                 "ApproveInput2"
               ],
-              "type": 18
+              "type": 16
             }
           },
           {
@@ -450,7 +313,7 @@
                 "psp34_external",
                 "ApproveInput3"
               ],
-              "type": 20
+              "type": 9
             }
           }
         ],
@@ -475,7 +338,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 22
+          "type": 17
         },
         "selector": "0x1932a8b0"
       },
@@ -498,7 +361,7 @@
                 "psp34_external",
                 "TransferInput2"
               ],
-              "type": 10
+              "type": 11
             }
           },
           {
@@ -534,9 +397,137 @@
             "ink",
             "MessageResult"
           ],
-          "type": 22
+          "type": 17
         },
         "selector": "0x3128d61b"
+      },
+      {
+        "args": [
+          {
+            "label": "owner",
+            "type": {
+              "displayName": [
+                "psp34_external",
+                "AllowanceInput1"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "label": "operator",
+            "type": {
+              "displayName": [
+                "psp34_external",
+                "AllowanceInput2"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "label": "id",
+            "type": {
+              "displayName": [
+                "psp34_external",
+                "AllowanceInput3"
+              ],
+              "type": 16
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Returns `true` if the operator is approved by the owner to withdraw `id` token.",
+          " If `id` is `None`, returns `true` if the operator is approved to withdraw all owner's tokens."
+        ],
+        "label": "PSP34::allowance",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 20
+        },
+        "selector": "0x4790f55a"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Returns current NFT total supply."
+        ],
+        "label": "PSP34::total_supply",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 21
+        },
+        "selector": "0x628413fe"
+      },
+      {
+        "args": [
+          {
+            "label": "owner",
+            "type": {
+              "displayName": [
+                "psp34_external",
+                "BalanceOfInput1"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Returns the balance of the owner.",
+          "",
+          " This represents the amount of unique tokens the owner has."
+        ],
+        "label": "PSP34::balance_of",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 22
+        },
+        "selector": "0xcde7e55f"
+      },
+      {
+        "args": [
+          {
+            "label": "id",
+            "type": {
+              "displayName": [
+                "psp34_external",
+                "OwnerOfInput1"
+              ],
+              "type": 11
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Returns the owner of the token if any."
+        ],
+        "label": "PSP34::owner_of",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 23
+        },
+        "selector": "0x1168624d"
       },
       {
         "args": [
@@ -557,7 +548,7 @@
                 "psp34burnable_external",
                 "BurnInput2"
               ],
-              "type": 10
+              "type": 11
             }
           }
         ],
@@ -576,7 +567,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 22
+          "type": 17
         },
         "selector": "0x63c9877a"
       },
@@ -657,11 +648,21 @@
       {
         "args": [
           {
-            "label": "new_owner",
+            "label": "role",
             "type": {
               "displayName": [
-                "ownable_external",
-                "TransferOwnershipInput1"
+                "accesscontrol_external",
+                "HasRoleInput1"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "address",
+            "type": {
+              "displayName": [
+                "accesscontrol_external",
+                "HasRoleInput2"
               ],
               "type": 0
             }
@@ -669,36 +670,9 @@
         ],
         "default": false,
         "docs": [
-          " Transfers ownership of the contract to a `new_owner`.",
-          " Can only be called by the current owner.",
-          "",
-          " On success a `OwnershipTransferred` event is emitted.",
-          "",
-          " # Errors",
-          "",
-          " Panics with `CallerIsNotOwner` error if caller is not owner.",
-          "",
-          " Panics with `NewOwnerIsZero` error if new owner's address is zero."
+          " Returns `true` if `account` has been granted `role`."
         ],
-        "label": "Ownable::transfer_ownership",
-        "mutates": true,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 27
-        },
-        "selector": "0x11f43efd"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Returns the address of the current owner."
-        ],
-        "label": "Ownable::owner",
+        "label": "AccessControl::has_role",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -706,27 +680,44 @@
             "ink",
             "MessageResult"
           ],
-          "type": 30
+          "type": 20
         },
-        "selector": "0x4fa43c8c"
+        "selector": "0xc1d9ac18"
       },
       {
-        "args": [],
+        "args": [
+          {
+            "label": "role",
+            "type": {
+              "displayName": [
+                "accesscontrol_external",
+                "RevokeRoleInput1"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "account",
+            "type": {
+              "displayName": [
+                "accesscontrol_external",
+                "RevokeRoleInput2"
+              ],
+              "type": 0
+            }
+          }
+        ],
         "default": false,
         "docs": [
-          " Leaves the contract without owner. It will not be possible to call",
-          " owner's functions anymore. Can only be called by the current owner.",
+          " Revokes `role` from `account`.",
           "",
-          " NOTE: Renouncing ownership will leave the contract without an owner,",
-          " thereby removing any functionality that is only available to the owner.",
-          "",
-          " On success a `OwnershipTransferred` event is emitted.",
+          " On success a `RoleRevoked` event is emitted.",
           "",
           " # Errors",
           "",
-          " Panics with `CallerIsNotOwner` error if caller is not owner"
+          " Returns with `MissingRole` error if caller can't grant the `role` or if `account` doesn't have `role`."
         ],
-        "label": "Ownable::renounce_ownership",
+        "label": "AccessControl::revoke_role",
         "mutates": true,
         "payable": false,
         "returnType": {
@@ -736,7 +727,131 @@
           ],
           "type": 27
         },
-        "selector": "0x5e228753"
+        "selector": "0x6e4f0991"
+      },
+      {
+        "args": [
+          {
+            "label": "role",
+            "type": {
+              "displayName": [
+                "accesscontrol_external",
+                "RenounceRoleInput1"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "account",
+            "type": {
+              "displayName": [
+                "accesscontrol_external",
+                "RenounceRoleInput2"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Revokes `role` from the calling account.",
+          " Roles are often managed via `grant_role` and `revoke_role`: this function's",
+          " purpose is to provide a mechanism for accounts to lose their privileges",
+          " if they are compromised (such as when a trusted device is misplaced).",
+          "",
+          " On success a `RoleRevoked` event is emitted.",
+          "",
+          " # Errors",
+          "",
+          " Returns with `InvalidCaller` error if caller is not `account`.",
+          " Returns with `MissingRole` error if `account` doesn't have `role`."
+        ],
+        "label": "AccessControl::renounce_role",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 27
+        },
+        "selector": "0xeaf1248a"
+      },
+      {
+        "args": [
+          {
+            "label": "role",
+            "type": {
+              "displayName": [
+                "accesscontrol_external",
+                "GrantRoleInput1"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "account",
+            "type": {
+              "displayName": [
+                "accesscontrol_external",
+                "GrantRoleInput2"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Grants `role` to `account`.",
+          "",
+          " On success a `RoleGranted` event is emitted.",
+          "",
+          " # Errors",
+          "",
+          " Returns with `MissingRole` error if caller can't grant the role.",
+          " Returns with `RoleRedundant` error `account` has `role`."
+        ],
+        "label": "AccessControl::grant_role",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 27
+        },
+        "selector": "0x4ac062fd"
+      },
+      {
+        "args": [
+          {
+            "label": "role",
+            "type": {
+              "displayName": [
+                "accesscontrol_external",
+                "GetRoleAdminInput1"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Returns the admin role that controls `role`. See `grant_role` and `revoke_role`."
+        ],
+        "label": "AccessControl::get_role_admin",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 22
+        },
+        "selector": "0x83da3bb2"
       },
       {
         "args": [
@@ -747,7 +862,7 @@
                 "psp34metadata_external",
                 "GetAttributeInput1"
               ],
-              "type": 10
+              "type": 11
             }
           },
           {
@@ -775,9 +890,27 @@
             "ink",
             "MessageResult"
           ],
-          "type": 31
+          "type": 30
         },
         "selector": "0xf19d48d1"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Check if whitelist is enabled."
+        ],
+        "label": "PinkMint::is_whitelist_enabled",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 20
+        },
+        "selector": "0xba15e6ae"
       },
       {
         "args": [
@@ -788,7 +921,7 @@
                 "pinkmint_external",
                 "SetMaxSupplyInput1"
               ],
-              "type": 33
+              "type": 32
             }
           }
         ],
@@ -804,38 +937,77 @@
             "ink",
             "MessageResult"
           ],
-          "type": 34
+          "type": 33
         },
         "selector": "0x4f50f3ce"
       },
       {
         "args": [
           {
-            "label": "token_id",
+            "label": "user",
             "type": {
               "displayName": [
                 "pinkmint_external",
-                "TokenUriInput1"
+                "AddToWhitelistInput1"
               ],
-              "type": 6
+              "type": 0
+            }
+          },
+          {
+            "label": "enabled",
+            "type": {
+              "displayName": [
+                "pinkmint_external",
+                "AddToWhitelistInput2"
+              ],
+              "type": 9
             }
           }
         ],
         "default": false,
         "docs": [
-          " Get URI for the token Id."
+          " Add an account to the whitelist."
         ],
-        "label": "PinkMint::token_uri",
-        "mutates": false,
+        "label": "PinkMint::add_to_whitelist",
+        "mutates": true,
         "payable": false,
         "returnType": {
           "displayName": [
             "ink",
             "MessageResult"
           ],
-          "type": 38
+          "type": 33
         },
-        "selector": "0x5b903a36"
+        "selector": "0xc9468a9d"
+      },
+      {
+        "args": [
+          {
+            "label": "list",
+            "type": {
+              "displayName": [
+                "pinkmint_external",
+                "AddToWhitelistManyInput1"
+              ],
+              "type": 37
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Add list of accounts to the whitelist."
+        ],
+        "label": "PinkMint::add_to_whitelist_many",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 33
+        },
+        "selector": "0x3cd02623"
       },
       {
         "args": [
@@ -872,9 +1044,132 @@
             "ink",
             "MessageResult"
           ],
-          "type": 41
+          "type": 38
         },
         "selector": "0x5efd98d7"
+      },
+      {
+        "args": [
+          {
+            "label": "limit",
+            "type": {
+              "displayName": [
+                "pinkmint_external",
+                "SetLimitPerAccountInput1"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Set max amount of tokens to be minted per account."
+        ],
+        "label": "PinkMint::set_limit_per_account",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 33
+        },
+        "selector": "0x0f14a27d"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Get max amount of tokens to be minted per account."
+        ],
+        "label": "PinkMint::limit_per_account",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 22
+        },
+        "selector": "0xf03230b1"
+      },
+      {
+        "args": [
+          {
+            "label": "user",
+            "type": {
+              "displayName": [
+                "pinkmint_external",
+                "IsWhitelistedInput1"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Check if an account is whitelisted."
+        ],
+        "label": "PinkMint::is_whitelisted",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 20
+        },
+        "selector": "0xb7120806"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Get number of whitelisted accounts."
+        ],
+        "label": "PinkMint::whitelist_count",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 22
+        },
+        "selector": "0x0f9bdaf1"
+      },
+      {
+        "args": [
+          {
+            "label": "token_id",
+            "type": {
+              "displayName": [
+                "pinkmint_external",
+                "TokenUriInput1"
+              ],
+              "type": 6
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Get URI for the token Id."
+        ],
+        "label": "PinkMint::token_uri",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 40
+        },
+        "selector": "0x5b903a36"
       },
       {
         "args": [],
@@ -893,6 +1188,74 @@
           "type": 43
         },
         "selector": "0x667a6c97"
+      },
+      {
+        "args": [
+          {
+            "label": "token",
+            "type": {
+              "displayName": [
+                "pinkmint_external",
+                "ChangeMetadataInput1"
+              ],
+              "type": 11
+            }
+          },
+          {
+            "label": "metadata",
+            "type": {
+              "displayName": [
+                "pinkmint_external",
+                "ChangeMetadataInput2"
+              ],
+              "type": 8
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Change metadata for the token Id."
+        ],
+        "label": "PinkMint::change_metadata",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 33
+        },
+        "selector": "0x3c48aa0a"
+      },
+      {
+        "args": [
+          {
+            "label": "enabled",
+            "type": {
+              "displayName": [
+                "pinkmint_external",
+                "EnableWhitelistInput1"
+              ],
+              "type": 9
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Use or not use whitelist."
+        ],
+        "label": "PinkMint::enable_whitelist",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 33
+        },
+        "selector": "0x4fe639ec"
       }
     ]
   },
@@ -1113,12 +1476,70 @@
                   "fields": [
                     {
                       "layout": {
-                        "leaf": {
-                          "key": "0x00000000",
-                          "ty": 0
+                        "root": {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x6a2cd2b4",
+                              "ty": 5
+                            }
+                          },
+                          "root_key": "0x6a2cd2b4"
                         }
                       },
-                      "name": "owner"
+                      "name": "admin_roles"
+                    },
+                    {
+                      "layout": {
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "root": {
+                                  "layout": {
+                                    "leaf": {
+                                      "key": "0x5d5db175",
+                                      "ty": 3
+                                    }
+                                  },
+                                  "root_key": "0x5d5db175"
+                                }
+                              },
+                              "name": "members"
+                            },
+                            {
+                              "layout": {
+                                "enum": {
+                                  "dispatchKey": "0x00000000",
+                                  "name": "Option",
+                                  "variants": {
+                                    "0": {
+                                      "fields": [],
+                                      "name": "None"
+                                    },
+                                    "1": {
+                                      "fields": [
+                                        {
+                                          "layout": {
+                                            "leaf": {
+                                              "key": "0x00000000",
+                                              "ty": 3
+                                            }
+                                          },
+                                          "name": "0"
+                                        }
+                                      ],
+                                      "name": "Some"
+                                    }
+                                  }
+                                }
+                              },
+                              "name": "_reserved"
+                            }
+                          ],
+                          "name": "Members"
+                        }
+                      },
+                      "name": "members"
                     },
                     {
                       "layout": {
@@ -1153,7 +1574,7 @@
                   "name": "Data"
                 }
               },
-              "name": "ownable"
+              "name": "access"
             },
             {
               "layout": {
@@ -1254,10 +1675,10 @@
                       "layout": {
                         "leaf": {
                           "key": "0x00000000",
-                          "ty": 7
+                          "ty": 5
                         }
                       },
-                      "name": "price_per_mint"
+                      "name": "limit_per_account"
                     },
                     {
                       "layout": {
@@ -1272,6 +1693,38 @@
                         }
                       },
                       "name": "nft_metadata"
+                    },
+                    {
+                      "layout": {
+                        "root": {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xe9b1c008",
+                              "ty": 9
+                            }
+                          },
+                          "root_key": "0xe9b1c008"
+                        }
+                      },
+                      "name": "whitelist"
+                    },
+                    {
+                      "layout": {
+                        "leaf": {
+                          "key": "0x00000000",
+                          "ty": 9
+                        }
+                      },
+                      "name": "whitelist_enabled"
+                    },
+                    {
+                      "layout": {
+                        "leaf": {
+                          "key": "0x00000000",
+                          "ty": 5
+                        }
+                      },
+                      "name": "whitelist_count"
                     }
                   ],
                   "name": "MintingData"
@@ -1285,7 +1738,7 @@
                   "layout": {
                     "leaf": {
                       "key": "0x5ce6c6c4",
-                      "ty": 9
+                      "ty": 10
                     }
                   },
                   "root_key": "0x5ce6c6c4"
@@ -1394,14 +1847,22 @@
       "id": 9,
       "type": {
         "def": {
-          "sequence": {
-            "type": 10
-          }
+          "primitive": "bool"
         }
       }
     },
     {
       "id": 10,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 11
+          }
+        }
+      }
+    },
+    {
+      "id": 11,
       "type": {
         "def": {
           "variant": {
@@ -1478,39 +1939,6 @@
       }
     },
     {
-      "id": 11,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "index": 0,
-                "name": "None"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 0
-                  }
-                ],
-                "index": 1,
-                "name": "Some"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 0
-          }
-        ],
-        "path": [
-          "Option"
-        ]
-      }
-    },
-    {
       "id": 12,
       "type": {
         "def": {
@@ -1580,7 +2008,7 @@
               {
                 "fields": [
                   {
-                    "type": 9
+                    "type": 10
                   }
                 ],
                 "index": 0,
@@ -1601,7 +2029,7 @@
         "params": [
           {
             "name": "T",
-            "type": 9
+            "type": 10
           },
           {
             "name": "E",
@@ -1615,215 +2043,6 @@
     },
     {
       "id": 15,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 7
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 13
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 7
-          },
-          {
-            "name": "E",
-            "type": 13
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 16,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 5
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 13
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 5
-          },
-          {
-            "name": "E",
-            "type": 13
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 17,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 10
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 13
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 10
-          },
-          {
-            "name": "E",
-            "type": 13
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 18,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "index": 0,
-                "name": "None"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 10
-                  }
-                ],
-                "index": 1,
-                "name": "Some"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 10
-          }
-        ],
-        "path": [
-          "Option"
-        ]
-      }
-    },
-    {
-      "id": 19,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 20
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 13
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 20
-          },
-          {
-            "name": "E",
-            "type": 13
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 20,
-      "type": {
-        "def": {
-          "primitive": "bool"
-        }
-      }
-    },
-    {
-      "id": 21,
       "type": {
         "def": {
           "variant": {
@@ -1865,7 +2084,40 @@
       }
     },
     {
-      "id": 22,
+      "id": 16,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 11
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 11
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 17,
       "type": {
         "def": {
           "variant": {
@@ -1873,7 +2125,7 @@
               {
                 "fields": [
                   {
-                    "type": 23
+                    "type": 18
                   }
                 ],
                 "index": 0,
@@ -1894,7 +2146,7 @@
         "params": [
           {
             "name": "T",
-            "type": 23
+            "type": 18
           },
           {
             "name": "E",
@@ -1907,7 +2159,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 18,
       "type": {
         "def": {
           "variant": {
@@ -1924,7 +2176,7 @@
               {
                 "fields": [
                   {
-                    "type": 24
+                    "type": 19
                   }
                 ],
                 "index": 1,
@@ -1940,7 +2192,7 @@
           },
           {
             "name": "E",
-            "type": 24
+            "type": 19
           }
         ],
         "path": [
@@ -1949,7 +2201,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 19,
       "type": {
         "def": {
           "variant": {
@@ -1999,6 +2251,207 @@
           "errors",
           "psp34",
           "PSP34Error"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 13
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 9
+          },
+          {
+            "name": "E",
+            "type": 13
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 7
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 13
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 7
+          },
+          {
+            "name": "E",
+            "type": 13
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 5
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 13
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 5
+          },
+          {
+            "name": "E",
+            "type": 13
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 24
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 13
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 24
+          },
+          {
+            "name": "E",
+            "type": 13
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 0
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 0
+          }
+        ],
+        "path": [
+          "Option"
         ]
       }
     },
@@ -2053,7 +2506,7 @@
               {
                 "fields": [
                   {
-                    "type": 10
+                    "type": 11
                   }
                 ],
                 "index": 0,
@@ -2062,7 +2515,7 @@
               {
                 "fields": [
                   {
-                    "type": 24
+                    "type": 19
                   }
                 ],
                 "index": 1,
@@ -2074,11 +2527,11 @@
         "params": [
           {
             "name": "T",
-            "type": 10
+            "type": 11
           },
           {
             "name": "E",
-            "type": 24
+            "type": 19
           }
         ],
         "path": [
@@ -2178,11 +2631,15 @@
             "variants": [
               {
                 "index": 0,
-                "name": "CallerIsNotOwner"
+                "name": "InvalidCaller"
               },
               {
                 "index": 1,
-                "name": "NewOwnerIsZero"
+                "name": "MissingRole"
+              },
+              {
+                "index": 2,
+                "name": "RoleRedundant"
               }
             ]
           }
@@ -2191,8 +2648,8 @@
           "openbrush_contracts",
           "traits",
           "errors",
-          "ownable",
-          "OwnableError"
+          "access_control",
+          "AccessControlError"
         ]
       }
     },
@@ -2205,7 +2662,7 @@
               {
                 "fields": [
                   {
-                    "type": 0
+                    "type": 31
                   }
                 ],
                 "index": 0,
@@ -2226,7 +2683,7 @@
         "params": [
           {
             "name": "T",
-            "type": 0
+            "type": 31
           },
           {
             "name": "E",
@@ -2240,48 +2697,6 @@
     },
     {
       "id": 31,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 32
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 13
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 32
-          },
-          {
-            "name": "E",
-            "type": 13
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 32,
       "type": {
         "def": {
           "variant": {
@@ -2314,7 +2729,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 32,
       "type": {
         "def": {
           "variant": {
@@ -2347,7 +2762,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 33,
       "type": {
         "def": {
           "variant": {
@@ -2355,7 +2770,7 @@
               {
                 "fields": [
                   {
-                    "type": 35
+                    "type": 34
                   }
                 ],
                 "index": 0,
@@ -2376,7 +2791,7 @@
         "params": [
           {
             "name": "T",
-            "type": 35
+            "type": 34
           },
           {
             "name": "E",
@@ -2389,7 +2804,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 34,
       "type": {
         "def": {
           "variant": {
@@ -2406,7 +2821,7 @@
               {
                 "fields": [
                   {
-                    "type": 36
+                    "type": 35
                   }
                 ],
                 "index": 1,
@@ -2422,7 +2837,7 @@
           },
           {
             "name": "E",
-            "type": 36
+            "type": 35
           }
         ],
         "path": [
@@ -2431,7 +2846,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 35,
       "type": {
         "def": {
           "variant": {
@@ -2439,7 +2854,7 @@
               {
                 "fields": [
                   {
-                    "type": 37,
+                    "type": 36,
                     "typeName": "PinkError"
                   }
                 ],
@@ -2450,11 +2865,11 @@
                 "fields": [
                   {
                     "type": 29,
-                    "typeName": "OwnableError"
+                    "typeName": "AccessControlError"
                   }
                 ],
                 "index": 1,
-                "name": "Ownable"
+                "name": "AccessControl"
               }
             ]
           }
@@ -2467,7 +2882,7 @@
       }
     },
     {
-      "id": 37,
+      "id": 36,
       "type": {
         "def": {
           "variant": {
@@ -2482,14 +2897,22 @@
               },
               {
                 "index": 2,
-                "name": "UriNotFound"
+                "name": "MintingLimit"
               },
               {
                 "index": 3,
-                "name": "TokenExists"
+                "name": "NotWhitelisted"
               },
               {
                 "index": 4,
+                "name": "UriNotFound"
+              },
+              {
+                "index": 5,
+                "name": "TokenExists"
+              },
+              {
+                "index": 6,
                 "name": "TokenNotFound"
               }
             ]
@@ -2500,6 +2923,16 @@
           "internal",
           "PinkError"
         ]
+      }
+    },
+    {
+      "id": 37,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 0
+          }
+        }
       }
     },
     {
@@ -2553,7 +2986,7 @@
               {
                 "fields": [
                   {
-                    "type": 40
+                    "type": 11
                   }
                 ],
                 "index": 0,
@@ -2562,7 +2995,7 @@
               {
                 "fields": [
                   {
-                    "type": 36
+                    "type": 35
                   }
                 ],
                 "index": 1,
@@ -2574,11 +3007,11 @@
         "params": [
           {
             "name": "T",
-            "type": 40
+            "type": 11
           },
           {
             "name": "E",
-            "type": 36
+            "type": 35
           }
         ],
         "path": [
@@ -2590,8 +3023,42 @@
       "id": 40,
       "type": {
         "def": {
-          "primitive": "str"
-        }
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 41
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 13
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 41
+          },
+          {
+            "name": "E",
+            "type": 13
+          }
+        ],
+        "path": [
+          "Result"
+        ]
       }
     },
     {
@@ -2612,7 +3079,7 @@
               {
                 "fields": [
                   {
-                    "type": 13
+                    "type": 35
                   }
                 ],
                 "index": 1,
@@ -2628,7 +3095,7 @@
           },
           {
             "name": "E",
-            "type": 13
+            "type": 35
           }
         ],
         "path": [
@@ -2640,42 +3107,8 @@
       "id": 42,
       "type": {
         "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 10
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 36
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 10
-          },
-          {
-            "name": "E",
-            "type": 36
-          }
-        ],
-        "path": [
-          "Result"
-        ]
+          "primitive": "str"
+        }
       }
     },
     {
@@ -2687,7 +3120,7 @@
               {
                 "fields": [
                   {
-                    "type": 33
+                    "type": 32
                   }
                 ],
                 "index": 0,
@@ -2708,7 +3141,7 @@
         "params": [
           {
             "name": "T",
-            "type": 33
+            "type": 32
           },
           {
             "name": "E",
