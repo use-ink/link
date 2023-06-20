@@ -148,7 +148,7 @@ export const aiModels = {
   },
   anything: {
     name: "Anything",
-    text: "https://api-inference.huggingface.co/models/andite/anything-v4.0",
+    text: "https://api-inference.huggingface.co/models/Linaqruf/anything-v3.0",
   },
   openjourney: {
     name: "OpenJourney",
