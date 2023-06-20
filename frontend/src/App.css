@@ -141,6 +141,7 @@ input {
 
 select {
   @apply w-full bg-gray-800 text-white px-4 py-3 mb-2 border rounded-lg border-gray-700 hover:border-gray-500 focus:outline-none  disabled:opacity-50;
+  height: 50px;
 }
 
 input.PrivateSwitchBase-input-4.MuiRadio-colorSecondary.Mui-checked {
