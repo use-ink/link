@@ -1,5 +1,5 @@
 import { TwitterShareButton } from "react-twitter-embed";
-import { PINK_MARKETPLACE } from "../const";
+import { marketplaceTokenUrl } from "../const";
 
 export const Tweet = () => {
 
@@ -14,7 +14,7 @@ export const Tweet = () => {
               screenName: undefined,
               size: 'large',
               text: "How do you imagine your #PinkRobot 🤖 on #AstarNetwork?\n\nI just imagined and minted mine ",
-              via: `\n\n${PINK_MARKETPLACE}`
+              via: `\n\n${marketplaceTokenUrl}`
             }}
             url='https://pinkrobot.me/'
           />

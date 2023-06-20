@@ -3,7 +3,7 @@ import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
-import { CUSTOM_MARKETPLACE, CUSTOM_MINT_TEXT, PINK_MARKETPLACE, PINK_MINT_TEXT } from "../const";
+import { CUSTOM_MINT_TEXT, PINK_MINT_TEXT, marketplaceTokenUrl } from "../const";
 import { Tweet } from "./Tweet";
 
 interface Props {
@@ -32,11 +32,11 @@ export const SubmitResult = ({
       if (e.name === "system:ExtrinsicSuccess") {
         if (values.contractType === ContractType.PinkPsp34) {
           setSubmitOutcome(PINK_MINT_TEXT);
-          setMarketplaceLink(PINK_MARKETPLACE);
+          setMarketplaceLink(marketplaceTokenUrl);
         }
         else {
           setSubmitOutcome(CUSTOM_MINT_TEXT);
-          setMarketplaceLink(CUSTOM_MARKETPLACE);
+          setMarketplaceLink(marketplaceTokenUrl);
         }
       }
     });
