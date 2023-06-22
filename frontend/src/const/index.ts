@@ -30,8 +30,8 @@ export const networks: Array<NetworkInfo> = [
   {
     name: "Astar",
     endpoint: "wss://rpc.astar.network",
-    pinkContractAddress: "0",
-    pinkPsp34ContractAddress: "0",
+    pinkContractAddress: "ZohEUuLZWgreMDqTNpjGM3HSBJttAjfxETdPDFRSSguxGKo",
+    pinkPsp34ContractAddress: "XoywUxTTtNKPRrRN7V5KXCqz2QLMFeK7DxhpSniqZHps5Xq",
     marketplaceTokenUrl: 'https://marketplace.paras.id/token/astar/0'
   }
 ];
@@ -187,7 +187,7 @@ export const initialPinkValues: PinkValues = {
   displayImage: [default_pink_robot, default_upload_image],
   tokenId: [0, 0],
   limitMint: 0,
-  networkId: NetworkId.Shibuya,
+  networkId: NetworkId.Astar,
   price: BN_ZERO,
   total: BN_ZERO,
 };
