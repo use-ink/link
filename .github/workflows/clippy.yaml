@@ -34,7 +34,7 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
       - name: Run clippy
         shell: bash
         run: cargo +nightly clippy --verbose --no-default-features --target wasm32-unknown-unknown -- -D warnings
