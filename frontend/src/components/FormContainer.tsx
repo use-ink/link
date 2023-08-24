@@ -1,12 +1,12 @@
-import linkLogo from "../link-logo.svg";
-import { Formik } from "formik";
-import { initialValues, UrlShortenerSchema } from "../const";
-import { useLinkContract, useSubmitHandler, useUI } from "../hooks";
-import { UrlShortenerForm } from "./Form";
-import { Header } from "./Header";
-import { SubmitResult } from "./SubmitResult";
-import { ConnectWallet, Loader } from ".";
-import { hasAny } from "useink/utils";
+import { ReactComponent as LinkLogo } from '../link-logo.svg';
+import { Formik } from 'formik';
+import { initialValues, UrlShortenerSchema } from '../const';
+import { useLinkContract, useSubmitHandler, useUI } from '../hooks';
+import { UrlShortenerForm } from './Form';
+import { Header } from './Header';
+import { SubmitResult } from './SubmitResult';
+import { ConnectWallet, Loader } from '.';
+import { hasAny } from 'useink/utils';
 
 export const FormContainer = () => {
   const submitFn = useSubmitHandler();
@@ -24,10 +24,7 @@ export const FormContainer = () => {
           submitFn(values, helpers);
         }}
       >
-        {({
-          status: { finalized, events, slug, errorMessage } = {},
-          isSubmitting,
-        }) => {
+        {({ status: { finalized, events, slug, errorMessage } = {}, isSubmitting }) => {
           return isSubmitting && shorten && !hasAny(shorten, 'PendingSignature', 'None') ? (
             <Loader message="Submitting transaction..." />
           ) : (
@@ -35,13 +32,9 @@ export const FormContainer = () => {
               <Header />
               <div className="content">
                 <div className="form-panel">
-                  <img src={linkLogo} className="link-logo" alt="logo" />{" "}
+                  <LinkLogo className="link-logo" />{' '}
                   {finalized ? (
-                    <SubmitResult
-                      events={events}
-                      slug={slug}
-                      errorMessage={errorMessage}
-                    />
+                    <SubmitResult events={events} slug={slug} errorMessage={errorMessage} />
                   ) : (
                     <UrlShortenerForm />
                   )}

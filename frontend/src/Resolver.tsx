@@ -1,11 +1,12 @@
-import "./App.css";
-import { useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
-import { Loader } from "./components";
-import { hexToString } from 'useink/utils';
-import { useLinkContract } from "./hooks";
-import { AbiMessage, ContractExecResult, Registry } from "useink/core";
-import { useAbiMessage } from "useink";
+import './App.css';
+import { useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import { Loader } from './components';
+
+import { useLinkContract } from './hooks';
+import { AbiMessage, ContractExecResult, Registry } from 'useink/core';
+import { useAbiMessage } from 'useink';
+import { hexToString } from './lib/converter';
 
 // useink will decode results for ink! v4 +, but this dApp was built with ink! v3 and
 // requires this custom decoding function.
@@ -14,13 +15,13 @@ export function decodeURL(
   message: AbiMessage,
   registry: Registry,
 ): string | undefined {
-  if (result.isErr || !message.returnType) return
+  if (result.isErr || !message.returnType) return;
 
-  const returnTypeName = message.returnType.lookupName || message.returnType.type
+  const returnTypeName = message.returnType.lookupName || message.returnType.type;
   const raw = registry.createTypeUnsafe(returnTypeName, [result.asOk.data]);
 
   const OptionNoneResponse = '0x00';
-  if (raw.toHuman() === OptionNoneResponse) return
+  if (raw.toHuman() === OptionNoneResponse) return;
 
   const url = hexToString(raw.toHuman() as any);
 
@@ -39,7 +40,7 @@ const Resolver: React.FC = () => {
     }
 
     return undefined;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolve?.result]);
 
   useEffect(() => {
@@ -48,16 +49,20 @@ const Resolver: React.FC = () => {
 
   useEffect(() => {
     slug && resolve?.send([slug], { defaultCaller: true });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className="App h-screen flex flex-col justify-center">
-      {resolve?.isSubmitting && <Loader message={resolvedUrl ? `Redirecting to ${resolvedUrl}` : ""} />}
+    <div className="flex flex-col justify-center h-screen App">
+      {resolve?.isSubmitting && <Loader message={resolvedUrl ? `Redirecting to ${resolvedUrl}` : ''} />}
       {!resolve?.isSubmitting && resolve?.result?.ok && !resolvedUrl && (
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-center">URL not found for <span className="bg-white/5 rounded-md p-2">{slug}</span></h1>
-          <p className="mt-6">Go back to <a href="/">shortener</a>.</p>
+          <h1 className="text-2xl font-bold text-center">
+            URL not found for <span className="p-2 rounded-md bg-white/5">{slug}</span>
+          </h1>
+          <p className="mt-6">
+            Go back to <a href="/">shortener</a>.
+          </p>
         </div>
       )}
     </div>

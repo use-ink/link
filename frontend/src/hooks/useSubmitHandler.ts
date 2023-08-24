@@ -20,7 +20,8 @@ export const useSubmitHandler = () => {
         setSubmitting(false);
       }
 
-      if (!result?.status.isInBlock) return;
+      // TODO: fix me
+      // if (!result?.status.isInBlock) return;
 
       const events: UIEvent[] = [];
       let slug = '';
@@ -35,7 +36,7 @@ export const useSubmitHandler = () => {
       });
 
       // Collect pallet emitted events
-      result?.events.forEach(({ event }) => {
+      result?.contractEvents?.forEach(({ event }) => {
         if ('ContractEmitted' !== event.method) {
           let message = '';
 
@@ -51,7 +52,8 @@ export const useSubmitHandler = () => {
         }
       });
 
-      const dispatchError = shorten.result?.dispatchError;
+      // TODO: fix me
+      const dispatchError = false; //shorten.result?.dispatchError;
 
       if (dispatchError && link?.contract) {
         const errorMessage = decodeError(dispatchError, link, undefined, 'Something went wrong');
