@@ -14,7 +14,6 @@ export default defineConfig({
 
   server: { port: 8081 },
   build: {
-    minify: false, // solves vite [WARNING] Expected ";" [css-syntax-error]
     target: 'esnext',
     rollupOptions: {
       output: {
