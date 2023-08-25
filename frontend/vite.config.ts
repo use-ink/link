@@ -11,8 +11,10 @@ import nodePolyfills from 'vite-plugin-node-stdlib-browser';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tsConfigPaths(), eslintPlugin(), svgr(), nodePolyfills()],
+
   server: { port: 8081 },
   build: {
+    minify: false, // solves vite [WARNING] Expected ";" [css-syntax-error]
     target: 'esnext',
     rollupOptions: {
       output: {
