@@ -19,15 +19,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         dir: './build',
-        manualChunks(id) {
-          if (/[\\/]node_modules[\\/](react|react-dom)[\\/]/.test(id)) {
-            return 'react';
-          }
-
-          if (/[\\/]node_modules[\\/](@polkadot)[\\/]/.test(id)) {
-            return 'polkadot';
-          }
-        },
       },
     },
   },
