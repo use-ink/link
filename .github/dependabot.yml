@@ -8,9 +8,9 @@ updates:
   - package-ecosystem: npm
     directory: "/frontend"
     schedule:
-    interval: "daily"
+      interval: "daily"
     allow:
-      -dependency-type: "production"
+      - dependency-type: "production"
     ignore:
       - dependency-name: "*"
         update-types:

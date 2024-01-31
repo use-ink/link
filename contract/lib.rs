@@ -1,4 +1,4 @@
-// Copyright 2018-2022 Parity Technologies (UK) Ltd.
+// Copyright 2018-2024 Parity Technologies (UK) Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![cfg_attr(not(feature = "std"), no_std)]
-
-use ink_lang as ink;
+#![cfg_attr(not(feature = "std"), no_std, no_main)]
 
 #[ink::contract]
 mod link {
-    use ink_prelude::vec::Vec;
-    use ink_storage::{traits::SpreadAllocate, Mapping};
+    use ink::{
+        prelude::vec::Vec,
+        storage::Mapping,
+    };
 
     /// Slugs shorter than this are rejected by [`shorten`].
     const MIN_SLUG_LENGTH: usize = 5;
@@ -44,7 +44,7 @@ mod link {
 
     /// The in-storage representation of this contract.
     #[ink(storage)]
-    #[derive(SpreadAllocate)]
+    //#[derive(SpreadAllocate)]
     pub struct Link {
         /// Needed in order to resolve slugs to URLs.
         urls: Mapping<Slug, Url>,
@@ -55,8 +55,8 @@ mod link {
     }
 
     /// The error type used for all messages.
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    #[derive(Debug, PartialEq, Eq)]
+    #[ink::scale_derive(Encode, Decode, TypeInfo)]
     pub enum Error {
         /// The slug is already in use for another URL.
         SlugUnavailable,
@@ -71,8 +71,8 @@ mod link {
     }
 
     /// Used by users to specify whether an URL should be de-duplicated.
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    #[derive(Debug, PartialEq, Eq)]
+    #[ink::scale_derive(Encode, Decode, TypeInfo)]
     pub enum SlugCreationMode {
         /// Always create a new slug even if the URL was already shortened.
         New(Slug),
@@ -83,8 +83,8 @@ mod link {
     }
 
     /// Specifies the outcome of a [`shorten`] message.
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    #[derive(Debug, PartialEq, Eq)]
+    #[ink::scale_derive(Encode, Decode, TypeInfo)]
     pub enum ShorteningOutcome {
         /// A new mapping from the supplied slug was created.
         Shortened,
@@ -122,9 +122,11 @@ mod link {
         /// constructor.
         #[ink(constructor)]
         pub fn default() -> Self {
-            ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.upgrader = Some(contract.env().caller());
-            })
+            Self {
+                urls: Mapping::default(),
+                slugs: Mapping::default(),
+                upgrader: Some(Self::env().caller()),
+            }
         }
 
         /// Construct a new contract and don't set an upgrader.
@@ -133,9 +135,11 @@ mod link {
         /// unstoppable.
         #[ink(constructor)]
         pub fn unstoppable() -> Self {
-            ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.upgrader = None;
-            })
+            Self {
+                urls: Mapping::default(),
+                slugs: Mapping::default(),
+                upgrader: None,
+            }
         }
 
         /// Create a a new mapping or use an existing one.
@@ -169,7 +173,7 @@ mod link {
             if slug.len() < MIN_SLUG_LENGTH {
                 return Err(Error::SlugTooShort);
             }
-            if self.urls.insert_return_size(&slug, &url).is_some() {
+            if self.urls.insert(&slug, &url).is_some() {
                 return Err(Error::SlugUnavailable);
             }
             self.slugs.insert(&url, &slug);
@@ -189,7 +193,7 @@ mod link {
         /// The code cannot be changed in case no upgrader was set because the
         /// [`unstoppable`] constructor was used.
         #[ink(message)]
-        pub fn upgrade(&mut self, code_hash: [u8; 32]) -> Result<()> {
+        pub fn upgrade(&mut self, code_hash: Hash) -> Result<()> {
             if self
                 .upgrader
                 .map(|id| id != self.env().caller())
@@ -197,7 +201,9 @@ mod link {
             {
                 return Err(Error::UpgradeDenied);
             }
-            ink_env::set_code_hash(&code_hash).map_err(|_| Error::UpgradeFailed)
+            self.env()
+                .set_code_hash(&code_hash)
+                .map_err(|_| Error::UpgradeFailed)
         }
     }
 }

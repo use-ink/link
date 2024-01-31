@@ -18,23 +18,16 @@ jobs:
         working-directory: contract
     steps:
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@b2417cde72dcf67f306c0ae8e0828a81bf0b189f # v1.0.7
+        uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: nightly
           override: true
 
-      - name: Cache Dependencies & Build Outputs
-        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - uses: actions/checkout@v4
 
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
 
-      - name: Run spellcheck
-        shell: bash
-        run: cargo fmt --verbose -- --check
+      - name: Run fmt
+        run: cargo +nightly fmt --verbose -- --check
