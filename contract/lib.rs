@@ -44,7 +44,6 @@ mod link {
 
     /// The in-storage representation of this contract.
     #[ink(storage)]
-    //#[derive(SpreadAllocate)]
     pub struct Link {
         /// Needed in order to resolve slugs to URLs.
         urls: Mapping<Slug, Url>,
