@@ -234,7 +234,7 @@ mod link {
             let slug = SLUG.as_bytes().to_vec();
             let url = URL.as_bytes().to_vec();
 
-            let mut contract = Link::default();
+            let mut contract = Link::new();
             assert_eq!(
                 contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
                 Ok(ShorteningOutcome::Shortened)
@@ -256,7 +256,7 @@ mod link {
             let slug = SLUG_TO_SHORT.as_bytes().to_vec();
             let url = URL.as_bytes().to_vec();
 
-            let mut contract = Link::default();
+            let mut contract = Link::new();
             assert_eq!(
                 contract.shorten(SlugCreationMode::New(slug), url),
                 Err(Error::SlugTooShort)
@@ -272,7 +272,7 @@ mod link {
 
             let url = URL.as_bytes().to_vec();
 
-            let mut contract = Link::default();
+            let mut contract = Link::new();
             assert_eq!(
                 contract.shorten(SlugCreationMode::Deduplicate, url),
                 Err(Error::UrlNotFound)
@@ -289,7 +289,7 @@ mod link {
             let slug = SLUG.as_bytes().to_vec();
             let url = URL.as_bytes().to_vec();
 
-            let mut contract = Link::default();
+            let mut contract = Link::new();
             assert_eq!(
                 contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
                 Ok(ShorteningOutcome::Shortened)
@@ -309,7 +309,7 @@ mod link {
             let slug = SLUG.as_bytes().to_vec();
             let url = URL.as_bytes().to_vec();
 
-            let mut contract = Link::default();
+            let mut contract = Link::new();
             assert_eq!(
                 contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
                 Ok(ShorteningOutcome::Shortened)
