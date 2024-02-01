@@ -44,6 +44,7 @@ mod link {
 
     /// The in-storage representation of this contract.
     #[ink(storage)]
+    #[derive(Default)]
     pub struct Link {
         /// Needed in order to resolve slugs to URLs.
         urls: Mapping<Slug, Url>,
@@ -122,9 +123,8 @@ mod link {
         #[ink(constructor)]
         pub fn new() -> Self {
             Self {
-                urls: Mapping::default(),
-                slugs: Mapping::default(),
                 upgrader: Some(Self::env().caller()),
+                ..Default::default()
             }
         }
 
