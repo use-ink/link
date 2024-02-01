@@ -363,7 +363,7 @@ mod link {
             let resolve_res = client.call(&ink_e2e::alice(), &resolve).dry_run().await?;
 
             // then
-            assert_eq!(Some(url), resolve_res.return_value());
+            assert_eq!(resolve_res.return_value(), Some(url));
 
             Ok(())
         }
