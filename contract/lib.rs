@@ -71,7 +71,7 @@ mod link {
     }
 
     /// Used by users to specify whether an URL should be de-duplicated.
-    #[derive(Debug, PartialEq, Eq)]
+    #[derive(Debug, PartialEq, Eq, Clone)]
     #[ink::scale_derive(Encode, Decode, TypeInfo)]
     pub enum SlugCreationMode {
         /// Always create a new slug even if the URL was already shortened.
@@ -203,6 +203,173 @@ mod link {
             self.env()
                 .set_code_hash(&code_hash)
                 .map_err(|_| Error::UpgradeFailed)
+        }
+    }
+    #[cfg(test)]
+    mod tests {
+        use ink::scale::Decode;
+
+        use super::*;
+
+        const SLUG: &str = "https://test1slug";
+        const SLUG_TO_SHORT: &str = "test";
+        const URL: &str = "https://test_slug.parity.io";
+
+        fn default_accounts(
+        ) -> ink::env::test::DefaultAccounts<ink::env::DefaultEnvironment> {
+            ink::env::test::default_accounts::<Environment>()
+        }
+
+        fn set_next_caller(caller: AccountId) {
+            ink::env::test::set_caller::<Environment>(caller);
+        }
+
+        #[ink::test]
+        fn shorten_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::default();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
+                Ok(ShorteningOutcome::Shortened)
+            );
+            let emitted_events = ink::env::test::recorded_events().collect::<Vec<_>>();
+            let event_data: Shortened =
+                Shortened::decode(&mut emitted_events[0].data.as_slice())
+                    .expect("event must decode");
+            assert_eq!((event_data.slug, event_data.url), (slug, url));
+        }
+
+        #[ink::test]
+        fn invalid_shorten_should_fail() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG_TO_SHORT.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::default();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug), url),
+                Err(Error::SlugTooShort)
+            );
+        }
+
+        #[ink::test]
+        fn unduplicated_shorten_should_fail() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::default();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::Deduplicate, url),
+                Err(Error::UrlNotFound)
+            );
+        }
+
+        #[ink::test]
+        fn resolve_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::default();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
+                Ok(ShorteningOutcome::Shortened)
+            );
+
+            set_next_caller(default_accounts.bob);
+            assert_eq!(contract.resolve(slug), Some(url));
+        }
+
+        #[ink::test]
+        fn invalid_resolve_should_fail() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::default();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
+                Ok(ShorteningOutcome::Shortened)
+            );
+
+            set_next_caller(default_accounts.bob);
+            assert_eq!(
+                contract.resolve("https://bad_slug".as_bytes().to_vec()),
+                None
+            );
+        }
+
+        #[ink::test]
+        fn unstoppable_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+            let mut contract = Link::unstoppable();
+
+            let code_hash = Hash::from([0x1; 32]);
+            assert_eq!(contract.upgrade(code_hash), Err(Error::UpgradeDenied));
+        }
+    }
+
+    #[cfg(all(test, feature = "e2e-tests"))]
+    mod e2e_tests {
+        use super::*;
+        use ink_e2e::ContractsBackend;
+
+        type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+
+        #[ink_e2e::test]
+        async fn e2e_resolve<Client: E2EBackend>(mut client: Client) -> E2EResult<()> {
+            let slug = "https://test1slug".as_bytes().to_vec();
+            let url = "https://test_slug.parity.io".as_bytes().to_vec();
+
+            let mut constructor = LinkRef::new();
+            let link = client
+                .instantiate("link", &ink_e2e::alice(), &mut constructor)
+                .submit()
+                .await
+                .expect("instantiate failed");
+            let mut call = link.call::<Link>();
+
+            // when
+            let shorten = call.shorten(SlugCreationMode::New(slug.clone()), url.clone());
+            let _shorten_res = client
+                .call(&ink_e2e::alice(), &shorten)
+                .submit()
+                .await
+                .expect("shorten failed");
+
+            let resolve = call.resolve(slug);
+            let resolve_res = client.call(&ink_e2e::alice(), &resolve).dry_run().await?;
+
+            // then
+            assert_eq!(Some(url), resolve_res.return_value());
+
+            Ok(())
         }
     }
 }
