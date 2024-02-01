@@ -134,11 +134,7 @@ mod link {
         /// unstoppable.
         #[ink(constructor)]
         pub fn unstoppable() -> Self {
-            Self {
-                urls: Mapping::default(),
-                slugs: Mapping::default(),
-                upgrader: None,
-            }
+            Self::default()
         }
 
         /// Create a a new mapping or use an existing one.
