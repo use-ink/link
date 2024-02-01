@@ -120,7 +120,7 @@ mod link {
         /// for that reason. A truly trustless deployment should use the [`unstoppable`]
         /// constructor.
         #[ink(constructor)]
-        pub fn default() -> Self {
+        pub fn new() -> Self {
             Self {
                 urls: Mapping::default(),
                 slugs: Mapping::default(),
