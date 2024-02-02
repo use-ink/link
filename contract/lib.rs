@@ -236,9 +236,75 @@ mod link {
                 Ok(ShorteningOutcome::Shortened)
             );
             let emitted_events = ink::env::test::recorded_events().collect::<Vec<_>>();
-            let event_data: Shortened =
-                Shortened::decode(&mut emitted_events[0].data.as_slice())
-                    .expect("event must decode");
+            let event_data = Shortened::decode(&mut emitted_events[0].data.as_slice())
+                .expect("event must decode");
+            assert_eq!((event_data.slug, event_data.url), (slug, url));
+        }
+
+        #[ink::test]
+        fn deduplicate_shorten_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::new();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
+                Ok(ShorteningOutcome::Shortened)
+            );
+
+            assert_eq!(
+                contract.shorten(SlugCreationMode::Deduplicate, url.clone()),
+                Ok(ShorteningOutcome::Deduplicated { slug: slug.clone() })
+            );
+
+            let emitted_events = ink::env::test::recorded_events().collect::<Vec<_>>();
+            let event_data = Deduplicated::decode(&mut emitted_events[1].data.as_slice())
+                .expect("event must decode");
+            assert_eq!((event_data.slug, event_data.url), (slug, url));
+        }
+
+        #[ink::test]
+        fn deduplicate_or_new_shorten_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::new();
+            assert_eq!(
+                contract.shorten(
+                    SlugCreationMode::DeduplicateOrNew(slug.clone()),
+                    url.clone()
+                ),
+                Ok(ShorteningOutcome::Shortened)
+            );
+
+            assert_eq!(
+                contract.shorten(
+                    SlugCreationMode::DeduplicateOrNew(slug.clone()),
+                    url.clone()
+                ),
+                Ok(ShorteningOutcome::Deduplicated { slug: slug.clone() })
+            );
+
+            let emitted_events = ink::env::test::recorded_events().collect::<Vec<_>>();
+            let event_data = Shortened::decode(&mut emitted_events[0].data.as_slice())
+                .expect("event must decode");
+            assert_eq!(
+                (event_data.slug, event_data.url),
+                (slug.clone(), url.clone())
+            );
+
+            let event_data = Deduplicated::decode(&mut emitted_events[1].data.as_slice())
+                .expect("event must decode");
             assert_eq!((event_data.slug, event_data.url), (slug, url));
         }
 
