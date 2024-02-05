@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           appName="link!"
           connectOnInit={true}
           defaultChain={"development"}
-          deployments={getDeployments("development")}
+          deployments={Promise.resolve(getDeployments("development"))}
         >
           <App />
         </UseInkathonProvider>

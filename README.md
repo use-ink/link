@@ -27,9 +27,9 @@ We built this project to illustrate how a full-stack DApp can be built with:
   You can use Substrate to build either standalone blockchains or parachains for Polkadot and Kusama.
 * __Frontend:__ For our MVP we use the `polkadot-js` API with hardcoded RPC and node URLs.
 
-In our next iteration of this MVP we want to migrate the frontend to utilize 
+In our next iteration of this MVP we want to migrate the frontend to utilize
 [`substrate-connect`](https://github.com/paritytech/substrate-connect) under the hood.
-In consequence the frontend would be truly trustless, there would then be no need to 
+In consequence the frontend would be truly trustless, there would then be no need to
 put trust in a server that e.g. the RPC return values are indeed what is stored on
 the blockchain.
 
@@ -72,3 +72,11 @@ in the underlying scientific mechanisms behind the blockchain network.
 With this project we illustrate how our stack can be used
 to build a decentralized URL shortener where you don't have to put
 trust in a singular entity.
+
+
+### Deploy
+
+In `contracts` folder
+```sh
+pnpm run script deploy
+```

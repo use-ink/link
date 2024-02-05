@@ -17,6 +17,19 @@ module.exports = {
     },
     extend: {
       colors: {
+        lavender: {
+          50: "#faf5ff",
+          100: "#f3e8ff",
+          200: "#e8d5ff",
+          300: "#d7b5fd",
+          400: "#bd83fb",
+          500: "#a556f6",
+          600: "#9034e9",
+          700: "#7b23cd",
+          800: "#6922a7",
+          900: "#561d86",
+          950: "#390863",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
