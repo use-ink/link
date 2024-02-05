@@ -1,5 +1,10 @@
 /* eslint-disable no-console */
-import { useInkathon, useRegisteredContract } from "@scio-labs/use-inkathon"
+import {
+  contractQuery,
+  decodeOutput,
+  useInkathon,
+  useRegisteredContract,
+} from "@scio-labs/use-inkathon"
 import { useEffect, useMemo } from "react"
 import { ContractIds } from "../../deployments/deployments"
 export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
@@ -13,42 +18,27 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
 
   useEffect(() => {
     if (!contract || !message || !api) return
-
-    contract.query
-      .resolve(
-        "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
-        { gasLimit: -1, storageDepositLimit: null },
-        new Uint8Array([]),
-      )
+    console.log({ slug })
+    contractQuery(
+      api,
+      "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", // Alice
+      contract,
+      "resolve",
+      undefined,
+      [slug],
+    )
       .then((outcome) => {
-        console.log("outcome", outcome)
-
-        if (outcome.result.isErr) {
-          if (outcome.result.asErr.isModule) {
-            const actualError = api.registry.findMetaError(
-              outcome.result.asErr.asModule,
-            )
-            console.log("Actual Error", actualError)
-          } else {
-            console.log(
-              "Outcome error",
-              outcome.result.asErr.asModule.toHuman(),
-            )
-          }
-        }
-
-        if (outcome.result.isOk) {
-          console.log("output:", outcome.output?.toU8a())
-          // message.
-          // const returnTypeName =
-          //   message.returnType.lookupName || message.returnType.type
-          // const codec = api.registry.createTypeUnsafe(returnTypeName, [
-          //   result.asOk.data,
-          // ])
+        const output = decodeOutput(outcome, contract, "resolve")
+        if (output.isError) throw Error("Unable to query contract")
+        if (output.output) {
+          window.location = output.output as Location
+        } else {
+          // redirect and prefill
+          console.log({ output })
         }
       })
-      .catch((error) => {
-        console.log(error)
+      .catch((e) => {
+        console.log({ e })
       })
   }, [api, contract, message, slug])
   return (

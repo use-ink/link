@@ -38,7 +38,7 @@ export const ContractTxSuccessToast: FC<ContractTxResult> = ({
   return (
     <div className="flex flex-col gap-0.5">
       <div>Transaction successful</div>
-      {(subscanDetailUrl || polkadotjsDetailUrl) && (
+      {(subscanDetailUrl ?? polkadotjsDetailUrl) && (
         <div className="text-xs text-gray-400">
           View on{" "}
           {subscanDetailUrl && (
@@ -46,6 +46,7 @@ export const ContractTxSuccessToast: FC<ContractTxResult> = ({
               href={subscanDetailUrl}
               target="_blank"
               className="transition-all hover:text-white"
+              rel="noopener noreferrer"
             >
               Subscan ↗
             </a>
@@ -54,6 +55,7 @@ export const ContractTxSuccessToast: FC<ContractTxResult> = ({
           {polkadotjsDetailUrl && (
             <a
               href={polkadotjsDetailUrl}
+              rel="noopener noreferrer"
               target="_blank"
               className="transition-all hover:text-white"
             >
@@ -99,6 +101,7 @@ export const ContractTxErrorToast: FC<ContractTxResult> = ({
         <div className="text-xs text-gray-400">
           <a
             href={faucetUrl}
+            rel="noopener noreferrer"
             target="_blank"
             className="transition-all hover:text-white"
           >

@@ -6,6 +6,7 @@ import App from "./App.tsx"
 import { TooltipProvider } from "./components/ui/tooltip"
 import { getDeployments } from "./deployments/deployments.ts"
 import "./global.css"
+import { Toaster } from "react-hot-toast"
 
 const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -14,11 +15,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <TooltipProvider>
         <UseInkathonProvider
           appName="link!"
-          connectOnInit={true}
+          // connectOnInit={true}
           defaultChain={"development"}
           deployments={Promise.resolve(getDeployments("development"))}
         >
-          <App />
+          <>
+            <App />
+            <Toaster position="top-center" reverseOrder={false} />
+          </>
         </UseInkathonProvider>
       </TooltipProvider>
     </QueryClientProvider>

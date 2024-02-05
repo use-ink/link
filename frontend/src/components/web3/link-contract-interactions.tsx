@@ -13,6 +13,7 @@ import { ContractIds } from "@/deployments/deployments"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   contractQuery,
+  decodeOutput,
   useInkathon,
   useRegisteredContract,
 } from "@scio-labs/use-inkathon"
@@ -37,7 +38,7 @@ export const LinkContractInteractions: FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      slug: "1234",
+      slug: "12345",
       url: "http://localhost:5173/",
     },
   })
@@ -46,38 +47,37 @@ export const LinkContractInteractions: FC = () => {
   const updateCosts: (data: { slug: string; url: string }) => Promise<void> =
     useCallback(
       debounce(async ({ slug, url }: { slug: string; url: string }) => {
-        if (!contract || !activeAccount) return
+        if (!contract || !activeAccount || !api) return
         console.log({ contract, activeAccount })
 
-        const shorten = contract.query.shorten(
+        const shorten = contractQuery(
+          api,
           activeAccount.address,
-          {
-            gasLimit: -1,
-            storageDepositLimit: null,
-          },
-          { DeduplicateOrNew: slug },
-          url,
+          contract,
+          "shorten",
+          undefined,
+          [{ New: slug }, url],
         )
 
-        const resolve = contract.query.resolve(
+        const resolve = contractQuery(
+          api,
           activeAccount.address,
-          {
-            gasLimit: -1,
-            storageDepositLimit: null,
-          },
-          slug,
+          contract,
+          "resolve",
+          undefined,
+          [slug],
         )
+
         const [shortenOutcome, resolveOutcome] = await Promise.all([
           shorten,
           resolve,
         ])
 
-        if (shortenOutcome.result.isErr) {
-        }
-        if (resolve) console.log({ resolve: resolveOutcome.result.asOk.data })
-        console.log({ shorten: shortenOutcome.result })
+        const shortenResult = decodeOutput(shortenOutcome, contract, "shorten")
+        const resolveResult = decodeOutput(resolveOutcome, contract, "resolve")
+        console.log({ shortenResult, resolveResult })
       }, 2000),
-      [contract, activeAccount],
+      [contract, api, activeAccount],
     )
   // Callback version of watch.  It's your responsibility to unsubscribe when done.
   useEffect(() => {
@@ -92,9 +92,6 @@ export const LinkContractInteractions: FC = () => {
       }
       if (!contract) {
         throw new Error("Contract not available")
-      }
-      if (!activeAccount) {
-        throw new Error("Account not available")
       }
 
       console.log({ slug, url })
@@ -114,7 +111,6 @@ export const LinkContractInteractions: FC = () => {
 
   if (!api) return null
 
-  console.log({ errors: form.formState.errors, form: form.formState })
   return (
     <div className="flex max-w-[24rem] grow flex-col">
       <CardHeader className="mx-[-10px] space-y-1">
@@ -128,27 +124,26 @@ export const LinkContractInteractions: FC = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex w-full flex-col items-start gap-3 p-3"
+            className="flex w-full  flex-col items-start gap-3 p-3"
           >
-            <div className="flex flex-col gap-1">
-              <div className="w-full rounded-xl bg-gray-100 p-2">
-                <FormField
-                  control={form.control}
-                  name="url"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="text-lg"
-                          placeholder={"https://use.ink/"}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            <div className="flex w-full flex-col gap-1">
+              <FormField
+                control={form.control}
+                name="url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        disabled={form.formState.isSubmitting}
+                        className="text-lg"
+                        placeholder={"https://use.ink/"}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -161,40 +156,62 @@ export const LinkContractInteractions: FC = () => {
                 </div>
               </div>
 
-              <div className="w-full rounded-xl bg-gray-100 p-2">
-                <FormField
-                  control={form.control}
-                  name="slug"
-                  rules={{
-                    validate: (value) => {
-                      console.log("validate", value)
-                      return "slug is taken"
-                    },
-                  }}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <div className="flex flex-row items-center gap-1 text-nowrap">
-                          <div className="text-lg">https://tiny.ink/</div>
-                          <Input
-                            className="flex-1 px-1 text-lg"
-                            placeholder={"check-this-out"}
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="slug"
+                rules={{
+                  validate: (value) => {
+                    console.log("validate", value)
+                    return "slug is taken"
+                  },
+                }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        disabled={form.formState.isSubmitting}
+                        className="flex-1 text-lg"
+                        placeholder={"check-this-out"}
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted-foreground">
+                    Resulting in
+                  </span>
+                </div>
+              </div>
+              <div className="flex h-12 w-full items-center rounded-xl bg-gray-100 px-4 text-lg">
+                <a
+                  href="https://tiny.ink/sug"
+                  className="text-purple-400 underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  https://tiny.ink/sug here
+                </a>
               </div>
             </div>
 
             <Button
-              className="w-full font-bold"
+              className="w-full rounded-lg font-bold"
               type="submit"
-              disabled={!form.formState.isValid || form.formState.isSubmitting}
+              size="lg"
+              disabled={
+                !form.formState.isValid ||
+                form.formState.isSubmitting ||
+                !activeSigner
+              }
             >
-              Apply
+              REGISTER
             </Button>
           </form>
         </Form>
