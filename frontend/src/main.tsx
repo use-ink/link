@@ -16,8 +16,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <UseInkathonProvider
           appName="link!"
           // connectOnInit={true}
-          defaultChain={"development"}
-          deployments={Promise.resolve(getDeployments("development"))}
+          defaultChain={import.meta.env.VITE_DEFAULT_CHAIN}
+          deployments={Promise.resolve(getDeployments())}
         >
           <>
             <App />

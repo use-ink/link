@@ -32,7 +32,7 @@ const slugParser = z
   .string()
   .min(5)
   .max(40)
-  .regex(/^\w+$/, "Can not contain symbols")
+  .regex(/^\w+$/, "Can not contain symbols or whitespaces")
   .trim()
   .toLowerCase()
 
