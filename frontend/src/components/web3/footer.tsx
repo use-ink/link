@@ -7,7 +7,7 @@ export const Footer = () => {
         href={"https://use.ink/"}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center justify-center gap-1 text-center text-sm text-gray-400 hover:text-gray-600"
+        className="flex items-center justify-center gap-1 text-center text-sm text-gray-600 hover:text-gray-800"
       >
         ink! Documentation <HiOutlineExternalLink />
       </a>
@@ -16,7 +16,7 @@ export const Footer = () => {
         href={"https://github.com/paritytech/link"}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center justify-center gap-1 text-center text-sm text-gray-400 hover:text-gray-600"
+        className="flex items-center justify-center gap-1 text-center text-sm text-gray-600 hover:text-gray-800"
       >
         GitHub <HiOutlineExternalLink />
       </a>
@@ -25,7 +25,7 @@ export const Footer = () => {
         href={"https://use.ink/5.x/faucet"}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center justify-center gap-1 text-center text-sm text-gray-400 hover:text-gray-600"
+        className="flex items-center justify-center gap-1 text-center text-sm text-gray-600 hover:text-gray-800"
       >
         Token Faucet <HiOutlineExternalLink />
       </a>

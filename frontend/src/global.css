@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: #F7F7F7;
+    --foreground: #5E4DC4;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card: #ABA1FF;
+    --card-foreground: #F7F7F7;
 
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
@@ -28,7 +28,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 89.8%;
+    --border: #8D7CF8;
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
 
@@ -36,11 +36,7 @@
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --background: #25213B;
 
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
@@ -60,7 +56,6 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
   }
@@ -68,9 +63,7 @@
 
 @layer base {
   * {
+    font-family: 'Itim', 'Comic Sans', sans-serif;
     @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }

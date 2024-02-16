@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
-import { FC, useCallback, useEffect } from "react"
-
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -17,73 +18,72 @@ import {
   useInkathon,
   useRegisteredContract,
 } from "@scio-labs/use-inkathon"
-import debounce from "lodash.debounce"
+import { Copy } from "lucide-react"
+import { customAlphabet } from "nanoid"
+import { FC, useCallback, useMemo } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
-import * as z from "zod"
+import toast from "react-hot-toast"
+import { z } from "zod"
+import { cn } from "../../utils/cn"
 import { contractTxWithToast } from "../../utils/contract-tx-with-toast"
-import { Button } from "../ui/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card"
+import PaperPlane from "@/assets/paper-plane.svg"
+
+const slugParser = z
+  .string()
+  .min(5)
+  .max(40)
+  .regex(/^\w+$/, "Can not contain symbols")
+  .trim()
+  .toLowerCase()
 
 const formSchema = z.object({
-  url: z.string().min(1).url(),
-  slug: z.string().min(5),
+  url: z.string().url(),
+  slug: slugParser,
 })
 
 export const LinkContractInteractions: FC = () => {
-  const { api, activeAccount, activeSigner } = useInkathon()
-  const { contract, address: contractAddress } = useRegisteredContract(
-    ContractIds.Link,
+  const { api, activeAccount, connect, isConnected } = useInkathon()
+  const { contract } = useRegisteredContract(ContractIds.Link)
+
+  const initialSlug = useMemo(
+    () => customAlphabet("abcdefghijklmnopqrstuvwxyz", 5)(),
+    [],
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
     defaultValues: {
-      slug: "12345",
-      url: "http://localhost:5173/",
+      slug: initialSlug,
     },
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const updateCosts: (data: { slug: string; url: string }) => Promise<void> =
-    useCallback(
-      debounce(async ({ slug, url }: { slug: string; url: string }) => {
-        if (!contract || !activeAccount || !api) return
-        console.log({ contract, activeAccount })
+  const dryRun = useCallback(
+    async ({ slug, url }: { slug: string; url: string }) => {
+      if (!contract || !api || !slug || !url || !activeAccount) return
 
-        const shorten = contractQuery(
-          api,
-          activeAccount.address,
-          contract,
-          "shorten",
-          undefined,
-          [{ New: slug }, url],
+      const shortenOutcome = await contractQuery(
+        api,
+        activeAccount?.address,
+        contract,
+        "shorten",
+        undefined,
+        [{ New: slug }, url],
+      )
+      const shortenResult = decodeOutput(shortenOutcome, contract, "shorten")
+
+      if (shortenOutcome.result.isErr && shortenOutcome.result.asErr.isModule) {
+        const { docs, method, section } = api.registry.findMetaError(
+          shortenOutcome.result.asErr.asModule,
         )
 
-        const resolve = contractQuery(
-          api,
-          activeAccount.address,
-          contract,
-          "resolve",
-          undefined,
-          [slug],
-        )
+        shortenResult.decodedOutput = `${section}.${method}: ${docs.join(" ")}`
+      }
 
-        const [shortenOutcome, resolveOutcome] = await Promise.all([
-          shorten,
-          resolve,
-        ])
-
-        const shortenResult = decodeOutput(shortenOutcome, contract, "shorten")
-        const resolveResult = decodeOutput(resolveOutcome, contract, "resolve")
-        console.log({ shortenResult, resolveResult })
-      }, 2000),
-      [contract, api, activeAccount],
-    )
-  // Callback version of watch.  It's your responsibility to unsubscribe when done.
-  useEffect(() => {
-    const subscription = form.watch((value) => updateCosts(value))
-    return () => subscription.unsubscribe()
-  }, [form, updateCosts])
+      return shortenResult
+    },
+    [contract, api, activeAccount],
+  )
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     async ({ slug, url }) => {
@@ -93,9 +93,18 @@ export const LinkContractInteractions: FC = () => {
       if (!contract) {
         throw new Error("Contract not available")
       }
+      if (!activeAccount) {
+        throw new Error("Signer not available")
+      }
 
-      console.log({ slug, url })
-      const result = await contractTxWithToast(
+      const outcome = await dryRun({ slug, url })
+      if (outcome?.isError) {
+        console.error({ outcome })
+        toast.error(outcome.decodedOutput)
+        return
+      }
+
+      return contractTxWithToast(
         api,
         activeAccount.address,
         contract,
@@ -103,122 +112,142 @@ export const LinkContractInteractions: FC = () => {
         {},
         [{ DeduplicateOrNew: slug }, url],
       )
-
-      console.log({ result })
     },
-    [activeAccount, api, contract],
+    [activeAccount, api, contract, dryRun],
   )
 
-  if (!api) return null
-
   return (
-    <div className="flex max-w-[24rem] grow flex-col">
-      <CardHeader className="mx-[-10px] space-y-1">
-        <CardTitle className="text-2xl">Shorten URLs</CardTitle>
-        <CardDescription>
-          Shorten & resolve URLs with the tiny.ink contract.
-        </CardDescription>
-      </CardHeader>
-
-      <Card className="z-10">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex w-full  flex-col items-start gap-3 p-3"
-          >
-            <div className="flex w-full flex-col gap-1">
+    <div className="flex w-screen min-w-[16rem] max-w-[748px] grow flex-col px-4">
+      <div className="mb-4 flex flex-col items-center justify-center space-y-[-10px]">
+        <h1 className="items-center self-center text-6xl font-bold text-ink-shadow">
+          link!
+        </h1>
+        <h2 className="text-md items-center self-center font-bold text-ink-border">
+          The smart contract based URL shortener!
+        </h2>
+      </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex w-full flex-col items-start gap-4 border-ink-border"
+        >
+          <div className="w-full rounded-md bg-ink-blue p-3">
+            <div
+              className={cn(
+                "flex w-full flex-col gap-4 rounded-md border-4 border-ink-border bg-ink-blue p-3 opacity-30 transition-opacity",
+                {
+                  "opacity-100": isConnected,
+                },
+              )}
+            >
               <FormField
                 control={form.control}
                 name="url"
-                render={({ field }) => (
-                  <FormItem>
+                render={({ field, fieldState }) => (
+                  <FormItem className="transition-all">
+                    <FormLabel className="pl-2">URL</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={form.formState.isSubmitting}
-                        className="text-lg"
+                        disabled={form.formState.isSubmitting || !isConnected}
+                        className={cn({
+                          "border-pink-300 focus-visible:ring-pink-600":
+                            !!fieldState.error,
+                        })}
                         placeholder={"https://use.ink/"}
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="pl-2" />
                   </FormItem>
                 )}
               />
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    will be shortened to
-                  </span>
-                </div>
-              </div>
 
               <FormField
                 control={form.control}
                 name="slug"
-                rules={{
-                  validate: (value) => {
-                    console.log("validate", value)
-                    return "slug is taken"
-                  },
-                }}
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
+                    <FormLabel className="pl-2">Custom Path</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={form.formState.isSubmitting}
-                        className="flex-1 text-lg"
-                        placeholder={"check-this-out"}
+                        disabled={form.formState.isSubmitting || !isConnected}
+                        className={cn({
+                          "border-pink-300 focus-visible:ring-pink-600":
+                            !!fieldState.error,
+                        })}
+                        placeholder={"helloworld"}
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage className="pl-2" />
                   </FormItem>
                 )}
               />
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+                  <span className="w-full rounded-md border-2 border-t border-ink-border" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    Resulting in
+                  <span className=" bg-ink-card px-2 text-lg text-ink-white">
+                    shorten to
                   </span>
                 </div>
               </div>
-              <div className="flex h-12 w-full items-center rounded-xl bg-gray-100 px-4 text-lg">
+
+              <div className="mb-1 flex min-h-14 w-full flex-row items-center justify-between rounded-md bg-ink-white px-4 py-3 text-xl">
                 <a
-                  href="https://tiny.ink/sug"
-                  className="text-purple-400 underline"
+                  href={`https://tiny.ink/${encodeURI(
+                    form.watch("slug").toLowerCase(),
+                  )}`}
+                  className="text-ink-text underline"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  https://tiny.ink/sug here
+                  {`https://tiny.ink/${encodeURI(
+                    form.watch("slug").toLowerCase(),
+                  )}`}
                 </a>
+
+                <Copy
+                  onClick={() => toast.success("Copied to Clipboard!")}
+                  className="cursor-pointer stroke-ink-shadow opacity-25 hover:opacity-75"
+                />
               </div>
             </div>
+          </div>
+
+          <div className="flex w-full flex-col items-center justify-center">
+            <div className="-z-10 m-[-16px] h-16 border-r-4 border-ink-shadow"></div>
 
             <Button
-              className="w-full rounded-lg font-bold"
-              type="submit"
+              className={cn({
+                "border-pink-900 bg-pink-500 hover:bg-pink-600": !activeAccount,
+              })}
+              disabled={activeAccount && !form.formState.isValid}
+              variant={"playful"}
               size="lg"
-              disabled={
-                !form.formState.isValid ||
-                form.formState.isSubmitting ||
-                !activeSigner
+              type={!activeAccount ? "button" : "submit"}
+              onClick={
+                !activeAccount
+                  ? () => {
+                      if (connect) void connect()
+                    }
+                  : () => {}
               }
             >
-              REGISTER
+              {!activeAccount ? "Connect Wallet" : "Shorten"}
+              {activeAccount && (
+                <img
+                  src={PaperPlane}
+                  alt="Paper Plane"
+                  className="h-12 w-12 pl-2"
+                />
+              )}
             </Button>
-          </form>
-        </Form>
-      </Card>
-      <Card className="z-0 mt-[-20px] bg-slate-100 px-2 pt-[20px] shadow-none">
-        <div className="py-2">Add data to get cost estimation</div>
-      </Card>
+          </div>
+        </form>
+      </Form>
     </div>
   )
 }

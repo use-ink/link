@@ -52,7 +52,7 @@ export const ConnectButton: FC = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            className="min-h-[3rem] min-w-[14rem] border bg-white text-primary hover:bg-gray-100"
+            className="min-h-[3rem]  min-w-[14rem] border-2 border-ink-border bg-white text-lg text-ink-text  hover:bg-gray-100"
             translate="no"
             disabled={isConnecting}
           >
@@ -94,29 +94,27 @@ export const ConnectButton: FC = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="">
         <Button
-          className="min-h-[3rem] min-w-[14rem] border bg-white text-primary hover:bg-gray-100"
+          className="min-h-[3rem] min-w-[14rem] border-2 border-ink-border bg-white text-primary hover:bg-gray-100"
           translate="no"
         >
           <div className="flex w-full flex-row items-center justify-between gap-2">
             <div className="flex flex-col items-start">
-              <div className="text-sm font-bold">{activeAccount.name}</div>
-              <div className="font-mono text-xs">
-                {truncateHash(
-                  encodeAddress(
-                    activeAccount.address,
-                    activeChain?.ss58Prefix || 42,
-                  ),
-                  8,
-                )}
+              <div className="text-lg font-bold text-ink-text">
+                {activeAccount.name}
               </div>
+              <div className="font-mono text-xs"></div>
             </div>
-            <FiChevronDown className="shrink-0" size={22} aria-hidden="true" />
+            <FiChevronDown
+              className="shrink-0 stroke-ink-text"
+              size={22}
+              aria-hidden="true"
+            />
           </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="no-scrollbar max-h-[40vh] min-w-[14rem] overflow-scroll"
+        className="no-scrollbar max-h-[40vh] min-w-[14rem] overflow-scroll border-2 border-ink-border"
       >
         {(accounts || []).map((acc) => {
           const encodedAddress = encodeAddress(
@@ -138,7 +136,7 @@ export const ConnectButton: FC = () => {
             >
               <div className="flex w-full items-center justify-between">
                 <div>
-                  <div className="flex items-center gap-2 text-sm font-bold">
+                  <div className="flex items-center gap-2 text-lg font-bold text-ink-text">
                     {acc.name}
                   </div>
 
