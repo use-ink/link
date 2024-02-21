@@ -154,7 +154,7 @@ mod link {
                         slug: slug.clone(),
                         url,
                     });
-                    return Ok(ShorteningOutcome::Deduplicated { slug });
+                    return Ok(ShorteningOutcome::Deduplicated { slug })
                 }
                 (SlugCreationMode::Deduplicate, None) => return Err(Error::UrlNotFound),
                 (
@@ -166,10 +166,10 @@ mod link {
 
             // No dedup: Insert new slug
             if slug.len() < MIN_SLUG_LENGTH {
-                return Err(Error::SlugTooShort);
+                return Err(Error::SlugTooShort)
             }
             if self.urls.insert(&slug, &url).is_some() {
-                return Err(Error::SlugUnavailable);
+                return Err(Error::SlugUnavailable)
             }
             self.slugs.insert(&url, &slug);
             self.env().emit_event(Shortened { slug, url });
@@ -194,7 +194,7 @@ mod link {
                 .map(|id| id != self.env().caller())
                 .unwrap_or(true)
             {
-                return Err(Error::UpgradeDenied);
+                return Err(Error::UpgradeDenied)
             }
             self.env()
                 .set_code_hash(&code_hash)
@@ -415,17 +415,18 @@ mod link {
                 .submit()
                 .await
                 .expect("instantiate failed");
-            let mut call = link.call::<Link>();
+            let mut call_builder = link.call_builder::<Link>();
 
             // when
-            let shorten = call.shorten(SlugCreationMode::New(slug.clone()), url.clone());
+            let shorten =
+                call_builder.shorten(SlugCreationMode::New(slug.clone()), url.clone());
             let _shorten_res = client
                 .call(&ink_e2e::alice(), &shorten)
                 .submit()
                 .await
                 .expect("shorten failed");
 
-            let resolve = call.resolve(slug);
+            let resolve = call_builder.resolve(slug);
             let resolve_res = client.call(&ink_e2e::alice(), &resolve).dry_run().await?;
 
             // then
