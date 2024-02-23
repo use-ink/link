@@ -1,4 +1,4 @@
-// Copyright 2018-2022 Parity Technologies (UK) Ltd.
+// Copyright 2018-2024 Parity Technologies (UK) Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![cfg_attr(not(feature = "std"), no_std)]
-
-use ink_lang as ink;
+#![cfg_attr(not(feature = "std"), no_std, no_main)]
 
 #[ink::contract]
 mod link {
-    use ink_prelude::vec::Vec;
-    use ink_storage::{traits::SpreadAllocate, Mapping};
+    use ink::{
+        prelude::vec::Vec,
+        storage::Mapping,
+    };
 
     /// Slugs shorter than this are rejected by [`shorten`].
     const MIN_SLUG_LENGTH: usize = 5;
@@ -44,7 +44,7 @@ mod link {
 
     /// The in-storage representation of this contract.
     #[ink(storage)]
-    #[derive(SpreadAllocate)]
+    #[derive(Default)]
     pub struct Link {
         /// Needed in order to resolve slugs to URLs.
         urls: Mapping<Slug, Url>,
@@ -55,8 +55,8 @@ mod link {
     }
 
     /// The error type used for all messages.
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    #[derive(Debug, PartialEq, Eq)]
+    #[ink::scale_derive(Encode, Decode, TypeInfo)]
     pub enum Error {
         /// The slug is already in use for another URL.
         SlugUnavailable,
@@ -71,8 +71,8 @@ mod link {
     }
 
     /// Used by users to specify whether an URL should be de-duplicated.
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    #[derive(Debug, PartialEq, Eq, Clone)]
+    #[ink::scale_derive(Encode, Decode, TypeInfo)]
     pub enum SlugCreationMode {
         /// Always create a new slug even if the URL was already shortened.
         New(Slug),
@@ -83,8 +83,8 @@ mod link {
     }
 
     /// Specifies the outcome of a [`shorten`] message.
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    #[derive(Debug, PartialEq, Eq)]
+    #[ink::scale_derive(Encode, Decode, TypeInfo)]
     pub enum ShorteningOutcome {
         /// A new mapping from the supplied slug was created.
         Shortened,
@@ -121,10 +121,11 @@ mod link {
         /// for that reason. A truly trustless deployment should use the [`unstoppable`]
         /// constructor.
         #[ink(constructor)]
-        pub fn default() -> Self {
-            ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.upgrader = Some(contract.env().caller());
-            })
+        pub fn new() -> Self {
+            Self {
+                upgrader: Some(Self::env().caller()),
+                ..Default::default()
+            }
         }
 
         /// Construct a new contract and don't set an upgrader.
@@ -133,9 +134,7 @@ mod link {
         /// unstoppable.
         #[ink(constructor)]
         pub fn unstoppable() -> Self {
-            ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.upgrader = None;
-            })
+            Self::default()
         }
 
         /// Create a a new mapping or use an existing one.
@@ -155,7 +154,7 @@ mod link {
                         slug: slug.clone(),
                         url,
                     });
-                    return Ok(ShorteningOutcome::Deduplicated { slug });
+                    return Ok(ShorteningOutcome::Deduplicated { slug })
                 }
                 (SlugCreationMode::Deduplicate, None) => return Err(Error::UrlNotFound),
                 (
@@ -167,10 +166,10 @@ mod link {
 
             // No dedup: Insert new slug
             if slug.len() < MIN_SLUG_LENGTH {
-                return Err(Error::SlugTooShort);
+                return Err(Error::SlugTooShort)
             }
-            if self.urls.insert_return_size(&slug, &url).is_some() {
-                return Err(Error::SlugUnavailable);
+            if self.urls.insert(&slug, &url).is_some() {
+                return Err(Error::SlugUnavailable)
             }
             self.slugs.insert(&url, &slug);
             self.env().emit_event(Shortened { slug, url });
@@ -189,15 +188,251 @@ mod link {
         /// The code cannot be changed in case no upgrader was set because the
         /// [`unstoppable`] constructor was used.
         #[ink(message)]
-        pub fn upgrade(&mut self, code_hash: [u8; 32]) -> Result<()> {
+        pub fn upgrade(&mut self, code_hash: Hash) -> Result<()> {
             if self
                 .upgrader
                 .map(|id| id != self.env().caller())
                 .unwrap_or(true)
             {
-                return Err(Error::UpgradeDenied);
+                return Err(Error::UpgradeDenied)
             }
-            ink_env::set_code_hash(&code_hash).map_err(|_| Error::UpgradeFailed)
+            self.env()
+                .set_code_hash(&code_hash)
+                .map_err(|_| Error::UpgradeFailed)
+        }
+    }
+    #[cfg(test)]
+    mod tests {
+        use ink::scale::Decode;
+
+        use super::*;
+
+        const SLUG: &str = "https://test1slug";
+        const SLUG_TO_SHORT: &str = "test";
+        const URL: &str = "https://test_slug.parity.io";
+
+        fn default_accounts(
+        ) -> ink::env::test::DefaultAccounts<ink::env::DefaultEnvironment> {
+            ink::env::test::default_accounts::<Environment>()
+        }
+
+        fn set_next_caller(caller: AccountId) {
+            ink::env::test::set_caller::<Environment>(caller);
+        }
+
+        #[ink::test]
+        fn shorten_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::new();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
+                Ok(ShorteningOutcome::Shortened)
+            );
+            let emitted_events = ink::env::test::recorded_events().collect::<Vec<_>>();
+            let event_data = Shortened::decode(&mut emitted_events[0].data.as_slice())
+                .expect("event must decode");
+            assert_eq!((event_data.slug, event_data.url), (slug, url));
+        }
+
+        #[ink::test]
+        fn deduplicate_shorten_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::new();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
+                Ok(ShorteningOutcome::Shortened)
+            );
+
+            assert_eq!(
+                contract.shorten(SlugCreationMode::Deduplicate, url.clone()),
+                Ok(ShorteningOutcome::Deduplicated { slug: slug.clone() })
+            );
+
+            let emitted_events = ink::env::test::recorded_events().collect::<Vec<_>>();
+            let event_data = Deduplicated::decode(&mut emitted_events[1].data.as_slice())
+                .expect("event must decode");
+            assert_eq!((event_data.slug, event_data.url), (slug, url));
+        }
+
+        #[ink::test]
+        fn deduplicate_or_new_shorten_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::new();
+            assert_eq!(
+                contract.shorten(
+                    SlugCreationMode::DeduplicateOrNew(slug.clone()),
+                    url.clone()
+                ),
+                Ok(ShorteningOutcome::Shortened)
+            );
+
+            assert_eq!(
+                contract.shorten(
+                    SlugCreationMode::DeduplicateOrNew(slug.clone()),
+                    url.clone()
+                ),
+                Ok(ShorteningOutcome::Deduplicated { slug: slug.clone() })
+            );
+
+            let emitted_events = ink::env::test::recorded_events().collect::<Vec<_>>();
+            let event_data = Shortened::decode(&mut emitted_events[0].data.as_slice())
+                .expect("event must decode");
+            assert_eq!(
+                (event_data.slug, event_data.url),
+                (slug.clone(), url.clone())
+            );
+
+            let event_data = Deduplicated::decode(&mut emitted_events[1].data.as_slice())
+                .expect("event must decode");
+            assert_eq!((event_data.slug, event_data.url), (slug, url));
+        }
+
+        #[ink::test]
+        fn invalid_shorten_should_fail() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG_TO_SHORT.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::new();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug), url),
+                Err(Error::SlugTooShort)
+            );
+        }
+
+        #[ink::test]
+        fn unduplicated_shorten_should_fail() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::new();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::Deduplicate, url),
+                Err(Error::UrlNotFound)
+            );
+        }
+
+        #[ink::test]
+        fn resolve_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::new();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
+                Ok(ShorteningOutcome::Shortened)
+            );
+
+            set_next_caller(default_accounts.bob);
+            assert_eq!(contract.resolve(slug), Some(url));
+        }
+
+        #[ink::test]
+        fn invalid_resolve_should_fail() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+
+            let slug = SLUG.as_bytes().to_vec();
+            let url = URL.as_bytes().to_vec();
+
+            let mut contract = Link::new();
+            assert_eq!(
+                contract.shorten(SlugCreationMode::New(slug.clone()), url.clone()),
+                Ok(ShorteningOutcome::Shortened)
+            );
+
+            set_next_caller(default_accounts.bob);
+            assert_eq!(
+                contract.resolve("https://bad_slug".as_bytes().to_vec()),
+                None
+            );
+        }
+
+        #[ink::test]
+        fn unstoppable_works() {
+            let default_accounts: ink::env::test::DefaultAccounts<
+                ink::env::DefaultEnvironment,
+            > = default_accounts();
+            set_next_caller(default_accounts.alice);
+            let mut contract = Link::unstoppable();
+
+            let code_hash = Hash::from([0x1; 32]);
+            assert_eq!(contract.upgrade(code_hash), Err(Error::UpgradeDenied));
+        }
+    }
+
+    #[cfg(all(test, feature = "e2e-tests"))]
+    mod e2e_tests {
+        use super::*;
+        use ink_e2e::ContractsBackend;
+
+        type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+
+        #[ink_e2e::test]
+        async fn e2e_resolve<Client: E2EBackend>(mut client: Client) -> E2EResult<()> {
+            let slug = "https://test1slug".as_bytes().to_vec();
+            let url = "https://test_slug.parity.io".as_bytes().to_vec();
+
+            let mut constructor = LinkRef::new();
+            let link = client
+                .instantiate("link", &ink_e2e::alice(), &mut constructor)
+                .submit()
+                .await
+                .expect("instantiate failed");
+            let mut call_builder = link.call_builder::<Link>();
+
+            // when
+            let shorten =
+                call_builder.shorten(SlugCreationMode::New(slug.clone()), url.clone());
+            let _shorten_res = client
+                .call(&ink_e2e::alice(), &shorten)
+                .submit()
+                .await
+                .expect("shorten failed");
+
+            let resolve = call_builder.resolve(slug);
+            let resolve_res = client.call(&ink_e2e::alice(), &resolve).dry_run().await?;
+
+            // then
+            assert_eq!(resolve_res.return_value(), Some(url));
+
+            Ok(())
         }
     }
 }
