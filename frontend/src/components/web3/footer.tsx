@@ -22,7 +22,7 @@ export const Footer = () => {
       </a>
 
       <a
-        href={"https://use.ink/5.x/faucet"}
+        href={"https://use.ink/faucet/"}
         target="_blank"
         rel="noreferrer"
         className="flex items-center justify-center gap-1 text-center text-sm text-gray-600 hover:text-gray-800"
