@@ -1,11 +1,11 @@
 {
   "source": {
-    "hash": "0x246f424b73bf32109f5fda9d7af6d4029f19cd5b9d4cd4ed829f47813afaaff9",
-    "language": "ink! 5.0.0-rc",
+    "hash": "0x50dd2517ea89230ee34d03b68c632a04d5f57b2f334ca290f3484d5d672cbf7a",
+    "language": "ink! 5.0.0",
     "compiler": "rustc 1.75.0",
     "build_info": {
       "build_mode": "Release",
-      "cargo_contract_version": "3.2.0",
+      "cargo_contract_version": "4.0.2",
       "rust_toolchain": "stable-aarch64-apple-darwin",
       "wasm_opt_settings": {
         "keep_debug_symbols": false,
@@ -20,6 +20,7 @@
       "Parity Technologies <admin@parity.io>"
     ]
   },
+  "image": null,
   "spec": {
     "constructors": [
       {
@@ -116,7 +117,9 @@
             "indexed": false,
             "label": "slug",
             "type": {
-              "displayName": [],
+              "displayName": [
+                "Slug"
+              ],
               "type": 0
             }
           },
@@ -127,7 +130,9 @@
             "indexed": false,
             "label": "url",
             "type": {
-              "displayName": [],
+              "displayName": [
+                "Url"
+              ],
               "type": 0
             }
           }
@@ -148,7 +153,9 @@
             "indexed": false,
             "label": "slug",
             "type": {
-              "displayName": [],
+              "displayName": [
+                "Slug"
+              ],
               "type": 0
             }
           },
@@ -159,7 +166,9 @@
             "indexed": false,
             "label": "url",
             "type": {
-              "displayName": [],
+              "displayName": [
+                "Url"
+              ],
               "type": 0
             }
           }
@@ -289,11 +298,11 @@
                 "root": {
                   "layout": {
                     "leaf": {
-                      "key": "0xa131b30a",
+                      "key": "0x0ab331a1",
                       "ty": 0
                     }
                   },
-                  "root_key": "0xa131b30a",
+                  "root_key": "0x0ab331a1",
                   "ty": 2
                 }
               },
@@ -304,11 +313,11 @@
                 "root": {
                   "layout": {
                     "leaf": {
-                      "key": "0x006c0496",
+                      "key": "0x96046c00",
                       "ty": 0
                     }
                   },
-                  "root_key": "0x006c0496",
+                  "root_key": "0x96046c00",
                   "ty": 7
                 }
               },
@@ -1095,5 +1104,5 @@
       }
     }
   ],
-  "version": "4"
+  "version": 5
 }

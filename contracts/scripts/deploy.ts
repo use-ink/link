@@ -20,21 +20,17 @@ const main = async () => {
 
   // Deploy greeter contract
   const { abi, wasm } = await getDeploymentData('link');
-
-  // TODO gives ugly error if constructor is not present
   const contract = await deployContract(api, account, abi, wasm, 'new', []);
 
   // Write contract addresses to `{contract}/{network}.ts` file(s)
-  // TODO does need `key` folder name match!
   await writeContractAddresses(chain.network, {
     link: contract,
   });
 };
 
-try {
-  await main();
-  process.exit(0);
-} catch (error) {
-  console.error(error);
-  process.exit(1);
-}
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => process.exit(0));
