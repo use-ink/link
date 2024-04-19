@@ -9,7 +9,7 @@
   ],
   "engines": {
     "node": "20",
-    "pnpm": "8"
+    "pnpm": "9"
   },
   "scripts": {
     "dev": "pnpm run -F frontend dev",
@@ -27,10 +27,9 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.1",
-    "lint-staged": "^15.2.1",
-    "next": "^14.0.4",
-    "simple-git-hooks": "^2.9.0",
-    "typescript": "^5.3.3",
+    "lint-staged": "^15.2.2",
+    "simple-git-hooks": "^2.11.1",
+    "typescript": "^5.4.5",
     "typesync": "^0.12.1"
   }
 }
