@@ -6,8 +6,9 @@ import {
   useRegisteredContract,
 } from "@scio-labs/use-inkathon"
 import { useEffect, useMemo } from "react"
+import Lottie from "react-lottie"
+import animationData from "../../assets/resolve.json"
 import { ContractIds } from "../../deployments/deployments"
-import LoadingGif from "../../assets/loading.gif"
 
 const DELAY = 6000
 
@@ -62,8 +63,23 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
   }, [api, contract, message, mounted, slug])
   return (
     <main className="flex h-screen w-screen flex-col items-center justify-center">
-      <img src={LoadingGif} />
+      <div className="pointer-events-none">
+        <Lottie
+          options={{
+            loop: true,
+            autoplay: true,
+            animationData: animationData,
+
+            rendererSettings: {
+              preserveAspectRatio: "xMidYMid slice",
+            },
+          }}
+          height={400}
+          width={400}
+        />
+      </div>
       <h1 className="text-2xl text-ink-text">Upscaling link...</h1>
+
       <a href="/" className="underline" target="_blank">
         Shrink your own link?
       </a>
