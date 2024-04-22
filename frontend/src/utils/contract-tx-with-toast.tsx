@@ -45,7 +45,7 @@ export const ContractTxSuccessToast: FC<ContractTxResult> = ({
             <a
               href={subscanDetailUrl}
               target="_blank"
-              className="transition-all hover:text-white"
+              className="transition-all hover:text-ink-text"
               rel="noopener noreferrer"
             >
               Subscan ↗
@@ -57,7 +57,7 @@ export const ContractTxSuccessToast: FC<ContractTxResult> = ({
               href={polkadotjsDetailUrl}
               rel="noopener noreferrer"
               target="_blank"
-              className="transition-all hover:text-white"
+              className="transition-all hover:text-ink-text"
             >
               Polkadot.js ↗
             </a>
