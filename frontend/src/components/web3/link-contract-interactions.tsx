@@ -1,6 +1,9 @@
 /* eslint-disable no-console */
+import PaperPlane from "@/assets/paper-plane.svg"
+import Left from "@/assets/left.svg"
+import Logo from "@/assets/logo.svg"
+import Right from "@/assets/right.svg"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -26,7 +29,6 @@ import toast from "react-hot-toast"
 import { z } from "zod"
 import { cn } from "../../utils/cn"
 import { contractTxWithToast } from "../../utils/contract-tx-with-toast"
-import PaperPlane from "@/assets/paper-plane.svg"
 
 const slugParser = z
   .string()
@@ -118,18 +120,24 @@ export const LinkContractInteractions: FC = () => {
 
   return (
     <div className="flex w-screen min-w-[16rem] max-w-[748px] grow flex-col px-4">
-      <div className="mb-4 flex flex-col items-center justify-center space-y-[-10px]">
-        <h1 className="items-center self-center text-6xl font-bold text-ink-shadow">
-          link!
-        </h1>
-        <h2 className="text-md items-center self-center font-bold text-ink-border">
-          The smart contract based URL shortener!
-        </h2>
+      <div className="relative flex h-[200px] flex-row items-start justify-center">
+        <img
+          className=" absolute bottom-[-25px] left-0"
+          src={Left}
+          alt="Reef Left"
+        />
+        <img className="h-14" src={Logo} alt="Link Logo" />
+
+        <img
+          className=" absolute bottom-[-30px] right-0"
+          src={Right}
+          alt="Reef Right"
+        />
       </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex w-full flex-col items-start gap-4 border-ink-border"
+          className="z-50 flex w-full flex-col items-start gap-4 border-ink-border"
         >
           <div className="w-full rounded-md bg-ink-blue p-3">
             <div
