@@ -8,10 +8,9 @@ import {
   useInkathon,
 } from "@scio-labs/use-inkathon"
 import { AiOutlineCheckCircle, AiOutlineDisconnect } from "react-icons/ai"
-import { FiChevronDown, FiExternalLink } from "react-icons/fi"
+import { FiExternalLink } from "react-icons/fi"
 import { RiArrowDownSLine } from "react-icons/ri"
 
-import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
