@@ -9,6 +9,8 @@ import { useEffect, useMemo } from "react"
 import Lottie from "react-lottie"
 import animationData from "../../assets/resolve.json"
 import { ContractIds } from "../../deployments/deployments"
+import { Footer } from "./footer"
+import toast from "react-hot-toast"
 
 const DELAY = 6000
 
@@ -41,7 +43,6 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
         const output = decodeOutput(outcome, contract, "resolve")
         if (output.isError) throw Error("Unable to query contract")
         if (output.output) {
-          // TODO not decoded correctly with inkv3 contract
           if (mounted + DELAY < Date.now()) {
             window.location = output.output as Location
           } else {
@@ -53,36 +54,41 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
             )
           }
         } else {
-          // redirect and prefill
-          console.log({ output })
+          window.location = `/?slug=${slug}` as any as Location
         }
       })
       .catch((e) => {
+        toast.error("Unable to resolve link")
         console.log({ e })
       })
   }, [api, contract, message, mounted, slug])
   return (
-    <main className="flex h-screen w-screen flex-col items-center justify-center">
-      <div className="pointer-events-none">
-        <Lottie
-          options={{
-            loop: true,
-            autoplay: true,
-            animationData: animationData,
+    <div className="flex h-screen w-screen flex-col items-center justify-center">
+      <main className="flex h-screen w-screen flex-col items-center justify-center">
+        <div className="pointer-events-none">
+          <Lottie
+            options={{
+              loop: true,
+              autoplay: true,
+              animationData: animationData,
 
-            rendererSettings: {
-              preserveAspectRatio: "xMidYMid slice",
-            },
-          }}
-          height={400}
-          width={400}
-        />
+              rendererSettings: {
+                preserveAspectRatio: "xMidYMid slice",
+              },
+            }}
+            height={400}
+            width={400}
+          />
+        </div>
+        <h1 className="text-2xl text-ink-text">Upscaling link...</h1>
+
+        <a href="/" className="underline" target="_blank">
+          Shrink your own link?
+        </a>
+      </main>
+      <div className="w-full py-2">
+        <Footer />
       </div>
-      <h1 className="text-2xl text-ink-text">Upscaling link...</h1>
-
-      <a href="/" className="underline" target="_blank">
-        Shrink your own link?
-      </a>
-    </main>
+    </div>
   )
 }
