@@ -26,7 +26,6 @@ export const ConnectButton: FC = () => {
     activeChain,
     connect,
     disconnect,
-    isConnecting,
     activeAccount,
     accounts,
     setActiveAccount,
@@ -51,16 +50,14 @@ export const ConnectButton: FC = () => {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            className="min-h-[3rem]  min-w-[14rem] border-2 border-ink-border bg-white text-lg text-ink-text  hover:bg-gray-100"
-            translate="no"
-            disabled={isConnecting}
-          >
-            Connect Wallet
-            <RiArrowDownSLine size={20} aria-hidden="true" />
-          </Button>
+          <div className="flex min-w-[14rem] flex-row items-center gap-4 rounded  bg-ink-shadow   text-lg text-white hover:cursor-pointer">
+            <div className="border-r-2 border-white px-2 py-2">
+              <RiArrowDownSLine size={20} aria-hidden="true" />
+            </div>
+            <div>Connect Wallet</div>
+          </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="min-w-[14rem]">
+        <DropdownMenuContent className="min-w-[14rem] border-2 border-ink-border">
           {!activeAccount &&
             browserWallets.map((w) =>
               isWalletInstalled(w) ? (
@@ -93,24 +90,12 @@ export const ConnectButton: FC = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="">
-        <Button
-          className="min-h-[3rem] min-w-[14rem] border-2 border-ink-border bg-white text-primary hover:bg-gray-100"
-          translate="no"
-        >
-          <div className="flex w-full flex-row items-center justify-between gap-2">
-            <div className="flex flex-col items-start">
-              <div className="text-lg font-bold text-ink-text">
-                {activeAccount.name}
-              </div>
-              <div className="font-mono text-xs"></div>
-            </div>
-            <FiChevronDown
-              className="shrink-0 stroke-ink-text"
-              size={22}
-              aria-hidden="true"
-            />
+        <div className="flex min-w-[14rem] flex-row items-center gap-4 rounded  bg-ink-shadow   text-lg text-white hover:cursor-pointer">
+          <div className="border-r-2 border-white px-2 py-2">
+            <RiArrowDownSLine size={20} aria-hidden="true" />
           </div>
-        </Button>
+          <div>{activeAccount.name}</div>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
