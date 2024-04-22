@@ -54,7 +54,7 @@ export const LinkContractInteractions: FC = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       slug: initialSlug,
     },
@@ -120,16 +120,16 @@ export const LinkContractInteractions: FC = () => {
 
   return (
     <div className="flex w-screen min-w-[16rem] max-w-[748px] grow flex-col px-4">
-      <div className="relative flex h-[200px] flex-row items-start justify-center">
+      <div className="relative flex h-[180px] flex-row items-start justify-center">
         <img
-          className=" absolute bottom-[-25px] left-0"
+          className="absolute bottom-[-25px] left-0"
           src={Left}
           alt="Reef Left"
         />
-        <img className="h-14" src={Logo} alt="Link Logo" />
+        <img className="z-50 h-14" src={Logo} alt="Link Logo" />
 
         <img
-          className=" absolute bottom-[-30px] right-0"
+          className="absolute bottom-[-30px] right-0"
           src={Right}
           alt="Reef Right"
         />
@@ -158,7 +158,7 @@ export const LinkContractInteractions: FC = () => {
                       <Input
                         disabled={form.formState.isSubmitting || !isConnected}
                         className={cn({
-                          "border-pink-300 focus-visible:ring-pink-600":
+                          "border-2 border-pink-500 focus-visible:ring-pink-600":
                             !!fieldState.error,
                         })}
                         placeholder={"https://use.ink/"}
@@ -180,7 +180,7 @@ export const LinkContractInteractions: FC = () => {
                       <Input
                         disabled={form.formState.isSubmitting || !isConnected}
                         className={cn({
-                          "border-pink-300 focus-visible:ring-pink-600":
+                          "border-2 border-pink-500 focus-visible:ring-pink-600":
                             !!fieldState.error,
                         })}
                         placeholder={"helloworld"}
@@ -203,12 +203,12 @@ export const LinkContractInteractions: FC = () => {
                 </div>
               </div>
 
-              <div className="mb-1 flex min-h-14 w-full flex-row items-center justify-between rounded-md bg-ink-white px-4 py-3 text-xl">
+              <div className="mb-1 flex min-h-14 w-full flex-row items-center justify-between rounded-md  bg-ink-border px-4 py-3 text-xl text-white">
                 <a
                   href={`https://tiny.ink/${encodeURI(
                     form.watch("slug").toLowerCase(),
                   )}`}
-                  className="text-ink-text underline"
+                  className="underline"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -219,7 +219,7 @@ export const LinkContractInteractions: FC = () => {
 
                 <Copy
                   onClick={() => toast.success("Copied to Clipboard!")}
-                  className="cursor-pointer stroke-ink-shadow opacity-25 hover:opacity-75"
+                  className="cursor-pointer stroke-white opacity-75 hover:opacity-50"
                 />
               </div>
             </div>

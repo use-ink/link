@@ -162,7 +162,7 @@ const FormMessage = React.forwardRef<
       style={{
         transition: "height 0.2s ease-in-out",
       }}
-      className={cn("text-[1rem] font-medium text-pink-700", className)}
+      className={cn("text-[1rem] font-medium text-pink-600", className)}
       {...props}
     >
       {body}
