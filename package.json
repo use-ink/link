@@ -1,7 +1,7 @@
 {
   "name": "link",
   "homepage": "https://tiny.ink/",
-  "author": "Parity Technologies <admin@parity.io>",
+  "author": "Use Ink <ink@r0gue.io>",
   "private": true,
   "workspaces": [
     "frontend",

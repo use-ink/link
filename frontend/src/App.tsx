@@ -8,6 +8,7 @@ function App() {
   const path = useMemo(() => {
     return window.location.pathname.split("/")[1]
   }, [])
+  console.log({ path, query: window.location.search })
 
   if (path) {
     return <Resolve slug={path} />

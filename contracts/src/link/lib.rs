@@ -1,4 +1,4 @@
-// Copyright 2018-2024 Parity Technologies (UK) Ltd.
+// Copyright 2018-2024 Use Ink (UK) Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -206,7 +206,7 @@ mod link {
 
         const SLUG: &str = "https://test1slug";
         const SLUG_TO_SHORT: &str = "test";
-        const URL: &str = "https://test_slug.parity.io";
+        const URL: &str = "https://test_slug.use.ink";
 
         fn default_accounts(
         ) -> ink::env::test::DefaultAccounts<ink::env::DefaultEnvironment> {
@@ -404,7 +404,7 @@ mod link {
         #[ink_e2e::test]
         async fn e2e_resolve<Client: E2EBackend>(mut client: Client) -> E2EResult<()> {
             let slug = "https://test1slug".as_bytes().to_vec();
-            let url = "https://test_slug.parity.io".as_bytes().to_vec();
+            let url = "https://test_slug.use.ink".as_bytes().to_vec();
 
             let mut constructor = LinkRef::new();
             let link = client

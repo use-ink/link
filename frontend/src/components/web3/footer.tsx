@@ -23,7 +23,7 @@ export const Footer = () => {
         </a>
 
         <a
-          href={"https://github.com/paritytech/link"}
+          href={"https://github.com/use-ink/link"}
           target="_blank"
           rel="noreferrer"
           className="flex items-center justify-center gap-1 text-center text-sm text-gray-600 hover:text-gray-800"
