@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <TooltipProvider>
         <UseInkathonProvider
           appName="link!"
-          connectOnInit={true}
+          connectOnInit={false}
           defaultChain={import.meta.env.VITE_DEFAULT_CHAIN}
           deployments={Promise.resolve(getDeployments())}
         >
