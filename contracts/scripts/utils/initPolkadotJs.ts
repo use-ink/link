@@ -3,7 +3,7 @@ import { IKeyringPair } from '@polkadot/types/types/interfaces';
 import { BN } from '@polkadot/util';
 import { getSubstrateChain } from '@scio-labs/use-inkathon/chains';
 import { getBalance, initPolkadotJs as initApi } from '@scio-labs/use-inkathon/helpers';
-import { SubstrateChain } from '@scio-labs/use-inkathon/types';
+import { SubstrateChain, SubstrateExplorer } from '@scio-labs/use-inkathon/types';
 import * as dotenv from 'dotenv';
 
 // Dynamically load environment from `.env.{chainId}`
@@ -24,7 +24,23 @@ export type InitParams = {
 };
 export const initPolkadotJs = async (): Promise<InitParams> => {
   const accountUri = process.env.ACCOUNT_URI || '//Alice';
-  const chain = getSubstrateChain(chainId);
+  let chain: SubstrateChain | undefined = undefined;
+  if (chainId === 'pop-network') {
+    chain = {
+      network: 'pop-network',
+      name: 'Pop Network',
+      ss58Prefix: 42,
+      rpcUrls: ['wss://rpc1.paseo.popnetwork.xyz', 'wss://rpc2.paseo.popnetwork.xyz'],
+      explorerUrls: {
+        [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc1.paseo.popnetwork.xyz`,
+      },
+      testnet: true,
+      faucetUrls: ['https://faucet.polkadot.io/'],
+    };
+  } else {
+    chain = getSubstrateChain(chainId);
+  }
+
   if (!chain) throw new Error(`Chain '${chainId}' not found`);
 
   // Initialize api
