@@ -36,7 +36,7 @@ export const Footer = () => {
           GitHub <HiOutlineExternalLink />
         </a>
         <a
-          href={"https://popnetwork.xyz/"}
+          href={"https://onboard.popnetwork.xyz/"}
           target="_blank"
           rel="noreferrer"
           className="flex items-center justify-center gap-1 text-center text-sm text-gray-600 hover:text-gray-800"
