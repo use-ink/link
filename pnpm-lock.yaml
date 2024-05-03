@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  '@scio-labs/use-inkathon@0.9.0':
-    hash: bnhebaa6hvsafoo4mhx2oeekda
-    path: patches/@scio-labs__use-inkathon@0.9.0.patch
-
 importers:
 
   .:
@@ -57,7 +52,7 @@ importers:
         version: 12.6.2(@polkadot/util@12.6.2)
       '@scio-labs/use-inkathon':
         specifier: ^0.9.0
-        version: 0.9.0(patch_hash=bnhebaa6hvsafoo4mhx2oeekda)(@nightlylabs/wallet-selector-polkadot@0.2.5)(@polkadot/api-contract@10.13.1)(@polkadot/api@10.13.1)(@polkadot/extension-inject@0.47.3)(@polkadot/keyring@12.6.2)(@polkadot/types@10.13.1)(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)(react-dom@18.3.1)(react@18.3.1)
+        version: 0.9.0(@nightlylabs/wallet-selector-polkadot@0.2.5)(@polkadot/api-contract@10.13.1)(@polkadot/api@10.13.1)(@polkadot/extension-inject@0.47.3)(@polkadot/keyring@12.6.2)(@polkadot/types@10.13.1)(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)(react-dom@18.3.1)(react@18.3.1)
       '@types/bn.js':
         specifier: ~5.1.5
         version: 5.1.5
@@ -3189,7 +3184,7 @@ packages:
       react-dom: 18.3.1(react@18.3.1)
     dev: false
 
-  /@scio-labs/use-inkathon@0.9.0(patch_hash=bnhebaa6hvsafoo4mhx2oeekda)(@nightlylabs/wallet-selector-polkadot@0.2.5)(@polkadot/api-contract@10.13.1)(@polkadot/api@10.13.1)(@polkadot/extension-inject@0.47.3)(@polkadot/keyring@12.6.2)(@polkadot/types@10.13.1)(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)(react-dom@18.3.1)(react@18.3.1):
+  /@scio-labs/use-inkathon@0.9.0(@nightlylabs/wallet-selector-polkadot@0.2.5)(@polkadot/api-contract@10.13.1)(@polkadot/api@10.13.1)(@polkadot/extension-inject@0.47.3)(@polkadot/keyring@12.6.2)(@polkadot/types@10.13.1)(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-infhBDyx8Ad/DhspoACsmeITN82mdBm54PWJh98a6NlkRuoO0Mvn/1V+6kRtP3xzlkTs9NwN7qnANNIAmz8VbQ==}
     engines: {node: '>=18 <=20', pnpm: '8'}
     peerDependencies:
@@ -3215,7 +3210,6 @@ packages:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     dev: true
-    patched: true
 
   /@scure/base@1.1.6:
     resolution: {integrity: sha512-ok9AWwhcgYuGG3Zfhyqg+zwl+Wn5uE+dwC0NV/2qQkx4dABbb/bx96vWu8NSj+BNjjSjno+JRYRjle1jV08k3g==}

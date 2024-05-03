@@ -31,10 +31,5 @@
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.4.5",
     "typesync": "^0.12.1"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "@scio-labs/use-inkathon@0.9.0": "patches/@scio-labs__use-inkathon@0.9.0.patch"
-    }
   }
 }
