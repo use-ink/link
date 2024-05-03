@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: contract
+        working-directory: contracts
     container:
       image: "paritytech/ci-unified:bullseye-1.75.0"
     steps:

@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: contract
+        working-directory: contracts
     steps:
       - name: Install Rust nightly toolchain
         uses: actions-rs/toolchain@v1
@@ -32,4 +32,5 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Run clippy
-        run: cargo clippy --verbose --no-default-features --target wasm32-unknown-unknown -- -D warnings
+        run: cargo clippy --verbose --no-default-features -- -D warnings
+
