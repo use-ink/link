@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   contractQuery,
   decodeOutput,
@@ -26,11 +25,10 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
   const mounted = useMemo(() => {
     return Date.now()
   }, [])
-  console.log({ mounted })
 
   useEffect(() => {
     if (!contract || !message || !api) return
-    console.log({ slug })
+
     contractQuery(
       api,
       "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", // Alice

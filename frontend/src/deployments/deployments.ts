@@ -16,7 +16,7 @@ const DEVELOPMENT_DEPLOYMENTS = {
 
 const POP_NETWORK_DEPLOYMENTS = {
   contractId: ContractIds.Link,
-  networkId: "pop-network",
+  networkId: "pop-network-testnet",
   abi: abi,
   address: linkPopNetwork,
 }
