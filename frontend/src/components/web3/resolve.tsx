@@ -65,9 +65,11 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
       <main className="flex h-screen w-screen flex-col items-center justify-center">
         <div className="pointer-events-none">
           <Lottie
+            speed={2.5}
             options={{
-              loop: true,
+              loop: false,
               autoplay: true,
+
               animationData: animationData,
 
               rendererSettings: {
