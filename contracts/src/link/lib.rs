@@ -16,7 +16,10 @@
 
 #[ink::contract]
 mod link {
-    use ink::{prelude::vec::Vec, storage::Mapping};
+    use ink::{
+        prelude::vec::Vec,
+        storage::Mapping,
+    };
 
     /// Slugs shorter than this are rejected by [`shorten`].
     const MIN_SLUG_LENGTH: usize = 5;
