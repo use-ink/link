@@ -1,7 +1,7 @@
 {
   "name": "link",
   "homepage": "https://tiny.ink/",
-  "author": "Use Ink <ink@r0gue.io>",
+  "author": "Use Ink <ink@use.ink>",
   "private": true,
   "workspaces": [
     "frontend",
