@@ -37,7 +37,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Install cargo-contract
-        uses: baptiste0928/cargo-install@21a18ba3bf4a184d1804e8b759930d3471b1c941 # v2.2.0
+        uses: baptiste0928/cargo-install@9f6037ed331dcf7da101461a20656273fa72abf0 # v3.1.0
         with:
           crate: cargo-contract
           version: "4.0.0-rc.1"
